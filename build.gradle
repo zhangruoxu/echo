@@ -33,5 +33,8 @@ dependencies {
     
     // Appium dependencies
     testCompile group: 'io.appium', name: 'java-client', version: '5.0.4'
+    
+    // SOOT and FlowDroid dependencies
+    compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
