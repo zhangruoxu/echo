@@ -1,5 +1,6 @@
 package util;
 
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,6 +50,12 @@ public class ManifestParser {
 	// Return the package name of an app
 	public String getPackageName() {
 		return manifest.getPackageName();
+	}
+	
+	public static String getPackageName(String appPath) {
+		if(! new File(appPath).isFile())
+			return null;
+		return new ManifestParser(appPath).getPackageName();
 	}
 	
 	// Return the main activities
