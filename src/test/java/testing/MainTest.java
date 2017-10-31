@@ -1,11 +1,9 @@
 package testing;
 
-import java.util.List;
-
 import org.junit.Test;
 
+import util.AppInfoWrapper;
 import util.Config;
-import util.ManifestParser;
 
 public class MainTest {
 	@Test
@@ -33,12 +31,12 @@ public class MainTest {
 		Config.init(null);
 		String[] args = new String[] {"-app", "0", "-emulator", "Nexus_5_API_19" };
 		TestingOptions.v().processOptions(args);
-		List<String> appPaths = TestingOptions.v().getAppPaths();
-		for(String appPath : appPaths)
-			Main.testingApp(appPath, (s, d) -> {
-				String pkgName = ManifestParser.getPackageName(appPath);
+		TestingOptions.v().getAppPaths().stream().map(AppInfoWrapper::new)
+		.forEach(i -> {
+			Main.testingApp(i, (info, d) -> {
 				d.closeApp();
-				d.removeApp(pkgName);
+				d.removeApp(info.getPkgName());
 			});
+		});
 	}
 }
