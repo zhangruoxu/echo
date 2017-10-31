@@ -9,7 +9,6 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.remote.MobilePlatform;
-import util.AppPathResolver;
 import util.Config;
 import util.ManifestParser;
 
@@ -28,7 +27,8 @@ public class Main {
 		appPaths.forEach(Main::testingApp);
 	}
 
-	// 
+	// simple testing
+	// launch the app, then uninstall it
 	public static void testingApp(String appPath) {
 		String pkgName = new ManifestParser(appPath).getPackageName();
 		DesiredCapabilities capabilities = new DesiredCapabilities();

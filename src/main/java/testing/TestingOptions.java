@@ -13,6 +13,9 @@ import util.Config;
  */
 public class TestingOptions {
 	private String emulatorName = null;
+	
+	private List<String> appPaths = null;
+	
 	public String getEmulatorName() {
 		return emulatorName;
 	}
@@ -20,9 +23,7 @@ public class TestingOptions {
 	public List<String> getAppPaths() {
 		return appPaths;
 	}
-
-	private List<String> appPaths = null;
-		
+	
 	private TestingOptions() {}
 	
 	public static final TestingOptions v() {
