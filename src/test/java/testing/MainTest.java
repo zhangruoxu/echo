@@ -1,8 +1,13 @@
 package testing;
 
+import java.util.function.BiConsumer;
+
 import org.junit.Test;
 
+import io.appium.java_client.MobileElement;
 import io.appium.java_client.android.Activity;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidKeyCode;
 import util.AppInfoWrapper;
 import util.Config;
 import util.ManifestParser;
@@ -58,5 +63,28 @@ public class MainTest {
 				d.removeApp(info.getPkgName());
 			});
 		});
+	}
+	
+	/**
+	 * Test return from unwanted app
+	 * Press back key to return
+	 */
+	@Test
+	public void test6() {
+		initTesting("0", (i, d) -> {
+			d.startActivity(new Activity("arity.calculator", "calculator.Calculator"));
+			if(! i.contains(d.currentActivity()))
+				d.pressKeyCode(AndroidKeyCode.BACK);
+		});
+	}
+	
+	/**
+	 * Initialize Appium testing
+	 */
+	private void initTesting(String id, BiConsumer<AppInfoWrapper, AndroidDriver<MobileElement>> testing) {
+		Config.init(null);
+		String[] args = new String[] {"-app", id, "-emulator", "Nexus_5_API_19"};
+		TestingOptions.v().processOptions(args);
+		TestingOptions.v().getAppPaths().stream().map(AppInfoWrapper::new).forEach(i -> Main.testingApp(i, testing));
 	}
 }
