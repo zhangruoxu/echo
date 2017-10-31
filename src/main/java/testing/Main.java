@@ -48,7 +48,7 @@ public class Main {
 	}
 	
 	/**
-	 * App testing work is implemented as a function interface.
+	 * App testing is implemented as a function interface.
 	 */
 	public static void testingApp(String appPath, BiConsumer<String, AppiumDriver<MobileElement>> testing) {
 		DesiredCapabilities capabilities = new DesiredCapabilities();
