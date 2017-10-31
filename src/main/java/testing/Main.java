@@ -2,6 +2,7 @@ package testing;
 
 import java.net.URL;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 import org.openqa.selenium.remote.DesiredCapabilities;
 
@@ -44,5 +45,23 @@ public class Main {
 		}
 		driver.closeApp();
 		driver.removeApp(pkgName);
+	}
+	
+	/**
+	 * App testing work is implemented as a function interface.
+	 */
+	public static void testingApp(String appPath, BiConsumer<String, AppiumDriver<MobileElement>> testing) {
+		DesiredCapabilities capabilities = new DesiredCapabilities();
+		capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Android Emulator");
+		capabilities.setCapability(MobileCapabilityType.APP, appPath);
+		capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, MobilePlatform.ANDROID);
+		AppiumDriver<MobileElement> driver = null;
+		try {
+			driver = new AppiumDriver<>(new URL(APPIUM_URL), capabilities);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+		testing.accept(appPath, driver);
 	}
 }
