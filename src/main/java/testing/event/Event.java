@@ -35,6 +35,14 @@ public abstract class Event {
     public int getEventType() {
         return eventType;
     }
-	// Perform the corresponding event 
+	
+    // Perform the corresponding event 
 	public abstract void injectEvent(AndroidDriver<AndroidElement> driver);
+	
+    /**
+     * @return true if it is safe to throttle after this event, and false otherwise.
+     */
+    public boolean isThrottlable() {
+        return true;
+    }
 }
