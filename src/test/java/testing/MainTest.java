@@ -1,19 +1,21 @@
 package testing;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.function.BiConsumer;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 
-import io.appium.java_client.MobileElement;
 import io.appium.java_client.MultiTouchAction;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.Activity;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidKeyCode;
-import testing.event.ThrottleEvent;
 import util.AppInfoWrapper;
 import util.Config;
 import util.ManifestParser;
@@ -85,7 +87,7 @@ public class MainTest {
 	}
 	
 	/**
-	 * Launch the app with pakcage name and launchable activity name 
+	 * Launch the app with package name and launchable activity name 
 	 */
 	@Test
 	public void test7() {
@@ -109,12 +111,28 @@ public class MainTest {
 			// click the "Add gesture" button
 			new TouchAction(d).tap(280,  1700).waitAction(Duration.ofMillis(5000)).perform();
 			//  swipe
-//			new TouchAction(d).press(518, 518).moveTo(200, 200).release().waitAction(Duration.ofMillis(500)).perform();
-//			new TouchAction(d).press(520, 963).moveTo(-100, -100).release().waitAction(Duration.ofMillis(500)).perform();
+			new TouchAction(d).press(518, 518).moveTo(200, 200).release().waitAction(Duration.ofMillis(500)).perform();
+			new TouchAction(d).press(520, 963).moveTo(-100, -100).release().waitAction(Duration.ofMillis(500)).perform();
 			// multi couch
 			TouchAction actOne = new TouchAction(d).press(357, 539).moveTo(-100, -100).release();
 			TouchAction actTwo = new TouchAction(d).press(470, 583).moveTo(100, 100).release();
 			new MultiTouchAction(d).add(actOne).add(actTwo).perform();
+		});
+	}
+	
+	/**
+	 * Test obtain screenshot and save to a file in current directory
+	 */
+	@Test
+	public void test9() {
+		initTesting("0", (i, d) -> {
+			try {
+			File screenshot = ((TakesScreenshot) d).getScreenshotAs(OutputType.FILE);
+			File dest = new File(String.join(File.separator, "." , screenshot.getName()));
+			FileUtils.copyFile(screenshot, dest);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		});
 	}
 	
