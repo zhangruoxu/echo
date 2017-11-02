@@ -1,13 +1,19 @@
 package testing;
 
+import java.time.Duration;
 import java.util.function.BiConsumer;
 
 import org.junit.Test;
+import org.openqa.selenium.Dimension;
 
 import io.appium.java_client.MobileElement;
+import io.appium.java_client.MultiTouchAction;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.Activity;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidKeyCode;
+import testing.event.ThrottleEvent;
 import util.AppInfoWrapper;
 import util.Config;
 import util.ManifestParser;
@@ -79,9 +85,43 @@ public class MainTest {
 	}
 	
 	/**
+	 * Launch the app with pakcage name and launchable activity name 
+	 */
+	@Test
+	public void test7() {
+		Main.testingApp("com.example.yzhan.startmode", ".MainActivity", (p, d) -> {
+			Dimension dimension = d.manage().window().getSize();
+			System.out.println("# Window height: " + dimension.height);
+			System.out.println("# Window width: " + dimension.width);
+			d.closeApp();
+		});
+	}
+	
+	/**
+	 * Test click button with coordinate
+	 */
+	@Test
+	public void test8() {
+		Main.testingApp("com.android.gesture.builder", ".GestureBuilderActivity", (p, d) -> {
+			Dimension dimension = d.manage().window().getSize();
+			System.out.println("# Window height: " + dimension.height);
+			System.out.println("# Window width: " + dimension.width); 
+			// click the "Add gesture" button
+			new TouchAction(d).tap(280,  1700).waitAction(Duration.ofMillis(5000)).perform();
+			//  swipe
+//			new TouchAction(d).press(518, 518).moveTo(200, 200).release().waitAction(Duration.ofMillis(500)).perform();
+//			new TouchAction(d).press(520, 963).moveTo(-100, -100).release().waitAction(Duration.ofMillis(500)).perform();
+			// multi couch
+			TouchAction actOne = new TouchAction(d).press(357, 539).moveTo(-100, -100).release();
+			TouchAction actTwo = new TouchAction(d).press(470, 583).moveTo(100, 100).release();
+			new MultiTouchAction(d).add(actOne).add(actTwo).perform();
+		});
+	}
+	
+	/**
 	 * Initialize Appium testing
 	 */
-	private void initTesting(String id, BiConsumer<AppInfoWrapper, AndroidDriver<MobileElement>> testing) {
+	private void initTesting(String id, BiConsumer<AppInfoWrapper, AndroidDriver<AndroidElement>> testing) {
 		Config.init(null);
 		String[] args = new String[] {"-app", id, "-emulator", "Nexus_5_API_19"};
 		TestingOptions.v().processOptions(args);
