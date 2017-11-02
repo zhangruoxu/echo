@@ -3,6 +3,7 @@ package testing;
 import java.util.ArrayList;
 import java.util.List;
 
+import testing.event.Throttle;
 import util.AppPathResolver;
 import util.Config;
 
@@ -13,9 +14,9 @@ import util.Config;
  */
 public class TestingOptions {
 	private String emulatorName = null;
-	
+
 	private List<String> appPaths = null;
-	
+
 	public String getEmulatorName() {
 		return emulatorName;
 	}
@@ -23,13 +24,13 @@ public class TestingOptions {
 	public List<String> getAppPaths() {
 		return appPaths;
 	}
-	
+
 	private TestingOptions() {}
-	
+
 	public static final TestingOptions v() {
 		return SingletonHolder.singleton;
 	}
-	
+
 	public void processOptions(String[] args) {
 		for(int i = 0; i < args.length; i++) {
 			String arg = args[i];
@@ -48,11 +49,19 @@ public class TestingOptions {
 				}
 				appPaths = AppPathResolver.resolveAppPaths(Config.v().get(Config.APPDIR), appIds);
 			}
+			// process throttle time
+			if(arg.equals("-throttle"))
+				try {
+					int throttle = Integer.valueOf(args[i + 1]);
+					Throttle.v().init(throttle);
+				} catch (Exception e) {
+					System.out.println(args[i + 1] + " is not a valid throttle time. Use 100ms.");
+				}
 		}
 		assert emulatorName != null;
 		assert appPaths != null && ! appPaths.isEmpty();
 	}
-	
+
 	/**
 	 * Multithread-safe singleton holder.
 	 */

@@ -11,9 +11,9 @@ import util.Log;
  */
 
 public class ThrottleEvent extends Event {
-	public ThrottleEvent(long throttle) {
+	public ThrottleEvent() {
 		super(Event.EVENT_TYPE_THROTTLE);
-		this.mthrottle =throttle;
+		this.mthrottle = Throttle.v().getThrottleDuration();
 	}
 
 	@Override
