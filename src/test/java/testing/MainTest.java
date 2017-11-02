@@ -1,7 +1,6 @@
 package testing;
 
 import java.io.File;
-import java.time.Duration;
 import java.util.function.BiConsumer;
 
 import org.apache.commons.io.FileUtils;
@@ -15,7 +14,8 @@ import io.appium.java_client.android.Activity;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidKeyCode;
-
+import testing.event.Throttle;
+import testing.event.ThrottleEvent;
 import util.AppInfoWrapper;
 import util.Config;
 import util.ManifestParser;
@@ -104,19 +104,22 @@ public class MainTest {
 	 */
 	@Test
 	public void test8() {
+		Throttle.v().init(500);
+		System.out.println("Event throttle " + Throttle.v().getDuration());
 		Main.testingApp("com.android.gesture.builder", ".GestureBuilderActivity", (p, d) -> {
 			Dimension dimension = d.manage().window().getSize();
 			System.out.println("# Window height: " + dimension.height);
 			System.out.println("# Window width: " + dimension.width); 
 			// click the "Add gesture" button
-			new TouchAction(d).tap(280,  1700).waitAction(Duration.ofMillis(5000)).perform();
+			new TouchAction(d).tap(280,  1700).waitAction(Throttle.v().getDuration()).perform();
 			//  swipe
-			new TouchAction(d).press(518, 518).moveTo(200, 200).release().waitAction(Duration.ofMillis(500)).perform();
-			new TouchAction(d).press(520, 963).moveTo(-100, -100).release().waitAction(Duration.ofMillis(500)).perform();
+			new TouchAction(d).press(518, 518).moveTo(200, 200).release().waitAction(Throttle.v().getDuration()).perform();
+			new TouchAction(d).press(520, 963).moveTo(-100, -100).release().waitAction(Throttle.v().getDuration()).perform();
 			// multi couch
-			TouchAction actOne = new TouchAction(d).press(357, 539).moveTo(-100, -100).release();
-			TouchAction actTwo = new TouchAction(d).press(470, 583).moveTo(100, 100).release();
+			TouchAction actOne = new TouchAction(d).press(357, 539).moveTo(-100, -100).waitAction(Throttle.v().getDuration()).release();
+			TouchAction actTwo = new TouchAction(d).press(470, 583).moveTo(100, 100).waitAction(Throttle.v().getDuration()).release();
 			new MultiTouchAction(d).add(actOne).add(actTwo).perform();
+			d.closeApp();
 		});
 	}
 
@@ -148,6 +151,20 @@ public class MainTest {
 		});
 	}
 
+	/**
+	 * Test throttle time.
+	 */
+	@Test
+	public void test11() {
+		Config.init(null);
+		String[] args = new String[] {"-app", "0", "-emulator", "Nexus_5_API_19", "-throttle", "500"};
+		TestingOptions.v().processOptions(args);
+		TestingOptions.v().getAppPaths().stream().map(AppInfoWrapper::new).forEach(i -> Main.testingApp(i, (info, d) -> {
+			new ThrottleEvent();
+			d.closeApp();
+		}));
+	}
+	
 	/**
 	 * Initialize Appium testing
 	 */
