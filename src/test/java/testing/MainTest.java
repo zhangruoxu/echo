@@ -8,7 +8,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 
 import io.appium.java_client.MultiTouchAction;
 import io.appium.java_client.TouchAction;
@@ -16,6 +15,7 @@ import io.appium.java_client.android.Activity;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidKeyCode;
+
 import util.AppInfoWrapper;
 import util.Config;
 import util.ManifestParser;
@@ -25,22 +25,22 @@ public class MainTest {
 	public void test1() {
 		Main.main(new String[] {"-emulator", "Nexus_5_API_19", "-app", "0"});
 	}
-	
+
 	@Test
 	public void test1_2() {
 		Main.main(new String[] {"-emulator", "Nexus_5_API_19_2", "-app", "0"});
 	}
-	
+
 	@Test
 	public void test2() {
 		Main.main(new String[] {"-emulator", "Nexus_5_API_19", "-app", "0", "1"});
 	}
-	
+
 	@Test
 	public void test3() {
 		Main.main(new String[] { "-app", "0", "1", "-emulator", "Nexus_5_API_19"});
 	}
-	
+
 	@Test
 	public void test4() {
 		Config.init(null);
@@ -54,7 +54,7 @@ public class MainTest {
 			});
 		});
 	}
-	
+
 	@Test
 	public void test5() {
 		Config.init(null);
@@ -72,7 +72,7 @@ public class MainTest {
 			});
 		});
 	}
-	
+
 	/**
 	 * Test return from unwanted app
 	 * Press back key to return
@@ -85,7 +85,7 @@ public class MainTest {
 				d.pressKeyCode(AndroidKeyCode.BACK);
 		});
 	}
-	
+
 	/**
 	 * Launch the app with package name and launchable activity name 
 	 */
@@ -98,7 +98,7 @@ public class MainTest {
 			d.closeApp();
 		});
 	}
-	
+
 	/**
 	 * Test click button with coordinate
 	 */
@@ -119,7 +119,7 @@ public class MainTest {
 			new MultiTouchAction(d).add(actOne).add(actTwo).perform();
 		});
 	}
-	
+
 	/**
 	 * Test obtain screenshot and save to a file in current directory
 	 */
@@ -127,15 +127,27 @@ public class MainTest {
 	public void test9() {
 		initTesting("0", (i, d) -> {
 			try {
-			File screenshot = ((TakesScreenshot) d).getScreenshotAs(OutputType.FILE);
-			File dest = new File(String.join(File.separator, "." , screenshot.getName()));
-			FileUtils.copyFile(screenshot, dest);
+				File screenshot = d.getScreenshotAs(OutputType.FILE);
+				File dest = new File(String.join(File.separator, "." , screenshot.getName()));
+				FileUtils.copyFile(screenshot, dest);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		});
 	}
-	
+
+	/**
+	 * Test obtaining window hierarchy of current screen
+	 * The string is a xml file.
+	 */
+	@Test
+	public void test10() {
+		initTesting("0", (i, d) -> {
+			System.out.println(d.getPageSource());
+			d.closeApp();
+		});
+	}
+
 	/**
 	 * Initialize Appium testing
 	 */
