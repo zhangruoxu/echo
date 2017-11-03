@@ -7,6 +7,8 @@ import util.Log;
 /**
  * Inject a fixed time delay between events during testing to let GUI respond to the injected events.
  * 
+ * This class is adapted from the MonkeyThrottleEvent of the Android Open Source Project.
+ * 
  * @author yifei
  */
 
