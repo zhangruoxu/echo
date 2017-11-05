@@ -40,6 +40,15 @@ public class KeyEvent extends Event {
 		return true;
 	}
 	
+	// Print the key code
+	// TODO Convert key code to key name
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("[KeyEvent] Press Key: ").append(mKeyCode);
+		return builder.toString();
+	}
+	
 	protected int mAction;
 	protected int mKeyCode;
 }

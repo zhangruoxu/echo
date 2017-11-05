@@ -47,4 +47,6 @@ public abstract class Event {
     public boolean isThrottlable() {
         return false;
     }
+    
+    public abstract String toString();
 }
