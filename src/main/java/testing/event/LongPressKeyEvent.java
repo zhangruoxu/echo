@@ -12,8 +12,8 @@ import io.appium.java_client.android.AndroidElement;
  * @author yifei
  */
 public class LongPressKeyEvent extends KeyEvent {
-	public LongPressKeyEvent(int action, int keyCode) {
-		super(action, keyCode);
+	public LongPressKeyEvent(int keyCode) {
+		super(keyCode);
 	}
 	
 	@Override

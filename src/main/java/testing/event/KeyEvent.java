@@ -13,9 +13,8 @@ import io.appium.java_client.android.AndroidElement;
  * @author yifei
  */
 public class KeyEvent extends Event {
-	public KeyEvent(int action, int keyCode) {
+	public KeyEvent(int keyCode) {
 		super(EVENT_TYPE_KEY);
-		mAction = action;
 		mKeyCode = keyCode;
 	}
 	
