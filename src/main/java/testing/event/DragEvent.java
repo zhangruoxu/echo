@@ -11,7 +11,7 @@ import util.PointF;
  * @author yifei
  */
 public class DragEvent extends MotionEvent {
-	public DragEvent(int type, long downAt, int metaState) {
+	public DragEvent(long downAt, int metaState) {
 		super(Event.EVENT_TYPE_TOUCH, downAt, metaState);
 		assert mFromPointers.size() == 1;
 		assert mMoves.size() == 1;

@@ -8,10 +8,12 @@ import org.openqa.selenium.Dimension;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidKeyCode;
+import testing.event.DragEvent;
 import testing.event.Event;
 import testing.event.EventQueue;
 import testing.event.EventSource;
 import testing.event.KeyEvent;
+import testing.event.MultiTouchEvent;
 import testing.event.TapEvent;
 import util.AndroidKeyCodeWrapper;
 import util.Log;
@@ -192,13 +194,19 @@ public class RandomEventSource implements EventSource {
 	private void generatePointerEvent(Random random, int gesture) {
 		// Obtain screen size
 		Dimension dimension = mDriver.manage().window().getSize();
-		PointF point = randomPoint(random, dimension);
+		PointF from = randomPoint(random, dimension);
 		long downAt = System.currentTimeMillis();
 
 		if(gesture == GESTURE_TAP) {
-			mQ.addLast(new TapEvent(downAt, 0).addPointer(0, point));
+			mQ.addLast(new TapEvent(downAt, 0).addPointer(0, from));
 		} else if(gesture == GESTURE_DRAG) {
-			
+			PointF move = randomSlop(random, from, dimension);
+			mQ.addLast(new DragEvent(downAt, 0).addFromTo(0, from, move));
+		} else if(gesture == GESTURE_PINCH_OR_ZOOM) {
+			PointF move = randomSlop(random, from, dimension);
+			PointF _from = randomPoint(random, dimension);
+			PointF _move = randomSlop(random, _from, dimension);
+			mQ.addLast(new MultiTouchEvent(downAt, 0).addFromTo(0, from, move).addFromTo(1, _from, _move));
 		}
 	}
 

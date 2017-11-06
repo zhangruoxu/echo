@@ -56,13 +56,13 @@ public abstract class MotionEvent extends Event {
 
 	// Add starting pointer coordinate of a motion event
 	public MotionEvent addPointer(int id, PointF p) {
-		mFromPointers.add(p);
+		mFromPointers.add(id, p);
 		return this;
 	}
 
 	// Add the ending pointer coordinate of a motion event
 	private MotionEvent addMove(int id, PointF p) {
-		mMoves.add(p);
+		mMoves.add(id, p);
 		return this;
 	}
 
