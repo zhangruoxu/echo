@@ -2,6 +2,7 @@ package testing.event;
 
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
+import util.AndroidKeyCodeWrapper;
 
 /**
  * Common key event.
@@ -22,9 +23,9 @@ public class KeyEvent extends Event {
 		return mKeyCode;
 	}
 
-	public int getAction() {
-		return mAction;
-	}
+//	public int getAction() {
+//		return mAction;
+//	}
 
 	@Override
 	public void injectEvent(AndroidDriver<AndroidElement> driver) {
@@ -41,11 +42,10 @@ public class KeyEvent extends Event {
 	}
 	
 	// Print the key code
-	// TODO Convert key code to key name
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("[KeyEvent] Press Key: ").append(mKeyCode);
+		builder.append("[KeyEvent] Press Key: ").append(AndroidKeyCodeWrapper.v().getKeyCodeName(mKeyCode));
 		return builder.toString();
 	}
 	
