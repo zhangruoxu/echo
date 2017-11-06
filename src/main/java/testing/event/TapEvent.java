@@ -16,10 +16,6 @@ public class TapEvent extends MotionEvent {
 
 	public TapEvent(long downAt, int metaState) {
 		super(Event.EVENT_TYPE_TOUCH, downAt, metaState);
-		assert mFromPointers.size() == 1;
-		PointF p = mFromPointers.get(0);
-		mX = Math.round(p.x);
-		mY = Math.round(p.y);
 	}
 
 	/**
@@ -27,17 +23,21 @@ public class TapEvent extends MotionEvent {
 	 */
 	@Override
 	public void injectEvent(AndroidDriver<AndroidElement> driver) {
+		assert mFromPointers.size() == 1;
+		PointF p = mFromPointers.get(0);
+		int mX = Math.round(p.x);
+		int mY = Math.round(p.y);
 		new TouchAction(driver).tap(mX, mY).waitAction(Throttle.v().getDuration()).perform();
 	}
 	
 	@Override
 	public String toString() {
+		assert mFromPointers.size() == 1;
+		PointF p = mFromPointers.get(0);
+		int mX = Math.round(p.x);
+		int mY = Math.round(p.y);
 		StringBuilder builder = new StringBuilder();
 		builder.append("[TouchEvent] Touch the point ( ").append(mX).append(", ").append(mY).append(").");
 		return builder.toString();
 	}
-	
-	// (mX,mY) indicates the touching coordinate
-	private int mX;
-	private int mY;
 }

@@ -104,7 +104,7 @@ public class RandomEventSource implements EventSource {
 	/**
 	 * Adjust the percentages (after applying user values) and then normalize to a 0..1 scale.
 	 */
-	private boolean adjustEventFactors() {
+	public boolean adjustEventFactors() {
 		// go through all values and compute totals for user & default values
 		float userSum = 0.0f;
 		float defaultSum = 0.0f;
