@@ -2,6 +2,7 @@ package testing.event;
 
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
+import util.AndroidKeyCodeWrapper;
 
 /**
  * Long press key event.
@@ -11,13 +12,33 @@ import io.appium.java_client.android.AndroidElement;
  * 
  * @author yifei
  */
-public class LongPressKeyEvent extends KeyEvent {
+public class LongPressKeyEvent extends Event {
 	public LongPressKeyEvent(int keyCode) {
-		super(keyCode);
+		super(Event.EVENT_TYPE_KEY);
+		mKeyCode = keyCode;
 	}
 	
 	@Override
 	public void injectEvent(AndroidDriver<AndroidElement> driver) {
 		driver.longPressKeyCode(mKeyCode);
 	}
+	
+	/**
+	 * Touch actions are throttled via waitAction() method.
+	 * Key events are throttled via inserting a ThrottleEvent manually after them. 
+	 */
+	@Override
+	public boolean isThrottlable() {
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder  = new StringBuilder();
+		builder.append("[LongPressKeyEvent] Long press key: ").append(AndroidKeyCodeWrapper.v().getKeyCodeName(mKeyCode));
+		return builder.toString();
+	}
+	
+	protected int mAction;
+	private int mKeyCode;
 }
