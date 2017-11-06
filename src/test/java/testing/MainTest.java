@@ -1,6 +1,8 @@
 package testing;
 
 import java.io.File;
+import java.security.SecureRandom;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 import org.apache.commons.io.FileUtils;
@@ -14,10 +16,12 @@ import io.appium.java_client.android.Activity;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidKeyCode;
+import soot.toolkits.scalar.Pair;
 import testing.event.Throttle;
 import testing.event.ThrottleEvent;
 import util.AppInfoWrapper;
 import util.Config;
+import util.AndroidKeyCodeWrapper;
 import util.ManifestParser;
 
 public class MainTest {
@@ -163,6 +167,34 @@ public class MainTest {
 			new ThrottleEvent();
 			d.closeApp();
 		}));
+	}
+	
+	/**
+	 * Test the class AndroidKeyCodeWrapper.
+	 */
+	@Test
+	public void test12() {
+		List<Pair<Integer, String>> list = AndroidKeyCodeWrapper.v().getList();
+		for(int i = 0; i < list.size(); i++) {
+			Pair<Integer, String> p = list.get(i);
+			assert i == p.getO1();
+			System.out.println(i + ", " + p.getO1() + ", " + p.getO2());
+		}
+		System.out.println("Size: " + list.size());
+	}
+	
+	/**
+	 * Test randomly key code generation.
+	 */
+	@Test
+	public void test13() {
+		SecureRandom random = new SecureRandom();
+		for(int i = 0; i < 10000; i++) {
+			int r = random.nextInt(AndroidKeyCodeWrapper.v().size());
+			Pair<?, ?> p = AndroidKeyCodeWrapper.v().get(r);
+			System.out.println(p.getO1() + ", " + p.getO2());
+		}
+		System.out.println("Size: " + AndroidKeyCodeWrapper.v().size());
 	}
 	
 	/**
