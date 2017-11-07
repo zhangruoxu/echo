@@ -235,8 +235,8 @@ public class RandomEventSource implements EventSource {
 		float x = p.x;
 		float y = p.y;
 		for (int i = 0; i < count; i++) {
-			x = (float) Math.max(Math.min(x + random.nextFloat() * vector.x, dimension.getWidth()), 0);
-			y = (float) Math.max(Math.min(y + random.nextFloat() * vector.y, dimension.getHeight()), 0);
+			x = (float) Math.max(Math.min(x + random.nextFloat() * vector.x, dimension.getWidth() - 1), 0);
+			y = (float) Math.max(Math.min(y + random.nextFloat() * vector.y, dimension.getHeight() - 1), 0);
 		}
 		System.out.println("# move to " + x + ", " + y);
 		return new PointF(x, y);

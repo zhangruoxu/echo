@@ -26,9 +26,8 @@ public class DragEvent extends MotionEvent {
 		int fromY = Math.round(from.y);
 		int toX = Math.round(to.x);
 		int toY = Math.round(to.y);
-		new MultiTouchAction(driver)
-		.add(new TouchAction(driver).press(fromX, fromY).moveTo(toX - fromX, toY - fromY).release()
-		.waitAction(Throttle.v().getDuration())).perform();
+		new TouchAction(driver).press(fromX, fromY).moveTo(toX - fromX, toY - fromY).release()
+		.waitAction(Throttle.v().getDuration()).perform();
 	}
 
 	@Override
