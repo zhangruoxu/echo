@@ -46,7 +46,8 @@ public class KeyEvent extends Event {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("[KeyEvent] Press Key: ").append(AndroidKeyCodeWrapper.v().getKeyCodeName(mKeyCode));
+		builder.append("[KeyEvent] Press Key: ").append(AndroidKeyCodeWrapper.v().getKeyCodeName(mKeyCode))
+		.append(", key code ").append(mKeyCode);
 		return builder.toString();
 	}
 	

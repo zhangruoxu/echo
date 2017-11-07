@@ -44,8 +44,21 @@ public class RandomEventSource implements EventSource {
 
 	/** Key events that perform system operations. */
 	private static final int[] SYS_KEYS = {
-			AndroidKeyCode.KEYCODE_HOME, AndroidKeyCode.KEYCODE_BACK,
-			AndroidKeyCode.KEYCODE_CALL, AndroidKeyCode.KEYCODE_ENDCALL,
+			/**
+			 * Home key is not generated
+			 * @author yifei
+			 */
+			// AndroidKeyCode.KEYCODE_HOME, 
+			AndroidKeyCode.KEYCODE_BACK,
+			/**
+			 * Call key opens contacts. 
+			 * This event is not generated.
+			 * @author yifei
+			 */
+			// AndroidKeyCode.KEYCODE_CALL, 
+			// End call key turns off the screen.
+			// It is not generated.
+			// AndroidKeyCode.KEYCODE_ENDCALL,
 			AndroidKeyCode.KEYCODE_VOLUME_UP, AndroidKeyCode.KEYCODE_VOLUME_DOWN, AndroidKeyCode.KEYCODE_VOLUME_MUTE,
 			AndroidKeyCode.KEYCODE_MUTE,
 	};
@@ -278,10 +291,9 @@ public class RandomEventSource implements EventSource {
 		//			return;
 		//		} 
 		else {
-			// Generate random integer in the range [0, size())
-			lastKey = mRandom.nextInt(AndroidKeyCodeWrapper.v().size());
+			lastKey = AndroidKeyCodeWrapper.v().generateRandomKey(mRandom);
 		}
-		KeyEvent e = new KeyEvent(AndroidKeyCodeWrapper.v().get(lastKey).getO1());
+		KeyEvent e = new KeyEvent(lastKey);
 		mQ.addLast(e);
 	}
 
