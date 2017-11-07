@@ -37,7 +37,7 @@ public class TapEvent extends MotionEvent {
 		int mX = Math.round(p.x);
 		int mY = Math.round(p.y);
 		StringBuilder builder = new StringBuilder();
-		builder.append("[TouchEvent] Touch the point ( ").append(mX).append(", ").append(mY).append(").");
+		builder.append("[TouchEvent] Touch the point (").append(mX).append(", ").append(mY).append(").");
 		return builder.toString();
 	}
 }

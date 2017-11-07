@@ -217,13 +217,15 @@ public class RandomEventSource implements EventSource {
 
 	// Randomly walk some distance from current coordinate
 	private PointF randomSlop(Random random, PointF p, Dimension dimension) {
+		PointF vector = new PointF((random.nextFloat() - 0.5f) * 50, (random.nextFloat() - 0.5f) * 50);
 		int count = random.nextInt(10);
-		int x = Math.round(p.x);
-		int y = Math.round(p.y);
+		float x = p.x;
+		float y = p.y;
 		for (int i = 0; i < count; i++) {
-			x = (x + (random.nextInt() % 10)) % dimension.getWidth();
-			y = (y + (random.nextInt() % 10)) % dimension.getHeight();
+			x = (float) Math.max(Math.min(x + random.nextFloat() * vector.x, dimension.getWidth()), 0);
+			y = (float) Math.max(Math.min(y + random.nextFloat() * vector.y, dimension.getHeight()), 0);
 		}
+		System.out.println("# move to " + x + ", " + y);
 		return new PointF(x, y);
 	}
 
@@ -263,18 +265,18 @@ public class RandomEventSource implements EventSource {
 			lastKey = SYS_KEYS[mRandom.nextInt(SYS_KEYS.length)];
 		} 
 		// These events are not generated.
-//		else if (cls < mFactors[FACTOR_APPSWITCH]) {
-//			MonkeyActivityEvent e = new MonkeyActivityEvent(mMainApps.get(
-//					mRandom.nextInt(mMainApps.size())));
-//			mQ.addLast(e);
-//			return;
-//		} 
-//		else if (cls < mFactors[FACTOR_FLIP]) {
-//			MonkeyFlipEvent e = new MonkeyFlipEvent(mKeyboardOpen);
-//			mKeyboardOpen = !mKeyboardOpen;
-//			mQ.addLast(e);
-//			return;
-//		} 
+		//		else if (cls < mFactors[FACTOR_APPSWITCH]) {
+		//			MonkeyActivityEvent e = new MonkeyActivityEvent(mMainApps.get(
+		//					mRandom.nextInt(mMainApps.size())));
+		//			mQ.addLast(e);
+		//			return;
+		//		} 
+		//		else if (cls < mFactors[FACTOR_FLIP]) {
+		//			MonkeyFlipEvent e = new MonkeyFlipEvent(mKeyboardOpen);
+		//			mKeyboardOpen = !mKeyboardOpen;
+		//			mQ.addLast(e);
+		//			return;
+		//		} 
 		else {
 			// Generate random integer in the range [0, size())
 			lastKey = mRandom.nextInt(AndroidKeyCodeWrapper.v().size());
