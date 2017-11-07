@@ -23,7 +23,7 @@ public class TestRandomEventSource {
 			for(int i = 0; i < 5000; i++) {
 				Event e = eventSource.getNextEvent();
 				System.out.println(e);
-				e.injectEvent(d);
+				e.injectEvent(info, d);
 			}
 		});
 	}

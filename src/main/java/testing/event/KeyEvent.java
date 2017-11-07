@@ -3,6 +3,7 @@ package testing.event;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import util.AndroidKeyCodeWrapper;
+import util.AppInfoWrapper;
 
 /**
  * Common key event.
@@ -28,7 +29,7 @@ public class KeyEvent extends Event {
 //	}
 
 	@Override
-	public void injectEvent(AndroidDriver<AndroidElement> driver) {
+	public void injectEvent(AppInfoWrapper info, AndroidDriver<AndroidElement> driver) {
 		driver.pressKeyCode(mKeyCode);
 	}
 

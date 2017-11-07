@@ -4,6 +4,7 @@ import io.appium.java_client.MultiTouchAction;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
+import util.AppInfoWrapper;
 import util.PointF;
 
 /**
@@ -17,7 +18,7 @@ public class MultiTouchEvent extends MotionEvent {
 	}
 
 	@Override
-	public void injectEvent(AndroidDriver<AndroidElement> driver) {
+	public void injectEvent(AppInfoWrapper info, AndroidDriver<AndroidElement> driver) {
 		assert mFromPointers.size() == mMoves.size();
 		MultiTouchAction action = new MultiTouchAction(driver);
 		for(int i = 0; i < mFromPointers.size(); i++) {
