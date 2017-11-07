@@ -37,11 +37,11 @@ public abstract class MotionEvent extends Event {
 	 */
 	protected List<PointF> mFromPointers;
 	/**
-	 * mMoves represents moving from the coordinates in mPointers.
+	 * mToPointers represents moving from the coordinates in mPointers.
 	 * For a simple touch event, like tap and long pressing, this list is empty.
 	 * For a moving touch event, like zooming, pinching and swiping, it represents a moving vector. 
 	 */
-	protected List<PointF> mMoves;
+	protected List<PointF> mToPointers;
 
 	//If true, this is an intermediate step (more verbose logging, only)
 	private boolean mIntermediateNote;  
@@ -51,25 +51,25 @@ public abstract class MotionEvent extends Event {
 		mDownTime = downAt;
 		mMetaState = metaState;
 		mFromPointers = new ArrayList<>();
-		mMoves = new ArrayList<>();
+		mToPointers = new ArrayList<>();
 	}
 
 	// Add starting pointer coordinate of a motion event
-	public MotionEvent addPointer(int id, PointF p) {
+	public MotionEvent addFrom(int id, PointF p) {
 		mFromPointers.add(id, p);
 		return this;
 	}
 
 	// Add the ending pointer coordinate of a motion event
-	private MotionEvent addMove(int id, PointF p) {
-		mMoves.add(id, p);
+	private MotionEvent addTo(int id, PointF p) {
+		mToPointers.add(id, p);
 		return this;
 	}
 
 	// Add a moving touch event
-	public MotionEvent addFromTo(int id, PointF p, PointF move) {
-		addPointer(id, p);
-		addMove(id, move);
+	public MotionEvent addFromTo(int id, PointF from, PointF to) {
+		addFrom(id, from);
+		addTo(id, to);
 		return this;
 	}
 

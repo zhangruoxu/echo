@@ -64,7 +64,7 @@ public class TestRandomEventSource {
 		initTesting("0", (info, d) -> {
 			System.out.println("# Height: " + d.manage().window().getSize().getHeight());
 			System.out.println("# Width: " + d.manage().window().getSize().getWidth());
-			new TapEvent(-1, -1).addPointer(0, new PointF(1, 1775)).injectEvent(info, d);
+			new TapEvent(-1, -1).addFrom(0, new PointF(1, 1775)).injectEvent(info, d);
 		});
 	}
 	
@@ -101,7 +101,7 @@ public class TestRandomEventSource {
 			new ThrottleEvent().injectEvent(info, d);
 			new KeyEvent(AndroidKeyCode.KEYCODE_HOME).injectEvent(info, d);
 			new ThrottleEvent().injectEvent(info, d);
-			new TapEvent(-1, -1).addPointer(0, new PointF(900, 1600)).injectEvent(info, d);
+			new TapEvent(-1, -1).addFrom(0, new PointF(900, 1600)).injectEvent(info, d);
 			new ThrottleEvent().injectEvent(info, d);
 			new CheckActivityEvent().injectEvent(info, d);
 		});

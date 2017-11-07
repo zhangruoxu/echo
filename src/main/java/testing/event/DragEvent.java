@@ -19,9 +19,9 @@ public class DragEvent extends MotionEvent {
 	@Override
 	public void injectEvent(AppInfoWrapper info, AndroidDriver<AndroidElement> driver) {
 		assert mFromPointers.size() == 1;
-		assert mMoves.size() == 1;
+		assert mToPointers.size() == 1;
 		PointF from = mFromPointers.get(0);
-		PointF to = mMoves.get(0);
+		PointF to = mToPointers.get(0);
 		int fromX = Math.round(from.x);
 		int fromY = Math.round(from.y);
 		int toX = Math.round(to.x);
@@ -33,9 +33,9 @@ public class DragEvent extends MotionEvent {
 	@Override
 	public String toString() {
 		assert mFromPointers.size() == 1;
-		assert mMoves.size() == 1;
+		assert mToPointers.size() == 1;
 		PointF from = mFromPointers.get(0);
-		PointF to = mMoves.get(0);
+		PointF to = mToPointers.get(0);
 		int fromX = Math.round(from.x);
 		int fromY = Math.round(from.y);
 		int toX = Math.round(to.x);

@@ -211,7 +211,7 @@ public class RandomEventSource implements EventSource {
 		long downAt = System.currentTimeMillis();
 
 		if(gesture == GESTURE_TAP) {
-			mQ.addLast(new TapEvent(downAt, 0).addPointer(0, from));
+			mQ.addLast(new TapEvent(downAt, 0).addFrom(0, from));
 		} else if(gesture == GESTURE_DRAG) {
 			PointF move = randomSlop(random, from, dimension);
 			mQ.addLast(new DragEvent(downAt, 0).addFromTo(0, from, move));

@@ -19,11 +19,11 @@ public class MultiTouchEvent extends MotionEvent {
 
 	@Override
 	public void injectEvent(AppInfoWrapper info, AndroidDriver<AndroidElement> driver) {
-		assert mFromPointers.size() == mMoves.size();
+		assert mFromPointers.size() == mToPointers.size();
 		MultiTouchAction action = new MultiTouchAction(driver);
 		for(int i = 0; i < mFromPointers.size(); i++) {
 			PointF from = mFromPointers.get(i);
-			PointF to = mMoves.get(i);
+			PointF to = mToPointers.get(i);
 			int fromX = Math.round(from.x);
 			int fromY = Math.round(from.y);
 			int toX = Math.round(to.x);
@@ -42,8 +42,8 @@ public class MultiTouchEvent extends MotionEvent {
 			builder.append("(").append(p.x).append(", ").append(p.y).append("), ");
 		}
 		builder.append("], to[");
-		for(int i = 0; i < mMoves.size(); i++) {
-			PointF p = mMoves.get(i);
+		for(int i = 0; i < mToPointers.size(); i++) {
+			PointF p = mToPointers.get(i);
 			builder.append("(").append(p.x).append(", ").append(p.y).append("), ");
 		}
 		builder.append("].");
