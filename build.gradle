@@ -36,5 +36,8 @@ dependencies {
     
     // SOOT and FlowDroid dependencies
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    
+    // JGgraphT dependencies
+    compile fileTree(dir: 'libs/jgrapht', include: ['*.jar'])
 }
 
