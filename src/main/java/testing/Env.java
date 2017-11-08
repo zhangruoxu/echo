@@ -7,6 +7,8 @@ import io.appium.java_client.android.AndroidElement;
 
 /**
  * This class represents the testing environments.
+ * 
+ * @author yifei
  */
 public class Env {
 	public Env(AndroidDriver<AndroidElement> driver) {

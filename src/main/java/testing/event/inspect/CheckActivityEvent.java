@@ -3,16 +3,17 @@ package testing.event.inspect;
 import io.appium.java_client.android.AndroidKeyCode;
 import testing.AppInfoWrapper;
 import testing.Env;
-import testing.event.Event;
 import testing.event.KeyEvent;
 import testing.event.ThrottleEvent;
 
 /**
  * This event is used to inspect the current activity
+ * 
+ * @author yifei
  */
-public class CheckActivityEvent extends Event {
+public class CheckActivityEvent extends InspectEvent {
 	public CheckActivityEvent() {
-		super(Event.EVENT_INSPECT);
+		super();
 	}
 
 	@Override

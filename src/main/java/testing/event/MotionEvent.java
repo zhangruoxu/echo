@@ -13,9 +13,6 @@ import util.PointF;
  * 
  * @author yifei
  */
-/**
- * monkey motion event
- */
 public abstract class MotionEvent extends Event {
 	private long mDownTime = -1;
 	private long mEventTime = -1;    
