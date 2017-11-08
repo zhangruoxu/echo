@@ -2,6 +2,8 @@ package testing.event;
 
 import java.util.LinkedList;
 
+import testing.event.inspect.CheckActivityEvent;
+
 /**
  * Queue of testing events.
  * 
@@ -23,5 +25,11 @@ public class EventQueue extends LinkedList<Event> {
 		if (e.isThrottlable()) {
 			super.add(new ThrottleEvent());
 		}
+		/**
+		 * Check current activity during testing after injecting every event
+		 * TODO Better way to insert inspecting events
+		 * @author yifei
+		 */
+		super.add(new CheckActivityEvent());
 	}
 }

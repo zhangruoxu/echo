@@ -1,5 +1,7 @@
 package testing.random;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 import org.junit.Test;
@@ -26,17 +28,25 @@ public class TestRandomEventSource {
 	public void test1() {
 		initTesting("0", (info, env) -> {
 			Throttle.v().init(500);
-			RandomEventSource eventSource = new RandomEventSource(null, null, 10000);
+			RandomEventSource eventSource = new RandomEventSource(null, env, 10000);
 			eventSource.adjustEventFactors();
+			List<Event> failedEvents = new ArrayList<>();
 			for(int i = 0; i < 5000; i++) {
 				System.out.println("# Event " + i);
-				Event e = eventSource.getNextEvent();
-				System.out.println(e);
-				e.injectEvent(info, env);
+				Event event = eventSource.getNextEvent();
+				System.out.println(event);
+				try {
+					event.injectEvent(info, env);
+				} catch (Exception e) {
+					e.printStackTrace();
+					failedEvents.add(event);
+				}
 			}
+			System.out.println("# Failed events: " + failedEvents.size());
+			failedEvents.forEach(System.out::println);
 		});
 	}
-	
+
 	/**
 	 * Test end call key. This key makes the device sleep.
 	 */
@@ -46,7 +56,7 @@ public class TestRandomEventSource {
 			new KeyEvent(AndroidKeyCode.KEYCODE_ENDCALL).injectEvent(info, d);
 		});
 	}
-	
+
 	/**
 	 * Test menu and home key.
 	 */
@@ -57,7 +67,7 @@ public class TestRandomEventSource {
 			new KeyEvent(AndroidKeyCode.HOME).injectEvent(info, d);
 		});
 	}
-	
+
 	/**
 	 * Test tap event
 	 */
@@ -70,7 +80,7 @@ public class TestRandomEventSource {
 			new TapEvent(-1, -1).addFrom(0, new PointF(1, 1775)).injectEvent(info, env);
 		});
 	}
-	
+
 	/**
 	 * Test drag event
 	 */
@@ -80,7 +90,7 @@ public class TestRandomEventSource {
 			new DragEvent(-1, -1).addFromTo(0, new PointF(398, 1388),  new PointF(365, 1371)).injectEvent(info, d);
 		});
 	}
-	
+
 	/**
 	 * Test relaunch the testing app during testing
 	 * 
@@ -89,16 +99,16 @@ public class TestRandomEventSource {
 	@Test
 	public void test6() {
 		initTesting("0", (info, d) -> {
-//			Throttle.v().init(500);
-//			new KeyEvent(AndroidKeyCode.KEYCODE_DPAD_CENTER).injectEvent(info, d);
-//			new ThrottleEvent().injectEvent(info, d);
-//			new CheckActivityEvent().injectEvent(info, d);
-//			new ThrottleEvent().injectEvent(info, d);
-//			new KeyEvent(AndroidKeyCode.KEYCODE_CONTACTS).injectEvent(info, d);
-//			new ThrottleEvent().injectEvent(info, d);
-//			new CheckActivityEvent().injectEvent(info, d);
-//			new ThrottleEvent().injectEvent(info, d);
-			
+			//			Throttle.v().init(500);
+			//			new KeyEvent(AndroidKeyCode.KEYCODE_DPAD_CENTER).injectEvent(info, d);
+			//			new ThrottleEvent().injectEvent(info, d);
+			//			new CheckActivityEvent().injectEvent(info, d);
+			//			new ThrottleEvent().injectEvent(info, d);
+			//			new KeyEvent(AndroidKeyCode.KEYCODE_CONTACTS).injectEvent(info, d);
+			//			new ThrottleEvent().injectEvent(info, d);
+			//			new CheckActivityEvent().injectEvent(info, d);
+			//			new ThrottleEvent().injectEvent(info, d);
+
 			Throttle.v().init(1000);
 			new KeyEvent(AndroidKeyCode.KEYCODE_DPAD_CENTER).injectEvent(info, d);
 			new ThrottleEvent().injectEvent(info, d);
@@ -109,7 +119,7 @@ public class TestRandomEventSource {
 			new CheckActivityEvent().injectEvent(info, d);
 		});
 	}
-	
+
 	/**
 	 * Initialize Appium testing
 	 */

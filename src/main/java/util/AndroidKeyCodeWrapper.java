@@ -90,6 +90,8 @@ public class AndroidKeyCodeWrapper {
 				AndroidKeyCode.KEYCODE_CALENDAR,
 				AndroidKeyCode.KEYCODE_CONTACTS,
 				AndroidKeyCode.KEYCODE_MUSIC,
+				AndroidKeyCode.KEYCODE_ENVELOPE,
+				AndroidKeyCode.KEYCODE_EXPLORER,
 				AndroidKeyCode.KEYCODE_CALL,
 				AndroidKeyCode.KEYCODE_ENDCALL,
 				AndroidKeyCode.KEYCODE_POWER,

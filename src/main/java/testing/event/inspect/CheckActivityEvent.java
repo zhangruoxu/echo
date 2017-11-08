@@ -1,26 +1,32 @@
 package testing.event.inspect;
 
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
+import io.appium.java_client.android.AndroidKeyCode;
+import testing.AppInfoWrapper;
+import testing.Env;
 import testing.event.Event;
+import testing.event.KeyEvent;
 import testing.event.ThrottleEvent;
-import util.AppInfoWrapper;
 
 /**
  * This event is used to inspect the current activity
  */
 public class CheckActivityEvent extends Event {
 	public CheckActivityEvent() {
-		super(-1);
+		super(Event.EVENT_INSPECT);
 	}
 
 	@Override
-	public void injectEvent(AppInfoWrapper info, AndroidDriver<AndroidElement> driver) {
-		String curAct =  expandClassName(info, driver.currentActivity());
+	public void injectEvent(AppInfoWrapper info, Env env) {
+		String curAct = expandClassName(info, env.driver().currentActivity());
 		System.out.println("# Current activity: " + curAct);
 		if(! info.contains(curAct)) {
-			driver.launchApp();
-			new ThrottleEvent().injectEvent(info, driver);
+			// Try to return to the app being tested
+			new KeyEvent(AndroidKeyCode.BACK).injectEvent(info, env);
+			new ThrottleEvent().injectEvent(info, env);
+			if(! info.contains(expandClassName(info, env.driver().currentActivity()))) {
+				System.out.println("# Warning: testing has been distracted from the app " + info.getPkgName());
+				System.exit(0);
+			}
 		}
 	}
 

@@ -21,6 +21,7 @@ public abstract class Event {
     public static final int EVENT_TYPE_THROTTLE = 6;
     public static final int EVENT_TYPE_PERMISSION = 7;
     public static final int EVENT_TYPE_NOOP = 8;
+    public static final int EVENT_INSPECT = 9;
 
     public static final int INJECT_SUCCESS = 1;
     public static final int INJECT_FAIL = 0;

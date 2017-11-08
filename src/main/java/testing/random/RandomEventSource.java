@@ -93,9 +93,9 @@ public class RandomEventSource implements EventSource {
 		// default values for random distributions
 		// note, these are straight percentages, to match user input (cmd line args)
 		// but they will be converted to 0..1 values before the main loop runs.
-		mFactors[FACTOR_TOUCH] = 15.0f;
-		mFactors[FACTOR_MOTION] = 10.0f;
-		mFactors[FACTOR_TRACKBALL] = 15.0f;
+		mFactors[FACTOR_TOUCH] = 25.0f;
+		mFactors[FACTOR_MOTION] = 15.0f;
+		mFactors[FACTOR_TRACKBALL] = 0.0f;
 		// Adjust the values if we want to enable rotation by default.
 		mFactors[FACTOR_ROTATION] = 0.0f;
 		mFactors[FACTOR_NAV] = 25.0f;
