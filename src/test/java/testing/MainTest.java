@@ -217,9 +217,9 @@ public class MainTest {
 		Throttle.v().init(500);
 		System.out.println("Event throttle " + Throttle.v().getDuration());
 		Main.testingApp("com.android.gesture.builder", ".GestureBuilderActivity", (p, env) -> {
-			new TapEvent(-1, -1).addFrom(0, new PointF(280, 1700)).injectEvent(null, env);
-			new DragEvent(-1, -1).addFromTo(0, new PointF(env.width() / 2, env.height() / 2), new PointF(100, 100)).injectEvent(null, env);
-			new DragEvent(-1, -1).addFromTo(0, new PointF(398, 1388), new PointF(365, 1371)).injectEvent(null, env);
+			new TapEvent().addFrom(0, new PointF(280, 1700)).injectEvent(null, env);
+			new DragEvent().addFromTo(0, new PointF(env.width() / 2, env.height() / 2), new PointF(100, 100)).injectEvent(null, env);
+			new DragEvent().addFromTo(0, new PointF(398, 1388), new PointF(365, 1371)).injectEvent(null, env);
 		});
 	}
 	

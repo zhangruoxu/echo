@@ -86,7 +86,7 @@ public class TestRandomEventSource {
 			AndroidDriver<AndroidElement> d = env.driver();
 			System.out.println("# Height: " + d.manage().window().getSize().getHeight());
 			System.out.println("# Width: " + d.manage().window().getSize().getWidth());
-			new TapEvent(-1, -1).addFrom(0, new PointF(1, 1775)).injectEvent(info, env);
+			new TapEvent().addFrom(0, new PointF(1, 1775)).injectEvent(info, env);
 		});
 	}
 
@@ -96,36 +96,21 @@ public class TestRandomEventSource {
 	@Test
 	public void test5() {
 		initTesting("0", (info, d) -> {
-			new DragEvent(-1, -1).addFromTo(0, new PointF(398, 1388),  new PointF(365, 1371)).injectEvent(info, d);
+			new DragEvent().addFromTo(0, new PointF(398, 1388),  new PointF(365, 1371)).injectEvent(info, d);
 		});
 	}
 
 	/**
-	 * Test relaunch the testing app during testing
-	 * 
-	 * The app will be relaunched, rather than be resumed.
+	 * Test try to return previous app
+	 * CheckActivityEvent issues a BACK key pressing event, which may drive the app to the app being tested
 	 */
 	@Test
 	public void test6() {
-		initTesting("0", (info, d) -> {
-			//			Throttle.v().init(500);
-			//			new KeyEvent(AndroidKeyCode.KEYCODE_DPAD_CENTER).injectEvent(info, d);
-			//			new ThrottleEvent().injectEvent(info, d);
-			//			new CheckActivityEvent().injectEvent(info, d);
-			//			new ThrottleEvent().injectEvent(info, d);
-			//			new KeyEvent(AndroidKeyCode.KEYCODE_CONTACTS).injectEvent(info, d);
-			//			new ThrottleEvent().injectEvent(info, d);
-			//			new CheckActivityEvent().injectEvent(info, d);
-			//			new ThrottleEvent().injectEvent(info, d);
-
+		initTesting("0", (info, env) -> {
 			Throttle.v().init(1000);
-			new KeyEvent(AndroidKeyCode.KEYCODE_DPAD_CENTER).injectEvent(info, d);
-			new ThrottleEvent().injectEvent(info, d);
-			new KeyEvent(AndroidKeyCode.KEYCODE_HOME).injectEvent(info, d);
-			new ThrottleEvent().injectEvent(info, d);
-			new TapEvent(-1, -1).addFrom(0, new PointF(900, 1600)).injectEvent(info, d);
-			new ThrottleEvent().injectEvent(info, d);
-			new CheckActivityEvent().injectEvent(info, d);
+			new KeyEvent(AndroidKeyCode.KEYCODE_CONTACTS).injectEvent(info, env);
+			new ThrottleEvent().injectEvent(info, env);
+			new CheckActivityEvent().injectEvent(info, env);
 		});
 	}
 

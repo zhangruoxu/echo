@@ -13,9 +13,12 @@ import util.PointF;
  * @author yifei
  */
 public class TapEvent extends MotionEvent {
-
 	public TapEvent(long downAt, int metaState) {
 		super(Event.EVENT_TYPE_TOUCH, downAt, metaState);
+	}
+	
+	public TapEvent() {
+		super(Event.EVENT_TYPE_TOUCH, -1, -1);
 	}
 
 	/**

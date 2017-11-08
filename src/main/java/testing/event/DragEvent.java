@@ -13,6 +13,10 @@ public class DragEvent extends MotionEvent {
 	public DragEvent(long downAt, int metaState) {
 		super(Event.EVENT_TYPE_TOUCH, downAt, metaState);
 	}
+	
+	public DragEvent() {
+		super(EVENT_TYPE_TOUCH, -1, -1);
+	}
 
 	@Override
 	public void injectEvent(AppInfoWrapper info, Env env) {

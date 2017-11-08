@@ -11,9 +11,12 @@ import util.PointF;
  * @author yifei
  */
 public class MultiTouchEvent extends MotionEvent {
-
 	public MultiTouchEvent(long downAt, int metaState) {
 		super(Event.EVENT_TYPE_TOUCH, downAt, metaState);
+	}
+	
+	public MultiTouchEvent() {
+		super(Event.EVENT_TYPE_TOUCH, -1, -1);
 	}
 
 	@Override
