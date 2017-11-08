@@ -28,7 +28,7 @@ public class MultiTouchEvent extends MotionEvent {
 			int fromY = Math.round(from.y);
 			int toX = Math.round(to.x);
 			int toY = Math.round(to.y);
-			action.add(new TouchAction(driver).press(fromX, fromY).moveTo(toX - fromX, toY - fromY).release().waitAction(Throttle.v().getDuration()));
+			action.add(new TouchAction(driver).longPress(fromX, fromY).moveTo(toX, toY).release().waitAction(Throttle.v().getDuration()));
 		}
 		action.perform();
 	}
