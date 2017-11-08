@@ -22,16 +22,19 @@ import testing.event.ThrottleEvent;
 import testing.event.inspect.CheckActivityEvent;
 import util.Config;
 import util.PointF;
+import util.Timer;
 
 public class TestRandomEventSource {
 	@Test
 	public void test1() {
+		Timer timer = new Timer();
+		timer.start();
 		initTesting("0", (info, env) -> {
 			Throttle.v().init(500);
 			RandomEventSource eventSource = new RandomEventSource(null, env, 10000);
 			eventSource.adjustEventFactors();
 			List<Event> failedEvents = new ArrayList<>();
-			for(int i = 0; i < 5000; i++) {
+			for(int i = 0; i < 10000; i++) {
 				System.out.println("# Event " + i);
 				Event event = eventSource.getNextEvent();
 				System.out.println(event);
@@ -45,6 +48,8 @@ public class TestRandomEventSource {
 			System.out.println("# Failed events: " + failedEvents.size());
 			failedEvents.forEach(System.out::println);
 		});
+		timer.stop();
+		System.out.println("# Time: " + timer.getDurationInSecond() + "s.");
 	}
 
 	/**
@@ -62,10 +67,14 @@ public class TestRandomEventSource {
 	 */
 	@Test
 	public void test3() {
+		Timer timer = new Timer();
+		timer.start();
 		initTesting("0", (info, d) -> {
 			new KeyEvent(AndroidKeyCode.MENU).injectEvent(info, d);
 			new KeyEvent(AndroidKeyCode.HOME).injectEvent(info, d);
 		});
+		timer.stop();
+		System.out.println("# Time: " + timer.getDurationInSecond() + "s.");
 	}
 
 	/**

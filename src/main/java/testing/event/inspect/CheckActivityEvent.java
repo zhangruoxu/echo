@@ -20,6 +20,7 @@ public class CheckActivityEvent extends Event {
 		String curAct = expandClassName(info, env.driver().currentActivity());
 		System.out.println("# Current activity: " + curAct);
 		if(! info.contains(curAct)) {
+			System.out.println("# Go to activity " + curAct);
 			// Try to return to the app being tested
 			new KeyEvent(AndroidKeyCode.BACK).injectEvent(info, env);
 			new ThrottleEvent().injectEvent(info, env);

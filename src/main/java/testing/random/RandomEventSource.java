@@ -95,18 +95,18 @@ public class RandomEventSource implements EventSource {
 		// but they will be converted to 0..1 values before the main loop runs.
 		mFactors[FACTOR_TOUCH] = 25.0f;
 		mFactors[FACTOR_MOTION] = 15.0f;
+		mFactors[FACTOR_PINCHZOOM] = 2.0f;
 		mFactors[FACTOR_TRACKBALL] = 0.0f;
 		// Adjust the values if we want to enable rotation by default.
 		mFactors[FACTOR_ROTATION] = 0.0f;
-		mFactors[FACTOR_NAV] = 25.0f;
-		mFactors[FACTOR_MAJORNAV] = 15.0f;
-		mFactors[FACTOR_SYSOPS] = 2.0f;
-		mFactors[FACTOR_APPSWITCH] = 2.0f;
-		mFactors[FACTOR_FLIP] = 1.0f;
 		// disbale permission by default
 		mFactors[FACTOR_PERMISSION] = 0.0f;
-		mFactors[FACTOR_ANYTHING] = 13.0f;
-		mFactors[FACTOR_PINCHZOOM] = 2.0f;
+		mFactors[FACTOR_NAV] = 27.0f;
+		mFactors[FACTOR_MAJORNAV] = 15.0f;
+		mFactors[FACTOR_SYSOPS] = 2.0f;
+		mFactors[FACTOR_APPSWITCH] = 0.0f;
+		mFactors[FACTOR_FLIP] = 0.0f;
+		mFactors[FACTOR_ANYTHING] = 14.0f;
 
 		mEventCount = 0;
 		this.env = env;
