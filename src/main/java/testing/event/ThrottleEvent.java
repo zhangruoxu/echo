@@ -1,8 +1,7 @@
 package testing.event;
 
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
-import util.AppInfoWrapper;
+import testing.AppInfoWrapper;
+import testing.Env;
 import util.Log;
 
 /**
@@ -20,7 +19,7 @@ public class ThrottleEvent extends Event {
 	}
 
 	@Override
-	public void injectEvent(AppInfoWrapper info, AndroidDriver<AndroidElement> driver) {
+	public void injectEvent(AppInfoWrapper info, Env env) {
 		try {
 			Thread.sleep(mthrottle);
 		} catch (Exception e) {

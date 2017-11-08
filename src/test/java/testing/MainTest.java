@@ -17,12 +17,14 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidKeyCode;
 import soot.toolkits.scalar.Pair;
+import testing.event.DragEvent;
+import testing.event.TapEvent;
 import testing.event.Throttle;
 import testing.event.ThrottleEvent;
-import util.AppInfoWrapper;
 import util.Config;
 import util.AndroidKeyCodeWrapper;
 import util.ManifestParser;
+import util.PointF;
 
 public class MainTest {
 	@Test
@@ -52,7 +54,8 @@ public class MainTest {
 		TestingOptions.v().processOptions(args);
 		TestingOptions.v().getAppPaths().stream().map(AppInfoWrapper::new)
 		.forEach(i -> {
-			Main.testingApp(i, (info, d) -> {
+			Main.testingApp(i, (info, env) -> {
+				AndroidDriver<AndroidElement> d = env.driver();
 				d.closeApp();
 				d.removeApp(info.getPkgName());
 			});
@@ -69,7 +72,8 @@ public class MainTest {
 		TestingOptions.v().processOptions(args);
 		TestingOptions.v().getAppPaths().stream().map(AppInfoWrapper::new)
 		.forEach(i -> {
-			Main.testingApp(i, (info, d) -> {
+			Main.testingApp(i, (info, env) -> {
+				AndroidDriver<AndroidElement> d = env.driver();
 				d.startActivity(new Activity("arity.calculator", "calculator.Calculator"));
 				d.closeApp();
 				d.removeApp(info.getPkgName());
@@ -83,7 +87,8 @@ public class MainTest {
 	 */
 	@Test
 	public void test6() {
-		initTesting("0", (i, d) -> {
+		initTesting("0", (i, env) -> {
+			AndroidDriver<AndroidElement> d = env.driver();
 			d.startActivity(new Activity("arity.calculator", "calculator.Calculator"));
 			if(! i.contains(d.currentActivity()))
 				d.pressKeyCode(AndroidKeyCode.BACK);
@@ -95,7 +100,8 @@ public class MainTest {
 	 */
 	@Test
 	public void test7() {
-		Main.testingApp("com.example.yzhan.startmode", ".MainActivity", (p, d) -> {
+		Main.testingApp("com.example.yzhan.startmode", ".MainActivity", (p, env) -> {
+			AndroidDriver<AndroidElement> d = env.driver();
 			Dimension dimension = d.manage().window().getSize();
 			System.out.println("# Window height: " + dimension.height);
 			System.out.println("# Window width: " + dimension.width);
@@ -110,7 +116,8 @@ public class MainTest {
 	public void test8() {
 		Throttle.v().init(500);
 		System.out.println("Event throttle " + Throttle.v().getDuration());
-		Main.testingApp("com.android.gesture.builder", ".GestureBuilderActivity", (p, d) -> {
+		Main.testingApp("com.android.gesture.builder", ".GestureBuilderActivity", (p, env) -> {
+			AndroidDriver<AndroidElement> d = env.driver();
 			Dimension dimension = d.manage().window().getSize();
 			System.out.println("# Window height: " + dimension.height);
 			System.out.println("# Window width: " + dimension.width); 
@@ -132,8 +139,9 @@ public class MainTest {
 	 */
 	@Test
 	public void test9() {
-		initTesting("0", (i, d) -> {
+		initTesting("0", (i, env) -> {
 			try {
+				AndroidDriver<AndroidElement> d = env.driver();
 				File screenshot = d.getScreenshotAs(OutputType.FILE);
 				File dest = new File(String.join(File.separator, "." , screenshot.getName()));
 				FileUtils.copyFile(screenshot, dest);
@@ -149,7 +157,8 @@ public class MainTest {
 	 */
 	@Test
 	public void test10() {
-		initTesting("0", (i, d) -> {
+		initTesting("0", (i, env) -> {
+			AndroidDriver<AndroidElement> d = env.driver();
 			System.out.println(d.getPageSource());
 			d.closeApp();
 		});
@@ -163,7 +172,8 @@ public class MainTest {
 		Config.init(null);
 		String[] args = new String[] {"-app", "0", "-emulator", "Nexus_5_API_19", "-throttle", "500"};
 		TestingOptions.v().processOptions(args);
-		TestingOptions.v().getAppPaths().stream().map(AppInfoWrapper::new).forEach(i -> Main.testingApp(i, (info, d) -> {
+		TestingOptions.v().getAppPaths().stream().map(AppInfoWrapper::new).forEach(i -> Main.testingApp(i, (info, env) -> {
+			AndroidDriver<AndroidElement> d = env.driver();
 			new ThrottleEvent();
 			d.closeApp();
 		}));
@@ -198,9 +208,25 @@ public class MainTest {
 	}
 	
 	/**
+	 * Test click button with coordinate
+	 * @see test8()
+	 * Use longPress() rather than press()
+	 */
+	@Test
+	public void test14() {
+		Throttle.v().init(500);
+		System.out.println("Event throttle " + Throttle.v().getDuration());
+		Main.testingApp("com.android.gesture.builder", ".GestureBuilderActivity", (p, env) -> {
+			new TapEvent(-1, -1).addFrom(0, new PointF(280, 1700)).injectEvent(null, env);
+			new DragEvent(-1, -1).addFromTo(0, new PointF(env.width() / 2, env.height() / 2), new PointF(100, 100)).injectEvent(null, env);
+			new DragEvent(-1, -1).addFromTo(0, new PointF(398, 1388), new PointF(365, 1371)).injectEvent(null, env);
+		});
+	}
+	
+	/**
 	 * Initialize Appium testing
 	 */
-	private void initTesting(String id, BiConsumer<AppInfoWrapper, AndroidDriver<AndroidElement>> testing) {
+	private void initTesting(String id, BiConsumer<AppInfoWrapper, Env> testing) {
 		Config.init(null);
 		String[] args = new String[] {"-app", id, "-emulator", "Nexus_5_API_19"};
 		TestingOptions.v().processOptions(args);

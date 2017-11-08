@@ -1,6 +1,10 @@
-package util;
+package testing;
 
 import java.util.List;
+
+import util.AppPathResolver;
+import util.Config;
+import util.ManifestParser;
 
 /**
  * This class includes info of an app

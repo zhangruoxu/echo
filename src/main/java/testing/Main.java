@@ -10,7 +10,6 @@ import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.remote.MobilePlatform;
-import util.AppInfoWrapper;
 import util.Config;
 
 /**
@@ -30,7 +29,7 @@ public class Main {
 	/**
 	 * Setup testing session
 	 */
-	private static AndroidDriver<AndroidElement> setUp(AppInfoWrapper appInfo) {
+	private static Env setUp(AppInfoWrapper appInfo) {
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Android Emulator");
 		capabilities.setCapability(AndroidMobileCapabilityType.APP_PACKAGE, appInfo.getPkgName());
@@ -43,13 +42,13 @@ public class Main {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		return driver;
+		return new Env(driver);
 	}
 	
 	/**
 	 * Setup the testing with package name and launchable activity name
 	 */
-	private static AndroidDriver<AndroidElement> setUp(String pkgName, String actName) {
+	private static Env setUp(String pkgName, String actName) {
 		DesiredCapabilities capabilities = new DesiredCapabilities();
 		capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Android Emulator");
 		capabilities.setCapability(AndroidMobileCapabilityType.APP_PACKAGE, pkgName);
@@ -62,13 +61,14 @@ public class Main {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		return driver;
+		return new Env(driver);
 	}
 	
 	// simple testing
 	// launch the app, then uninstall it
 	public static void testingApp(AppInfoWrapper appInfo) {
-		AndroidDriver<AndroidElement> driver = setUp(appInfo);
+		Env env = setUp(appInfo);
+		AndroidDriver<AndroidElement> driver = env.driver();
 		driver.closeApp();
 		driver.removeApp(appInfo.getPkgName());
 	}
@@ -76,16 +76,16 @@ public class Main {
 	/**
 	 * App testing is implemented as a function interface.
 	 */
-	public static void testingApp(AppInfoWrapper appInfo, BiConsumer<AppInfoWrapper, AndroidDriver<AndroidElement>> testing) {
-		AndroidDriver<AndroidElement> driver = setUp(appInfo);
-		testing.accept(appInfo, driver);
+	public static void testingApp(AppInfoWrapper appInfo, BiConsumer<AppInfoWrapper, Env> testing) {
+		Env env = setUp(appInfo);
+		testing.accept(appInfo, env);
 	}
 	
 	/**
 	 * Launch the app with package name and launchable activity name
 	 */
-	public static void testingApp(String pkgName, String actName, BiConsumer<String, AndroidDriver<AndroidElement>> testing) {
-		AndroidDriver<AndroidElement> driver = setUp(pkgName, actName);
-		testing.accept(pkgName, driver);
+	public static void testingApp(String pkgName, String actName, BiConsumer<String, Env> testing) {
+		Env env = setUp(pkgName, actName);
+		testing.accept(pkgName, env);
 	}
 }

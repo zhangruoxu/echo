@@ -1,9 +1,8 @@
 package testing.event;
 
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
+import testing.AppInfoWrapper;
+import testing.Env;
 import util.AndroidKeyCodeWrapper;
-import util.AppInfoWrapper;
 
 /**
  * Long press key event.
@@ -20,8 +19,8 @@ public class LongPressKeyEvent extends Event {
 	}
 	
 	@Override
-	public void injectEvent(AppInfoWrapper info, AndroidDriver<AndroidElement> driver) {
-		driver.longPressKeyCode(mKeyCode);
+	public void injectEvent(AppInfoWrapper info, Env env) {
+		env.driver().longPressKeyCode(mKeyCode);
 	}
 	
 	/**

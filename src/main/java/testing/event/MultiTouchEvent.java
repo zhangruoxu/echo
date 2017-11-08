@@ -2,9 +2,8 @@ package testing.event;
 
 import io.appium.java_client.MultiTouchAction;
 import io.appium.java_client.TouchAction;
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
-import util.AppInfoWrapper;
+import testing.AppInfoWrapper;
+import testing.Env;
 import util.PointF;
 
 /**
@@ -18,9 +17,9 @@ public class MultiTouchEvent extends MotionEvent {
 	}
 
 	@Override
-	public void injectEvent(AppInfoWrapper info, AndroidDriver<AndroidElement> driver) {
+	public void injectEvent(AppInfoWrapper info, Env env) {
 		assert mFromPointers.size() == mToPointers.size();
-		MultiTouchAction action = new MultiTouchAction(driver);
+		MultiTouchAction action = new MultiTouchAction(env.driver());
 		for(int i = 0; i < mFromPointers.size(); i++) {
 			PointF from = mFromPointers.get(i);
 			PointF to = mToPointers.get(i);
@@ -28,7 +27,7 @@ public class MultiTouchEvent extends MotionEvent {
 			int fromY = Math.round(from.y);
 			int toX = Math.round(to.x);
 			int toY = Math.round(to.y);
-			action.add(new TouchAction(driver).longPress(fromX, fromY).moveTo(toX, toY).release().waitAction(Throttle.v().getDuration()));
+			action.add(new TouchAction(env.driver()).longPress(fromX, fromY).moveTo(toX, toY).release().waitAction(Throttle.v().getDuration()));
 		}
 		action.perform();
 	}

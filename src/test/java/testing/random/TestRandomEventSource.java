@@ -7,6 +7,8 @@ import org.junit.Test;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidKeyCode;
+import testing.AppInfoWrapper;
+import testing.Env;
 import testing.Main;
 import testing.TestingOptions;
 import testing.event.DragEvent;
@@ -16,21 +18,21 @@ import testing.event.TapEvent;
 import testing.event.Throttle;
 import testing.event.ThrottleEvent;
 import testing.event.inspect.CheckActivityEvent;
-import util.AppInfoWrapper;
 import util.Config;
 import util.PointF;
 
 public class TestRandomEventSource {
 	@Test
 	public void test1() {
-		initTesting("0", (info, d) -> {
+		initTesting("0", (info, env) -> {
 			Throttle.v().init(500);
-			RandomEventSource eventSource = new RandomEventSource(d, 0);
+			RandomEventSource eventSource = new RandomEventSource(null, null, 10000);
 			eventSource.adjustEventFactors();
 			for(int i = 0; i < 5000; i++) {
+				System.out.println("# Event " + i);
 				Event e = eventSource.getNextEvent();
 				System.out.println(e);
-				e.injectEvent(info, d);
+				e.injectEvent(info, env);
 			}
 		});
 	}
@@ -61,10 +63,11 @@ public class TestRandomEventSource {
 	 */
 	@Test
 	public void test4() {
-		initTesting("0", (info, d) -> {
+		initTesting("0", (info, env) -> {
+			AndroidDriver<AndroidElement> d = env.driver();
 			System.out.println("# Height: " + d.manage().window().getSize().getHeight());
 			System.out.println("# Width: " + d.manage().window().getSize().getWidth());
-			new TapEvent(-1, -1).addFrom(0, new PointF(1, 1775)).injectEvent(info, d);
+			new TapEvent(-1, -1).addFrom(0, new PointF(1, 1775)).injectEvent(info, env);
 		});
 	}
 	
@@ -110,7 +113,7 @@ public class TestRandomEventSource {
 	/**
 	 * Initialize Appium testing
 	 */
-	private void initTesting(String id, BiConsumer<AppInfoWrapper, AndroidDriver<AndroidElement>> testing) {
+	private void initTesting(String id, BiConsumer<AppInfoWrapper, Env> testing) {
 		Config.init(null);
 		String[] args = new String[] {"-app", id, "-emulator", "Nexus_5_API_19"};
 		TestingOptions.v().processOptions(args);

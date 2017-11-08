@@ -1,8 +1,7 @@
 package testing.event;
 
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
-import util.AppInfoWrapper;
+import testing.AppInfoWrapper;
+import testing.Env;
 
 /**
  * An abstract class for event. 
@@ -40,7 +39,7 @@ public abstract class Event {
     }
 	
     // Perform the corresponding event 
-	public abstract void injectEvent(AppInfoWrapper info, AndroidDriver<AndroidElement> driver);
+	public abstract void injectEvent(AppInfoWrapper info, Env env);
 	
     /**
      * @return true if it is safe to throttle after this event, and false otherwise.

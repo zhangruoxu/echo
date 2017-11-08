@@ -5,9 +5,9 @@ import java.util.Random;
 
 import org.openqa.selenium.Dimension;
 
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidKeyCode;
+import testing.AppInfoWrapper;
+import testing.Env;
 import testing.event.DragEvent;
 import testing.event.Event;
 import testing.event.EventQueue;
@@ -85,11 +85,11 @@ public class RandomEventSource implements EventSource {
 	 **/
 	private float[] mFactors = new float[FACTORZ_COUNT];
 	private int mEventCount;  //total number of events generated so far
-	private AndroidDriver<AndroidElement> mDriver;
+	private Env env;
 	private EventQueue mQ;
 	private Random mRandom;
 
-	public RandomEventSource(AndroidDriver<AndroidElement> driver, long seed) {
+	public RandomEventSource(AppInfoWrapper appInfo, Env env, long seed) {
 		// default values for random distributions
 		// note, these are straight percentages, to match user input (cmd line args)
 		// but they will be converted to 0..1 values before the main loop runs.
@@ -109,7 +109,7 @@ public class RandomEventSource implements EventSource {
 		mFactors[FACTOR_PINCHZOOM] = 2.0f;
 
 		mEventCount = 0;
-		mDriver = driver;
+		this.env = env;
 		mRandom = new SecureRandom();
 		mRandom.setSeed((seed == 0) ? -1 : seed);
 		mQ = new EventQueue();
@@ -206,7 +206,7 @@ public class RandomEventSource implements EventSource {
 	 */
 	private void generatePointerEvent(Random random, int gesture) {
 		// Obtain screen size
-		Dimension dimension = mDriver.manage().window().getSize();
+		Dimension dimension = env.dimension();
 		PointF from = randomPoint(random, dimension);
 		long downAt = System.currentTimeMillis();
 
