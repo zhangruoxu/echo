@@ -215,8 +215,12 @@ public class RandomEventSource implements EventSource {
 			try {
 				event.injectEvent(mAppInfo, env);
 				// ThrottleEvent and InspectEvent are not counted.
-				if(! (event instanceof ThrottleEvent || event instanceof InspectEvent))
+				if(! (event instanceof ThrottleEvent || event instanceof InspectEvent)) {
 					eventCounter++;
+					// The event has been successfully injected. 
+					// Then this event becomes previous event.
+					env.setPrevEvent(event);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

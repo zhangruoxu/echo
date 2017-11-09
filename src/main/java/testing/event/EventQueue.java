@@ -26,7 +26,7 @@ public class EventQueue extends LinkedList<Event> {
 		super.add(e);
 		// Insert a fix time delay after some events to let the GUI respond to the event
 		if (e.isThrottlable()) {
-			super.add(new ThrottleEvent());
+			super.addLast(new ThrottleEvent());
 		}
 		eventTraces.addAll(this);
 		/**

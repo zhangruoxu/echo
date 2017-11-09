@@ -4,6 +4,7 @@ import org.openqa.selenium.Dimension;
 
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
+import testing.event.Event;
 
 /**
  * This class represents the testing environments.
@@ -34,8 +35,21 @@ public class Env {
 		return height;
 	}
 	
+	
+	public Event getPrevEvent() {
+		return prevEvent;
+	}
+
+	public void setPrevEvent(Event prevEvent) {
+		this.prevEvent = prevEvent;
+	}
+
+	// Testing driver
 	private AndroidDriver<AndroidElement> driver;
+	// The dimension of the screen
 	private Dimension dimension;
 	private int width;
 	private int height;
+	// Previous event that has been successfully injected
+	private Event prevEvent;
 }
