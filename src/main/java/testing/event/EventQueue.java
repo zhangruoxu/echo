@@ -1,6 +1,8 @@
 package testing.event;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import testing.event.inspect.CheckActivityEvent;
 
@@ -16,6 +18,7 @@ import testing.event.inspect.CheckActivityEvent;
 public class EventQueue extends LinkedList<Event> {
 	public EventQueue() {
 		super();
+		eventTraces = new ArrayList<>();
 	}
 
 	@Override
@@ -25,11 +28,19 @@ public class EventQueue extends LinkedList<Event> {
 		if (e.isThrottlable()) {
 			super.add(new ThrottleEvent());
 		}
+		eventTraces.addAll(this);
 		/**
 		 * Check current activity during testing after injecting every event
 		 * TODO Better way to insert inspecting events
 		 * @author yifei
 		 */
-		super.add(new CheckActivityEvent());
+		super.addLast(new CheckActivityEvent());
 	}
+	
+	public List<Event> getEventTraces() {
+		return eventTraces;
+	}
+	
+	// This list contains all the generated events
+	private List<Event> eventTraces;
 }

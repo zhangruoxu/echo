@@ -1,6 +1,7 @@
 package testing.random;
 
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Random;
 
 import org.openqa.selenium.Dimension;
@@ -187,6 +188,13 @@ public class RandomEventSource implements EventSource {
 
 	public void setFactors(int index, float v) {
 		mFactors[index] = v;
+	}
+	
+	/**
+	 * Obtain the event traces during testing
+	 */
+	public List<Event> getEventTraces() {
+		return mQ.getEventTraces();
 	}
 
 	/**
