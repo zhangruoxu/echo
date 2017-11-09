@@ -20,6 +20,7 @@ import testing.event.TapEvent;
 import testing.event.Throttle;
 import testing.event.ThrottleEvent;
 import testing.event.inspect.CheckActivityEvent;
+import testing.event.inspect.InspectEvent;
 import util.Config;
 import util.PointF;
 import util.Timer;
@@ -112,6 +113,43 @@ public class TestRandomEventSource {
 			new ThrottleEvent().injectEvent(info, env);
 			new CheckActivityEvent().injectEvent(info, env);
 		});
+	}
+
+	/**
+	 * Test the test case trace.
+	 */
+	@Test
+	public void test7() {
+		Timer timer = new Timer();
+		timer.start();
+		initTesting("0", (info, env) -> {
+			Throttle.v().init(500);
+			RandomEventSource eventSource = new RandomEventSource(null, env, 10000);
+			eventSource.adjustEventFactors();
+			final int eventCount = 100;
+			int eventCounter = 0;
+			List<Event> failedEvents = new ArrayList<>();
+			while(eventCounter < eventCount) {
+				System.out.println("# Event " + eventCounter);
+				Event event = eventSource.getNextEvent();
+				System.out.println(event);
+				try {
+					event.injectEvent(info, env);
+					if(!( event instanceof ThrottleEvent || event instanceof InspectEvent))
+						eventCounter++;
+				} catch (Exception e) {
+					e.printStackTrace();
+					failedEvents.add(event);
+				}
+			}
+			System.out.println("# Failed events: " + failedEvents.size());
+			failedEvents.forEach(System.out::println);
+			List<Event> eventTraces = eventSource.getEventTraces();
+			System.out.println("## Event traces: " + eventTraces.size());
+			System.out.println("## ThrottleEvent: " + eventTraces.stream().filter(ThrottleEvent.class::isInstance).count());
+		});
+		timer.stop();
+		System.out.println("# Time: " + timer.getDurationInSecond() + "s.");
 	}
 
 	/**
