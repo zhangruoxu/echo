@@ -16,6 +16,8 @@ public class TestingOptions {
 	private String emulatorName = null;
 
 	private List<String> appPaths = null;
+	
+	private int numberOfEvents = 1000;
 
 	public String getEmulatorName() {
 		return emulatorName;
@@ -25,6 +27,10 @@ public class TestingOptions {
 		return appPaths;
 	}
 
+	public int getnumberOfEvents() {
+		return numberOfEvents;
+	}
+	
 	private TestingOptions() {}
 
 	public static final TestingOptions v() {
@@ -38,7 +44,7 @@ public class TestingOptions {
 			if(arg.equals("-emulator"))
 				emulatorName = args[i + 1];
 			// process app paths
-			if(arg.equals("-app")) {
+			else if(arg.equals("-app")) {
 				List<Integer> appIds = new ArrayList<>();
 				for(int j = i + 1; j < args.length; j++) {
 					try {
@@ -50,12 +56,19 @@ public class TestingOptions {
 				appPaths = AppPathResolver.resolveAppPaths(Config.v().get(Config.APPDIR), appIds);
 			}
 			// process throttle time
-			if(arg.equals("-throttle"))
+			else if(arg.equals("-throttle"))
 				try {
 					int throttle = Integer.valueOf(args[i + 1]);
 					Throttle.v().init(throttle);
 				} catch (Exception e) {
 					System.out.println(args[i + 1] + " is not a valid throttle time. Use 100ms.");
+				}
+			// process the number of test cases
+			else if(arg.equals("-event"))
+				try {
+					numberOfEvents = Integer.valueOf(args[i + 1]);
+				} catch (Exception e) {
+					System.out.println(args[i + 1] + " is not a valid integer. Inject 1000 events.");
 				}
 		}
 		assert emulatorName != null;

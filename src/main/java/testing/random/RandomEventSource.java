@@ -9,6 +9,7 @@ import org.openqa.selenium.Dimension;
 import io.appium.java_client.android.AndroidKeyCode;
 import testing.AppInfoWrapper;
 import testing.Env;
+import testing.TestingOptions;
 import testing.event.DragEvent;
 import testing.event.Event;
 import testing.event.EventQueue;
@@ -16,6 +17,8 @@ import testing.event.EventSource;
 import testing.event.KeyEvent;
 import testing.event.MultiTouchEvent;
 import testing.event.TapEvent;
+import testing.event.ThrottleEvent;
+import testing.event.inspect.InspectEvent;
 import util.AndroidKeyCodeWrapper;
 import util.Log;
 import util.PointF;
@@ -86,6 +89,7 @@ public class RandomEventSource implements EventSource {
 	 **/
 	private float[] mFactors = new float[FACTORZ_COUNT];
 	private int mEventCount;  //total number of events generated so far
+	private AppInfoWrapper mAppInfo;
 	private Env env;
 	private EventQueue mQ;
 	private Random mRandom;
@@ -110,6 +114,7 @@ public class RandomEventSource implements EventSource {
 		mFactors[FACTOR_ANYTHING] = 14.0f;
 
 		mEventCount = 0;
+		this.mAppInfo = appInfo;
 		this.env = env;
 		mRandom = new SecureRandom();
 		mRandom.setSeed((seed == 0) ? -1 : seed);
@@ -197,6 +202,27 @@ public class RandomEventSource implements EventSource {
 		return mQ.getEventTraces();
 	}
 
+	/**
+	 * Testing cycle
+	 */
+	public void runTestingCycles() {
+		final int numberOfEvents = TestingOptions.v().getnumberOfEvents();
+		int eventCounter = 0;
+		adjustEventFactors();
+		while(eventCounter < numberOfEvents) {
+			Event event = getNextEvent();
+			System.out.println(event);
+			try {
+				event.injectEvent(mAppInfo, env);
+				// ThrottleEvent and InspectEvent are not counted.
+				if(! (event instanceof ThrottleEvent || event instanceof InspectEvent))
+					eventCounter++;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	/**
 	 * Generates a random motion event. This method counts a down, move, and up as multiple events.
 	 *
