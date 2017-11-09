@@ -1,6 +1,7 @@
 package testing.event;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,31 +17,63 @@ import testing.event.inspect.CheckActivityEvent;
 
 @SuppressWarnings("serial")
 public class EventQueue extends LinkedList<Event> {
+	// Initialize the meta-class of inspecting event
+	// TODO
+	// Make this as an option.
+	static {
+		inspectEventMetaClz = Arrays.asList(
+			CheckActivityEvent.class
+		);
+	}
+	
 	public EventQueue() {
 		super();
 		eventTraces = new ArrayList<>();
+		throttleEvent = new ThrottleEvent();
+		inspectEvents = new ArrayList<>();
+		/**
+		 * Prepare inspecting event objects.
+		 * Both throttling and inspecting events are reused.
+		 * It is safe to do that because these events are just instructions on the client side, 
+		 * rather than the real events being injected into the system.
+		 * 
+		 * @author yifei
+		 */
+		for(Class<? extends Event> c : inspectEventMetaClz) {
+			try {
+				inspectEvents.add(c.newInstance());
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("Failed to inject event " + c.getName());
+				System.exit(0);
+			}
+		}
 	}
 
 	@Override
-	public void addLast(Event e) {
-		super.add(e);
+	public void addLast(Event event) {
+		super.add(event);
 		// Insert a fix time delay after some events to let the GUI respond to the event
-		if (e.isThrottlable()) {
-			super.addLast(new ThrottleEvent());
+		if (event.isThrottlable()) {
+			super.addLast(throttleEvent);
 		}
+		// Keep the testing events.
 		eventTraces.addAll(this);
-		/**
-		 * Check current activity during testing after injecting every event
-		 * TODO Better way to insert inspecting events
-		 * @author yifei
-		 */
-		super.addLast(new CheckActivityEvent());
+		// Insert inspecting events
+		super.addAll(inspectEvents);
 	}
 	
 	public List<Event> getEventTraces() {
 		return eventTraces;
 	}
 	
-	// This list contains all the generated events
+	// This list contains all the generated events except the inspecting events
 	private List<Event> eventTraces;
+	// This list contains the meta class objects of the inspecting events 
+	// that are going to be injected
+	private List<Event> inspectEvents;
+	// Throttling event that is going to be injected
+	private ThrottleEvent throttleEvent;
+	// Meta-class of inspecting events
+	private static List<Class<? extends Event>> inspectEventMetaClz;
 }
