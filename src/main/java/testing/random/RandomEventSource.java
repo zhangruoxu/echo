@@ -206,7 +206,7 @@ public class RandomEventSource implements EventSource {
 	 * Testing cycle
 	 */
 	public void runTestingCycles() {
-		final int numberOfEvents = TestingOptions.v().getnumberOfEvents();
+		final int numberOfEvents = TestingOptions.v().getNumberOfEvents();
 		int eventCounter = 0;
 		adjustEventFactors();
 		while(eventCounter < numberOfEvents) {

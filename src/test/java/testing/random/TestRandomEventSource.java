@@ -153,11 +153,31 @@ public class TestRandomEventSource {
 	}
 
 	/**
+	 * Test runTestingCycles().
+	 */
+	@Test
+	public void test8() {
+		Timer timer = new Timer();
+		timer.start();
+		initTesting("0", (info, env) -> {
+			Throttle.v().init(500);
+			TestingOptions.v().setNumberOfEvents(1000);
+			RandomEventSource eventSource = new RandomEventSource(info, env, 10000);
+			eventSource.runTestingCycles();
+			List<Event> eventTraces = eventSource.getEventTraces();
+			System.out.println("## Event traces: " + eventTraces.size());
+			System.out.println("## ThrottleEvent: " + eventTraces.stream().filter(ThrottleEvent.class::isInstance).count());
+		});
+		timer.stop();
+		System.out.println("# Time: " + timer.getDurationInSecond() + "s.");
+	}
+	
+	/**
 	 * Initialize Appium testing
 	 */
 	private void initTesting(String id, BiConsumer<AppInfoWrapper, Env> testing) {
 		Config.init(null);
-		String[] args = new String[] {"-app", id, "-emulator", "Nexus_5_API_19"};
+		String[] args = new String[] {"-app", id, "-emulator", "Nexus_5_API_19", "-event"};
 		TestingOptions.v().processOptions(args);
 		TestingOptions.v().getAppPaths().stream().map(AppInfoWrapper::new).forEach(i -> Main.testingApp(i, testing));
 	}

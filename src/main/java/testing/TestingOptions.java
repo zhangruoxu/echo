@@ -26,11 +26,15 @@ public class TestingOptions {
 	public List<String> getAppPaths() {
 		return appPaths;
 	}
-
-	public int getnumberOfEvents() {
+	
+	public int getNumberOfEvents() {
 		return numberOfEvents;
 	}
-	
+
+	public void setNumberOfEvents(int numberOfEvents) {
+		this.numberOfEvents = numberOfEvents;
+	}
+
 	private TestingOptions() {}
 
 	public static final TestingOptions v() {
