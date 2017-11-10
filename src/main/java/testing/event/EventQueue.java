@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import testing.event.inspect.CheckActivityEvent;
+import util.Log;
 
 /**
  * Queue of testing events.
@@ -43,7 +44,7 @@ public class EventQueue extends LinkedList<Event> {
 				inspectEvents.add(c.newInstance());
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("Failed to inject event " + c.getName());
+				Log.println("Failed to inject event " + c.getName());
 				System.exit(0);
 			}
 		}

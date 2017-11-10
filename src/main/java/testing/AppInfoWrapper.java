@@ -1,6 +1,8 @@
 package testing;
 
+import java.io.File;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import util.AppPathResolver;
 import util.Config;
@@ -23,6 +25,9 @@ public class AppInfoWrapper {
 	}
 	
 	private void init() {
+		String[] temp = appPath.split(Pattern.quote(File.separator));
+		assert temp.length > 0;
+		appFileName = temp[temp.length - 1];
 		ManifestParser parser = new ManifestParser(appPath);
 		pkgName = parser.getPackageName();
 		activityNames = parser.getActivityNames();
@@ -31,6 +36,10 @@ public class AppInfoWrapper {
 	
 	public String getAppPath() {
 		return appPath;
+	}
+	
+	public String getAppFileName() {
+		return appFileName;
 	}
 	
 	public String getPkgName() {
@@ -60,6 +69,7 @@ public class AppInfoWrapper {
 	}
 	
 	private String appPath;
+	private String appFileName;
 	private String pkgName;
 	private List<String> activityNames;
 }

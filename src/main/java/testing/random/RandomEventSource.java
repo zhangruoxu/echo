@@ -214,7 +214,7 @@ public class RandomEventSource implements EventSource {
 		adjustEventFactors();
 		while(eventCounter < numberOfEvents) {
 			Event event = getNextEvent();
-			System.out.println(event);
+			Log.println(event);
 			try {
 				event.injectEvent(mAppInfo, env);
 				if(! (event instanceof InspectEvent)) {
@@ -229,7 +229,7 @@ public class RandomEventSource implements EventSource {
 					} 
 				}
 			} catch (Exception e) {
-				System.out.println("## Fail to inject the event " + event);
+				Log.println("## Fail to inject the event " + event);
 				e.printStackTrace();
 			}
 		}
@@ -284,7 +284,7 @@ public class RandomEventSource implements EventSource {
 			x = (float) Math.max(Math.min(x + random.nextFloat() * vector.x, dimension.getWidth() - 1), 0);
 			y = (float) Math.max(Math.min(y + random.nextFloat() * vector.y, dimension.getHeight() - 1), 0);
 		}
-		System.out.println("# move to " + x + ", " + y);
+		Log.println("# move to " + x + ", " + y);
 		return new PointF(x, y);
 	}
 

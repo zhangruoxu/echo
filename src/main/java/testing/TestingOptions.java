@@ -6,6 +6,7 @@ import java.util.List;
 import testing.event.Throttle;
 import util.AppPathResolver;
 import util.Config;
+import util.Log;
 
 /**
  * Process testing options.
@@ -65,14 +66,14 @@ public class TestingOptions {
 					int throttle = Integer.valueOf(args[i + 1]);
 					Throttle.v().init(throttle);
 				} catch (Exception e) {
-					System.out.println(args[i + 1] + " is not a valid throttle time. Use 100ms.");
+					Log.println(args[i + 1] + " is not a valid throttle time. Use 100ms.");
 				}
 			// process the number of test cases
 			else if(arg.equals("-event"))
 				try {
 					numberOfEvents = Integer.valueOf(args[i + 1]);
 				} catch (Exception e) {
-					System.out.println(args[i + 1] + " is not a valid integer. Inject 1000 events.");
+					Log.println(args[i + 1] + " is not a valid integer. Inject 1000 events.");
 				}
 		}
 		assert emulatorName != null;
