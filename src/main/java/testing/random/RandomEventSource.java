@@ -214,7 +214,7 @@ public class RandomEventSource implements EventSource {
 		adjustEventFactors();
 		while(eventCounter < numberOfEvents) {
 			Event event = getNextEvent();
-			Log.println(event);
+			Log.println("# " +eventCounter + " " + event);
 			try {
 				event.injectEvent(mAppInfo, env);
 				if(! (event instanceof InspectEvent)) {

@@ -1,5 +1,10 @@
 package testing.random;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -23,6 +28,7 @@ import testing.event.inspect.CheckActivityEvent;
 import testing.event.inspect.InspectEvent;
 import testing.event.inspect.ScreenshotEvent;
 import util.Config;
+import util.Log;
 import util.PointF;
 import util.Timer;
 
@@ -172,7 +178,7 @@ public class TestRandomEventSource {
 		timer.stop();
 		System.out.println("# Time: " + timer.getDurationInSecond() + "s.");
 	}
-	
+
 	/**
 	 * Test screenshot event
 	 */
@@ -182,7 +188,36 @@ public class TestRandomEventSource {
 			new ScreenshotEvent().injectEvent(info, env);
 		});
 	}
-	
+
+	/**
+	 * Test the real-world apps.
+	 */
+	@Test
+	public void test10() {
+		for(int i = 1; i <= 1; i++) {
+			Timer timer = new Timer();
+			timer.start();
+			initTesting(Integer.toString(i), (info, env) -> {
+				TestingOptions.v().setNumberOfEvents(5000);
+				String output = Config.v().get(Config.OUTPUT);
+				File outputDir = new File(output);
+				if(! outputDir.exists())
+					outputDir.mkdir();
+				String fileName = String.join(File.separator, output, info.getAppFileName() + ".txt");
+				try(PrintStream printStream = new PrintStream(fileName)) {
+					Log.init(printStream);
+					RandomEventSource eventSource = new RandomEventSource(info, env, 8888);
+					eventSource.runTestingCycles();
+					timer.stop();
+					Log.println("# Time: " + timer.getDurationInSecond() + " s.");
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.exit(0);
+				}
+			});
+		}
+	}
+
 	/**
 	 * Initialize Appium testing
 	 */

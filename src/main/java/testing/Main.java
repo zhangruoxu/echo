@@ -78,6 +78,7 @@ public class Main {
 	 */
 	public static void testingApp(AppInfoWrapper appInfo, BiConsumer<AppInfoWrapper, Env> testing) {
 		Env env = setUp(appInfo);
+		env.driver().resetApp();
 		testing.accept(appInfo, env);
 	}
 	
@@ -86,6 +87,7 @@ public class Main {
 	 */
 	public static void testingApp(String pkgName, String actName, BiConsumer<String, Env> testing) {
 		Env env = setUp(pkgName, actName);
+		env.driver().resetApp();
 		testing.accept(pkgName, env);
 	}
 }
