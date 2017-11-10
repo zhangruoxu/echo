@@ -1,6 +1,7 @@
 package testing.random;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -91,6 +92,7 @@ public class RandomEventSource implements EventSource {
 	private int mEventCount;  //total number of events generated so far
 	private AppInfoWrapper mAppInfo;
 	private Env env;
+	private List<Event> eventTraces;
 	private EventQueue mQ;
 	private Random mRandom;
 
@@ -116,6 +118,7 @@ public class RandomEventSource implements EventSource {
 		mEventCount = 0;
 		this.mAppInfo = appInfo;
 		this.env = env;
+		eventTraces = new ArrayList<>();
 		mRandom = new SecureRandom();
 		mRandom.setSeed((seed == 0) ? -1 : seed);
 		mQ = new EventQueue();
@@ -194,12 +197,12 @@ public class RandomEventSource implements EventSource {
 	public void setFactors(int index, float v) {
 		mFactors[index] = v;
 	}
-	
+
 	/**
 	 * Obtain the event traces during testing
 	 */
 	public List<Event> getEventTraces() {
-		return mQ.getEventTraces();
+		return eventTraces;
 	}
 
 	/**
@@ -214,19 +217,24 @@ public class RandomEventSource implements EventSource {
 			System.out.println(event);
 			try {
 				event.injectEvent(mAppInfo, env);
-				// ThrottleEvent and InspectEvent are not counted.
-				if(! (event instanceof ThrottleEvent || event instanceof InspectEvent)) {
-					eventCounter++;
-					// The event has been successfully injected. 
-					// Then this event becomes previous event.
-					env.setPrevEvent(event);
+				if(! (event instanceof InspectEvent)) {
+					// Keep the event traces
+					eventTraces.add(event);
+					if(! (event instanceof ThrottleEvent)) {
+						// ThrottleEvent and InspectEvent are not counted.
+						eventCounter++;
+						// The event has been successfully injected. 
+						// Then this event becomes previous event.
+						env.setPrevEvent(event);
+					} 
 				}
 			} catch (Exception e) {
+				System.out.println("## Fail to inject the event " + event);
 				e.printStackTrace();
 			}
 		}
 	}
-	
+
 	/**
 	 * Generates a random motion event. This method counts a down, move, and up as multiple events.
 	 *

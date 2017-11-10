@@ -28,7 +28,6 @@ public class EventQueue extends LinkedList<Event> {
 	
 	public EventQueue() {
 		super();
-		eventTraces = new ArrayList<>();
 		throttleEvent = new ThrottleEvent();
 		inspectEvents = new ArrayList<>();
 		/**
@@ -57,18 +56,10 @@ public class EventQueue extends LinkedList<Event> {
 		if (event.isThrottlable()) {
 			super.addLast(throttleEvent);
 		}
-		// Keep the testing events.
-		eventTraces.addAll(this);
 		// Insert inspecting events
 		super.addAll(inspectEvents);
 	}
 	
-	public List<Event> getEventTraces() {
-		return eventTraces;
-	}
-	
-	// This list contains all the generated events except the inspecting events
-	private List<Event> eventTraces;
 	// This list contains the meta class objects of the inspecting events 
 	// that are going to be injected
 	private List<Event> inspectEvents;
