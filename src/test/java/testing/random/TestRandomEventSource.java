@@ -21,6 +21,7 @@ import testing.event.Throttle;
 import testing.event.ThrottleEvent;
 import testing.event.inspect.CheckActivityEvent;
 import testing.event.inspect.InspectEvent;
+import testing.event.inspect.ScreenshotEvent;
 import util.Config;
 import util.PointF;
 import util.Timer;
@@ -170,6 +171,16 @@ public class TestRandomEventSource {
 		});
 		timer.stop();
 		System.out.println("# Time: " + timer.getDurationInSecond() + "s.");
+	}
+	
+	/**
+	 * Test screenshot event
+	 */
+	@Test
+	public void test9() {
+		initTesting("0", (info, env) -> {
+			new ScreenshotEvent().injectEvent(info, env);
+		});
 	}
 	
 	/**
