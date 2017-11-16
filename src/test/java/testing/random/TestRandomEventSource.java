@@ -3,6 +3,7 @@ package testing.random;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.function.BiConsumer;
 
@@ -148,7 +149,7 @@ public class TestRandomEventSource {
 			}
 			System.out.println("# Failed events: " + failedEvents.size());
 			failedEvents.forEach(System.out::println);
-			List<Event> eventTraces = eventSource.getEventTraces();
+			Deque<Event> eventTraces = env.getEventTrace();
 			System.out.println("## Event traces: " + eventTraces.size());
 			System.out.println("## ThrottleEvent: " + eventTraces.stream().filter(ThrottleEvent.class::isInstance).count());
 		});
@@ -165,10 +166,10 @@ public class TestRandomEventSource {
 		timer.start();
 		initTesting("0", (info, env) -> {
 			Throttle.v().init(500);
-			TestingOptions.v().setNumberOfEvents(1000);
+			TestingOptions.v().setNumberOfEvents(100);
 			RandomEventSource eventSource = new RandomEventSource(info, env, 10000);
 			eventSource.runTestingCycles();
-			List<Event> eventTraces = eventSource.getEventTraces();
+			Deque<Event> eventTraces = env.getEventTrace();
 			System.out.println("## Event traces: " + eventTraces.size());
 			System.out.println("## ThrottleEvent: " + eventTraces.stream().filter(ThrottleEvent.class::isInstance).count());
 		});
