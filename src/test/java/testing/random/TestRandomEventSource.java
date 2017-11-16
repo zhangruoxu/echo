@@ -1,9 +1,6 @@
 package testing.random;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -218,6 +215,37 @@ public class TestRandomEventSource {
 		}
 	}
 
+	/**
+	 * Test keycode_escape
+	 */
+	@Test
+	public void test11() {
+		initTesting("1", (info, env) -> {
+			Throttle.v().init(1000);
+			new TapEvent().addFrom(0, new PointF(522, 836)).injectEvent(info, env);
+			new ThrottleEvent().injectEvent(info, env);
+			new KeyEvent(AndroidKeyCode.BACK).injectEvent(info, env);
+			new ThrottleEvent().injectEvent(info, env);
+			new KeyEvent(AndroidKeyCode.KEYCODE_BUTTON_B).injectEvent(info, env);
+			new ThrottleEvent().injectEvent(info, env);
+			new CheckActivityEvent().injectEvent(info, env);
+		});
+	}
+	
+	/**
+	 * Test keycode_escape
+	 */
+	@Test
+	public void test12() {
+		initTesting("0", (info, env) -> {
+			Throttle.v().init(1000);
+			new ThrottleEvent().injectEvent(info, env);
+			new KeyEvent(AndroidKeyCode.KEYCODE_BUTTON_B).injectEvent(info, env);
+			new ThrottleEvent().injectEvent(info, env);
+			new CheckActivityEvent().injectEvent(info, env);
+		});
+	}
+	
 	/**
 	 * Initialize Appium testing
 	 */

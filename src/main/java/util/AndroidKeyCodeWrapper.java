@@ -96,6 +96,8 @@ public class AndroidKeyCodeWrapper {
 				AndroidKeyCode.KEYCODE_ENDCALL,
 				AndroidKeyCode.KEYCODE_POWER,
 				AndroidKeyCode.KEYCODE_APP_SWITCH,
+				AndroidKeyCode.KEYCODE_ESCAPE,
+				AndroidKeyCode.KEYCODE_BUTTON_B,
 		}));
 	}
 
