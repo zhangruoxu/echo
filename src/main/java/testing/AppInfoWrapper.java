@@ -32,6 +32,8 @@ public class AppInfoWrapper {
 		pkgName = parser.getPackageName();
 		activityNames = parser.getActivityNames();
 		assert ! activityNames.isEmpty();
+		launchableActivities = parser.getLaunchableActivities();
+		assert ! launchableActivities.isEmpty();
 	}
 	
 	public String getAppPath() {
@@ -50,10 +52,14 @@ public class AppInfoWrapper {
 		return activityNames;
 	}
 	
+	public List<String> getLaunchableActivities() {
+		return launchableActivities;
+	}
+	
 	public boolean contains(String activityName) {
 		return activityNames.contains(activityName);
 	}
-	
+
 	public boolean equals(Object o) {
 		if(this == o)
 			return true;
@@ -71,5 +77,8 @@ public class AppInfoWrapper {
 	private String appPath;
 	private String appFileName;
 	private String pkgName;
+	// Activity names that are in the apps
 	private List<String> activityNames;
+	// The entry activity names
+	private List<String> launchableActivities;
 }

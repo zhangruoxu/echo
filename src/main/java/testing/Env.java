@@ -1,5 +1,8 @@
 package testing;
 
+import java.util.Deque;
+import java.util.LinkedList;
+
 import org.openqa.selenium.Dimension;
 
 import io.appium.java_client.android.AndroidDriver;
@@ -17,6 +20,8 @@ public class Env {
 		this.dimension =  driver.manage().window().getSize();
 		this.width = dimension.getWidth();
 		this.height = dimension.getHeight();
+		eventTrace = new LinkedList<>();
+		activityTrance = new LinkedList<>();
 	}
 	
 	public AndroidDriver<AndroidElement> driver() {
@@ -35,21 +40,54 @@ public class Env {
 		return height;
 	}
 	
+	/**
+	 * Obtain the last event;
+	 * append current event into the event trace;
+	 * get the event trace.
+	 */
+	public Event getLastEvent() {
+		return eventTrace.getLast();
+	}
 	
-	public Event getPrevEvent() {
-		return prevEvent;
+	public void appendEvent(Event event) {
+		eventTrace.addLast(event);
+	}
+	
+	public Deque<Event> getEventTrace() {
+		return eventTrace;
+	}
+	
+	/**
+	 * Obtain last activity;
+	 * append current activity to the activity trace;
+	 * get the activity transition trace.
+	 */
+	public String getLastActivity() {
+		return activityTrance.getLast();
+	}
+	
+	public void appendActivity(String activity) {
+		if(! activityTrance.getLast().equals(activity))
+			activityTrance.addLast(activity);
+	}
+	
+	public Deque<String> getActivityTrace() {
+		return activityTrance;
 	}
 
-	public void setPrevEvent(Event prevEvent) {
-		this.prevEvent = prevEvent;
+	public void appendActivityTrace(String activityName) {
+		if(! activityTrance.getLast().equals(activityName))
+			activityTrance.add(activityName);
 	}
-
+	
 	// Testing driver
 	private AndroidDriver<AndroidElement> driver;
 	// The dimension of the screen
 	private Dimension dimension;
 	private int width;
 	private int height;
-	// Previous event that has been successfully injected
-	private Event prevEvent;
+	// Testing event traces
+	private Deque<Event> eventTrace;
+	// The activity transitions during testing
+	private Deque<String> activityTrance;
 }

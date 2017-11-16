@@ -92,7 +92,6 @@ public class RandomEventSource implements EventSource {
 	private int mEventCount;  //total number of events generated so far
 	private AppInfoWrapper mAppInfo;
 	private Env env;
-	private List<Event> eventTraces;
 	private EventQueue mQ;
 	private Random mRandom;
 
@@ -118,7 +117,6 @@ public class RandomEventSource implements EventSource {
 		mEventCount = 0;
 		this.mAppInfo = appInfo;
 		this.env = env;
-		eventTraces = new ArrayList<>();
 		mRandom = new SecureRandom();
 		mRandom.setSeed((seed == 0) ? -1 : seed);
 		mQ = new EventQueue();
@@ -199,13 +197,6 @@ public class RandomEventSource implements EventSource {
 	}
 
 	/**
-	 * Obtain the event traces during testing
-	 */
-	public List<Event> getEventTraces() {
-		return eventTraces;
-	}
-
-	/**
 	 * Testing cycle
 	 */
 	public void runTestingCycles() {
@@ -219,13 +210,10 @@ public class RandomEventSource implements EventSource {
 				event.injectEvent(mAppInfo, env);
 				if(! (event instanceof InspectEvent)) {
 					// Keep the event traces
-					eventTraces.add(event);
+					env.appendEvent(event);
 					if(! (event instanceof ThrottleEvent)) {
 						// ThrottleEvent and InspectEvent are not counted.
 						eventCounter++;
-						// The event has been successfully injected. 
-						// Then this event becomes previous event.
-						env.setPrevEvent(event);
 					} 
 				}
 			} catch (Exception e) {
