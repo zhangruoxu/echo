@@ -172,6 +172,9 @@ public class TestRandomEventSource {
 			Deque<Event> eventTraces = env.getEventTrace();
 			System.out.println("## Event traces: " + eventTraces.size());
 			System.out.println("## ThrottleEvent: " + eventTraces.stream().filter(ThrottleEvent.class::isInstance).count());
+			Deque<String> activityTrace = env.getActivityTrace();
+			System.out.println("Activity trace: ");
+			activityTrace.forEach(System.out::println);
 		});
 		timer.stop();
 		System.out.println("# Time: " + timer.getDurationInSecond() + "s.");
@@ -244,6 +247,54 @@ public class TestRandomEventSource {
 			new KeyEvent(AndroidKeyCode.KEYCODE_BUTTON_B).injectEvent(info, env);
 			new ThrottleEvent().injectEvent(info, env);
 			new CheckActivityEvent().injectEvent(info, env);
+		});
+	}
+	
+	/**
+	 * Test activity trace
+	 */
+	@Test
+	public void test13() {
+		initTesting("0", (info, env) -> {
+			Throttle.v().init(500);
+			TestingOptions.v().setNumberOfEvents(100);
+			RandomEventSource eventSource = new RandomEventSource(info, env, 10000);
+			eventSource.runTestingCycles();
+			Deque<Event> eventTrace = env.getEventTrace();
+			System.out.println("## Event trace: " + eventTrace.size());
+			System.out.println("## ThrottleEvent: " + eventTrace.stream().filter(ThrottleEvent.class::isInstance).count());
+			Deque<String> activityTrace = env.getActivityTrace();
+			System.out.println("Activity trace: ");
+			activityTrace.forEach(System.out::println);
+		});
+	}
+	
+	/**
+	 * Testing relaunching the app in CheckActivityEvent 
+	 * if the app exits during testing.
+	 */
+	@Test
+	public void test14() {
+		initTesting("0", (info, env) -> {
+			Throttle.v().init(500);
+			new CheckActivityEvent().injectEvent(info, env);
+			new ThrottleEvent().injectEvent(info, env);
+			new TapEvent().addFrom(0, new PointF(522, 838)).injectEvent(info, env);
+			new ThrottleEvent().injectEvent(info, env);
+			new CheckActivityEvent().injectEvent(info, env);
+			new KeyEvent(AndroidKeyCode.KEYCODE_BACK).injectEvent(info, env);
+			new ThrottleEvent().injectEvent(info, env);
+			new CheckActivityEvent().injectEvent(info, env);
+			new KeyEvent(AndroidKeyCode.KEYCODE_BACK).injectEvent(info, env);
+			new ThrottleEvent().injectEvent(info, env);
+			new CheckActivityEvent().injectEvent(info, env);
+			
+			Deque<Event> eventTrace = env.getEventTrace();
+			System.out.println("## Event trace: " + eventTrace.size());
+			System.out.println("## ThrottleEvent: " + eventTrace.stream().filter(ThrottleEvent.class::isInstance).count());
+			Deque<String> activityTrace = env.getActivityTrace();
+			System.out.println("Activity trace: ");
+			activityTrace.forEach(System.out::println);
 		});
 	}
 	
