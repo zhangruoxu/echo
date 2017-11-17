@@ -29,6 +29,10 @@ public class EventQueue extends LinkedList<Event> {
 	
 	public EventQueue() {
 		super();
+		// Initialize the event queue with the first two events
+		// that inspects the current activities.
+		super.addLast(new CheckActivityEvent());
+		super.addLast(new ThrottleEvent());
 		throttleEvent = new ThrottleEvent();
 		inspectEvents = new ArrayList<>();
 		/**

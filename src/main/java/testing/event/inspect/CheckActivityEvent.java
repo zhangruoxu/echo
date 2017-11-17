@@ -21,14 +21,26 @@ public class CheckActivityEvent extends InspectEvent {
 	public void injectEvent(AppInfoWrapper info, Env env) {
 		String curAct = expandClassName(info, env.driver().currentActivity());
 		Log.println("# Current activity: " + curAct);
-		if(! info.contains(curAct)) {
+		// If current is in current app, then save it to the current activity trace
+		if(info.contains(curAct)) {
+			env.appendActivity(curAct);
+		} else {
 			Log.println("# Go to activity " + curAct);
 			// Try to return to the app being tested
 			new KeyEvent(AndroidKeyCode.BACK).injectEvent(info, env);
 			new ThrottleEvent().injectEvent(info, env);
 			if(! info.contains(expandClassName(info, env.driver().currentActivity()))) {
+				// If previous activity is the same as the first activity,
+				// It is possible that the app exits.
+				// Then we relaunch the app.
+				String firstAct = env.getFirstActivity();
+				String lastAct = env.getLastActivity();
+				if(firstAct != null && firstAct.equals(lastAct))
+					env.driver().launchApp();
+				else {
 				Log.println("# Warning: testing has been distracted from the app " + info.getPkgName());
 				System.exit(0);
+				}
 			}
 		}
 	}

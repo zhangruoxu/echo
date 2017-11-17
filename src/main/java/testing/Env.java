@@ -46,7 +46,7 @@ public class Env {
 	 * get the event trace.
 	 */
 	public Event getLastEvent() {
-		return eventTrace.getLast();
+		return eventTrace.peekFirst();
 	}
 	
 	public void appendEvent(Event event) {
@@ -62,22 +62,22 @@ public class Env {
 	 * append current activity to the activity trace;
 	 * get the activity transition trace.
 	 */
+	public String getFirstActivity() {
+		return activityTrance.peekFirst();
+	}
+	
 	public String getLastActivity() {
-		return activityTrance.getLast();
+		return activityTrance.peekLast();
 	}
 	
 	public void appendActivity(String activity) {
-		if(! activityTrance.getLast().equals(activity))
+		String lastAct = activityTrance.peekLast();
+		if(lastAct == null || ! activity.equals(lastAct))
 			activityTrance.addLast(activity);
 	}
 	
 	public Deque<String> getActivityTrace() {
 		return activityTrance;
-	}
-
-	public void appendActivityTrace(String activityName) {
-		if(! activityTrance.getLast().equals(activityName))
-			activityTrance.add(activityName);
 	}
 	
 	// Testing driver
