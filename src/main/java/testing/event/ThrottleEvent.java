@@ -18,6 +18,11 @@ public class ThrottleEvent extends Event {
 		this.mthrottle = Throttle.v().getThrottleDuration();
 	}
 
+	public ThrottleEvent(long millis) {
+		super(Event.EVENT_TYPE_THROTTLE);
+		this.mthrottle = millis;
+	}
+	
 	@Override
 	public void injectEvent(AppInfoWrapper info, Env env) {
 		try {

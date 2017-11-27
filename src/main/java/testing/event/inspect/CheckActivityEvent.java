@@ -1,9 +1,12 @@
 package testing.event.inspect;
 
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidKeyCode;
 import testing.AppInfoWrapper;
 import testing.Env;
 import testing.event.KeyEvent;
+import testing.event.Throttle;
 import testing.event.ThrottleEvent;
 import util.Log;
 
@@ -19,46 +22,45 @@ public class CheckActivityEvent extends InspectEvent {
 
 	@Override
 	public void injectEvent(AppInfoWrapper info, Env env) {
-		String curAct = expandClassName(info, env.driver().currentActivity());
+		String curAct = getCurrentActivity(env);
 		Log.println("# Current activity: " + curAct);
 		// If current is in current app, then save it to the current activity trace
 		if(info.contains(curAct)) {
 			env.appendActivity(curAct);
 		} else {
-			Log.println("# Go to activity " + curAct);
+			Log.println("# Try to return from " + curAct);
 			// Try to return to the app being tested
-			new KeyEvent(AndroidKeyCode.BACK).injectEvent(info, env);
-			new ThrottleEvent().injectEvent(info, env);
-			if(! info.contains(expandClassName(info, env.driver().currentActivity()))) {
-				// If previous activity is the same as the first activity,
-				// It is possible that the app exits.
-				// Then we relaunch the app.
+			for(int i = 0; i < 10; i++) {
+				if(info.contains(getCurrentActivity(env)))
+					break;
+				new KeyEvent(AndroidKeyCode.BACK).injectEvent(info, env);
+				new ThrottleEvent(Throttle.v().getThrottleDuration() * 2).injectEvent(info, env);
+			}
+			// If testing does not return to the app, we relaunch the app.
+			if(! info.contains(getCurrentActivity(env))) {
 				String firstAct = env.getFirstActivity();
 				String lastAct = env.getLastActivity();
 				if(firstAct != null && firstAct.equals(lastAct))
-					env.driver().launchApp();
+					// env.driver().launchApp();
+					System.out.println("#### App stopped.");
 				else {
-				Log.println("# Warning: testing has been distracted from the app " + info.getPkgName());
-				System.exit(0);
+					Log.println("# Warning: testing has been distracted from the app " + info.getPkgName());
+					System.exit(0);
 				}
 			}
 		}
 	}
 
 	/**
-	 * The activity name obtained during testing may be incomplete (with package eliminated),
-	 * this method expands the class name. 
+	 * return the class name of current activity
 	 */
-	private String expandClassName(AppInfoWrapper info, String className) {
-		String packageName = info.getPkgName();
-		if (className.startsWith("."))
-			return packageName + className;
-		else if (!className.contains("."))
-			return packageName + "." + className;
-		else
-			return className;
+	private String getCurrentActivity(Env env) {
+		AndroidDriver<AndroidElement> driver = env.driver();
+		assert driver.getCurrentPackage() != null;
+		assert driver.currentActivity() != null;
+		return driver.getCurrentPackage() + driver.currentActivity();
 	}
-	
+
 	@Override
 	public String toString() {
 		return "[CheckActivityEvent].";
