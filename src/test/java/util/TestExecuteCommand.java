@@ -4,6 +4,8 @@ import java.io.File;
 
 import org.junit.Test;
 
+import testing.Logcat;
+
 public class TestExecuteCommand {
 	
 	// Test global command
@@ -21,5 +23,12 @@ public class TestExecuteCommand {
 		System.out.println(cmdDir);
 		String ret = ExecuteCommand.exec(cmdDir, "adb.exe", "devices");
 		System.out.println(ret);
+	}
+	
+	// Test Logcat command
+	@Test
+	public void test3() {
+		Config.init(null);
+		Logcat.clean();
 	}
 }
