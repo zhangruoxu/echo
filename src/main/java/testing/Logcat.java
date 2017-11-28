@@ -22,8 +22,7 @@ public class Logcat {
 	
 	// Clean logcat output
 	public static void clean() {
-		String cmdDir = String.join(File.separator, Config.v().get(Config.SDK), "platform-tools");
-		ExecuteCommand.exec(cmdDir, Config.v().get(Config.ADB), "logcat", "-c");
+		ExecuteCommand.exec(cleanCmdDir, Config.v().get(Config.ADB), "logcat", "-c");
 	}
 	
 	// obtain logcat entries
@@ -41,4 +40,5 @@ public class Logcat {
 	private Logcat() {}
 	private static AppInfoWrapper info;
 	private static Env env;
+	private static String cleanCmdDir = String.join(File.separator, Config.v().get(Config.SDK), "platform-tools");
 }

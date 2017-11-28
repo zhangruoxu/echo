@@ -6,6 +6,7 @@ import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidKeyCode;
 import testing.AppInfoWrapper;
 import testing.Env;
+import testing.Logcat;
 import testing.event.KeyEvent;
 import testing.event.Throttle;
 import testing.event.ThrottleEvent;
@@ -28,7 +29,17 @@ public class CheckActivityEvent extends InspectEvent {
 		// If current is in current app, then save it to the current activity trace
 		if(info.contains(curAct)) {
 			env.appendActivity(env.driver().currentActivity());
+			// Clean the logcat output
+			Logcat.clean();
 		} else {
+			// Obtain logcat to see whether there are exceptions
+			String logcat = Logcat.getLogAsString();
+			if(logcat.toLowerCase().contains("exception")) {
+				// Error occurs
+				Log.println("App error.");
+				Log.println(logcat);
+				System.exit(0);
+			}
 			// Try to return to the app being tested
 			for(int i = 0; i < 10; i++) {
 				if(info.contains(getCurrentActivity(env)))
