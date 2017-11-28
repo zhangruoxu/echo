@@ -19,6 +19,7 @@ public class Config {
 	public static final String NEWPROJECT = "2018-new-project";
 	public static final String OUTPUT = "output";
 	public static final String SDK = "SDK";
+	public static final String ADB = "ADB";
 
 	// Default names of configuration file
 	public static final String CONFIG = "config.properties";

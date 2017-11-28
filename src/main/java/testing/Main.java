@@ -42,7 +42,10 @@ public class Main {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		return new Env(driver);
+		Env env = new Env(driver);
+		// init Logcat
+		Logcat.init(appInfo, env);
+		return env;
 	}
 	
 	/**
@@ -61,7 +64,10 @@ public class Main {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		return new Env(driver);
+		Env env = new Env(driver);
+		// init Logcat
+		Logcat.init(null, env);
+		return env;
 	}
 	
 	// simple testing
