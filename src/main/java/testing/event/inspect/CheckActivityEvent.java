@@ -1,5 +1,6 @@
 package testing.event.inspect;
 
+import io.appium.java_client.android.Activity;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidKeyCode;
@@ -26,9 +27,8 @@ public class CheckActivityEvent extends InspectEvent {
 		Log.println("# Current activity: " + curAct);
 		// If current is in current app, then save it to the current activity trace
 		if(info.contains(curAct)) {
-			env.appendActivity(curAct);
+			env.appendActivity(env.driver().currentActivity());
 		} else {
-			Log.println("# Try to return from " + curAct);
 			// Try to return to the app being tested
 			for(int i = 0; i < 10; i++) {
 				if(info.contains(getCurrentActivity(env)))
@@ -40,9 +40,13 @@ public class CheckActivityEvent extends InspectEvent {
 			if(! info.contains(getCurrentActivity(env))) {
 				String firstAct = env.getFirstActivity();
 				String lastAct = env.getLastActivity();
-				if(firstAct != null && firstAct.equals(lastAct))
-					// env.driver().launchApp();
-					System.out.println("#### App stopped.");
+				if(firstAct != null && firstAct.equals(lastAct)) {
+					// Start the first activity during testing.
+					// Using the launching app API all the app data are lost.
+					// The app is relaunched via starting the first activity in the testing trace.
+					Activity mainActivity = new Activity(info.getPkgName(), firstAct);
+					env.driver().startActivity(mainActivity);
+				}
 				else {
 					Log.println("# Warning: testing has been distracted from the app " + info.getPkgName());
 					System.exit(0);
