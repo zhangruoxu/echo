@@ -85,6 +85,12 @@ public class Main {
 	public static void testingApp(AppInfoWrapper appInfo, BiConsumer<AppInfoWrapper, Env> testing) {
 		Env env = setUp(appInfo);
 		env.driver().resetApp();
+		// Wait for app loading
+		try {
+			Thread.sleep(5000);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 		testing.accept(appInfo, env);
 	}
 	

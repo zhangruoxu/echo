@@ -37,6 +37,13 @@ public class Logcat {
 		return String.join("\n", getLog().stream().map(LogEntry::toString).collect(Collectors.toList()));
 	}
 	
+	// whether there are exceptions raised
+	// TODO
+	// Better way to detect exception
+	public static boolean isException() {
+		return getLogAsString().toLowerCase().contains("exception");
+	}
+	
 	private Logcat() {}
 	private static AppInfoWrapper info;
 	private static Env env;

@@ -92,6 +92,7 @@ public class RandomEventSource implements EventSource {
 	private Env env;
 	private EventQueue mQ;
 	private Random mRandom;
+	private static boolean errorOccured = false;
 
 	public RandomEventSource(AppInfoWrapper appInfo, Env env, long seed) {
 		// default values for random distributions
@@ -194,6 +195,10 @@ public class RandomEventSource implements EventSource {
 		mFactors[index] = v;
 	}
 
+	public static void notifyError() {
+		errorOccured = true;
+	}
+	
 	/**
 	 * Testing cycle
 	 */
@@ -201,7 +206,8 @@ public class RandomEventSource implements EventSource {
 		final int numberOfEvents = TestingOptions.v().getNumberOfEvents();
 		int eventCounter = 0;
 		adjustEventFactors();
-		while(eventCounter < numberOfEvents) {
+		while(eventCounter < numberOfEvents 
+				&& ! errorOccured) {
 			Event event = getNextEvent();
 			Log.println("# " +eventCounter + " " + event);
 			try {

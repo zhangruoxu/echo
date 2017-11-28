@@ -10,10 +10,19 @@ import testing.Logcat;
 import testing.event.KeyEvent;
 import testing.event.Throttle;
 import testing.event.ThrottleEvent;
+import testing.random.RandomEventSource;
 import util.Log;
 
 /**
  * This event is used to inspect the current activity
+ * 
+ * This event can detects whether the testing has been distracted from the app being tested.
+ * If that happens, we check whether it is caused by the exceptions and crashes via inspecting logcat entries. 
+ * If true, testing terminates. If not, we try to return to the app being tested. 
+ * We firstly try to press back button to return. If the app does not return, then the app is restarted. 
+ * 
+ * The app is restarted via directly launching the first activity (activity traces are kept during testing), 
+ * which does not clean the previous data generated during testing. 
  * 
  * @author yifei
  */
@@ -32,35 +41,38 @@ public class CheckActivityEvent extends InspectEvent {
 			// Clean the logcat output
 			Logcat.clean();
 		} else {
+			// Testing has quit from the app being tested
 			// Obtain logcat to see whether there are exceptions
-			String logcat = Logcat.getLogAsString();
-			if(logcat.toLowerCase().contains("exception")) {
+			if(Logcat.isException()) {
 				// Error occurs
+				// Pint the logcat info then stop testing
 				Log.println("App error.");
-				Log.println(logcat);
-				System.exit(0);
-			}
-			// Try to return to the app being tested
-			for(int i = 0; i < 10; i++) {
-				if(info.contains(getCurrentActivity(env)))
-					break;
-				new KeyEvent(AndroidKeyCode.BACK).injectEvent(info, env);
-				new ThrottleEvent(Throttle.v().getThrottleDuration() * 2).injectEvent(info, env);
-			}
-			// If testing does not return to the app, we relaunch the app.
-			if(! info.contains(getCurrentActivity(env))) {
-				String firstAct = env.getFirstActivity();
-				String lastAct = env.getLastActivity();
-				if(firstAct != null && firstAct.equals(lastAct)) {
-					// Start the first activity during testing.
-					// Using the launching app API all the app data are lost.
-					// The app is relaunched via starting the first activity in the testing trace.
-					Activity mainActivity = new Activity(info.getPkgName(), firstAct);
-					env.driver().startActivity(mainActivity);
+				Log.println(Logcat.getLogAsString());
+				RandomEventSource.notifyError();
+			} else {
+				// No error happens. 
+				// Try to return to the app being tested
+				for(int i = 0; i < 5; i++) {
+					if(info.contains(getCurrentActivity(env)))
+						break;
+					new KeyEvent(AndroidKeyCode.BACK).injectEvent(info, env);
+					new ThrottleEvent(Throttle.v().getThrottleDuration() * 2).injectEvent(info, env);
 				}
-				else {
-					Log.println("# Warning: testing has been distracted from the app " + info.getPkgName());
-					System.exit(0);
+				// If testing does not return to the app, we relaunch the app.
+				if(! info.contains(getCurrentActivity(env))) {
+					String firstAct = env.getFirstActivity();
+					String lastAct = env.getLastActivity();
+					if(firstAct != null && firstAct.equals(lastAct)) {
+						// Start the first activity during testing.
+						// Using the launching app API all the app data are lost.
+						// The app is relaunched via starting the first activity in the testing trace.
+						Activity mainActivity = new Activity(info.getPkgName(), firstAct);
+						env.driver().startActivity(mainActivity);
+					}
+					else {
+						Log.println("# Warning: testing has been distracted from the app " + info.getPkgName());
+						System.exit(0);
+					}
 				}
 			}
 		}
