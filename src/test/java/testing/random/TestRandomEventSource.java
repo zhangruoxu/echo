@@ -14,6 +14,7 @@ import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.android.AndroidKeyCode;
 import testing.AppInfoWrapper;
 import testing.Env;
+import testing.Logcat;
 import testing.Main;
 import testing.TestingOptions;
 import testing.event.DragEvent;
@@ -195,10 +196,11 @@ public class TestRandomEventSource {
 	 */
 	@Test
 	public void test10() {
-		for(int i = 1; i <= 1; i++) {
+		for(int i = 3; i <= 3; i++) {
 			Timer timer = new Timer();
 			timer.start();
 			initTesting(Integer.toString(i), (info, env) -> {
+				Throttle.v().init(500);
 				TestingOptions.v().setNumberOfEvents(5000);
 				String output = Config.v().get(Config.OUTPUT);
 				File outputDir = new File(output);
@@ -207,7 +209,7 @@ public class TestRandomEventSource {
 				String fileName = String.join(File.separator, output, info.getAppFileName() + ".txt");
 				try(PrintStream printStream = new PrintStream(fileName)) {
 					Log.init(printStream);
-					RandomEventSource eventSource = new RandomEventSource(info, env, 8888);
+					RandomEventSource eventSource = new RandomEventSource(info, env, 0);
 					eventSource.runTestingCycles();
 					timer.stop();
 					Log.println("# Time: " + timer.getDurationInSecond() + " s.");
@@ -235,7 +237,7 @@ public class TestRandomEventSource {
 			new CheckActivityEvent().injectEvent(info, env);
 		});
 	}
-	
+
 	/**
 	 * Test keycode_escape
 	 */
@@ -249,7 +251,7 @@ public class TestRandomEventSource {
 			new CheckActivityEvent().injectEvent(info, env);
 		});
 	}
-	
+
 	/**
 	 * Test activity trace
 	 */
@@ -268,7 +270,7 @@ public class TestRandomEventSource {
 			activityTrace.forEach(System.out::println);
 		});
 	}
-	
+
 	/**
 	 * Testing relaunching the app in CheckActivityEvent 
 	 * if the app exits during testing.
@@ -288,7 +290,7 @@ public class TestRandomEventSource {
 			new KeyEvent(AndroidKeyCode.KEYCODE_BACK).injectEvent(info, env);
 			new ThrottleEvent().injectEvent(info, env);
 			new CheckActivityEvent().injectEvent(info, env);
-			
+
 			Deque<Event> eventTrace = env.getEventTrace();
 			System.out.println("## Event trace: " + eventTrace.size());
 			System.out.println("## ThrottleEvent: " + eventTrace.stream().filter(ThrottleEvent.class::isInstance).count());
@@ -297,7 +299,52 @@ public class TestRandomEventSource {
 			activityTrace.forEach(System.out::println);
 		});
 	}
-	
+
+	/**
+	 * Test the app 6, which crashes
+	 */
+	@Test
+	public void test15() {
+		initTesting("6", (info, env) -> {
+			Throttle.v().init(500);
+			new TapEvent().addFrom(0, new PointF(565, 571)).injectEvent(info, env);
+			new ThrottleEvent().injectEvent(info, env);
+			new TapEvent().addFrom(0, new PointF(565, 310)).injectEvent(info, env);
+			new ThrottleEvent().injectEvent(info, env);
+		});
+	}
+
+	/**
+	 * Test Logcat
+	 */
+	@Test
+	public void test16() {
+		Timer timer = new Timer();
+		timer.start();
+		initTesting(Integer.toString(10), (info, env) -> {
+			Logcat.clean();
+			Throttle.v().init(500);
+			TestingOptions.v().setNumberOfEvents(10);
+			String output = Config.v().get(Config.OUTPUT);
+			File outputDir = new File(output);
+			if(! outputDir.exists())
+				outputDir.mkdir();
+			String fileName = String.join(File.separator, output, info.getAppFileName() + ".txt");
+			try(PrintStream printStream = new PrintStream(fileName)) {
+				Log.init(printStream);
+				RandomEventSource eventSource = new RandomEventSource(info, env, 0);
+				eventSource.runTestingCycles();
+				timer.stop();
+				Log.println("# Time: " + timer.getDurationInSecond() + " s.");
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.exit(0);
+			}
+		});
+		System.out.println();
+		System.out.println(Logcat.getLogAsString());
+	}	
+
 	/**
 	 * Initialize Appium testing
 	 */
