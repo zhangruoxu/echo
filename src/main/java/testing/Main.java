@@ -1,5 +1,7 @@
 package testing;
 
+import java.io.File;
+import java.io.PrintStream;
 import java.net.URL;
 import java.util.function.BiConsumer;
 
@@ -10,7 +12,11 @@ import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.remote.MobilePlatform;
+import testing.event.Throttle;
+import testing.random.RandomEventSource;
 import util.Config;
+import util.Log;
+import util.Timer;
 
 /**
  * @author yifei
@@ -23,7 +29,30 @@ public class Main {
 	public static void main(String[] args) {
 		Config.init(null);
 		TestingOptions.v().processOptions(args);
-		TestingOptions.v().getAppPaths().stream().map(AppInfoWrapper::new).forEach(Main::testingApp);
+		System.out.println(TestingOptions.v().toString());
+		// Test 1 app for each time
+		AppInfoWrapper appInfo = new AppInfoWrapper(TestingOptions.v().getAppPaths().get(0));
+		Timer timer = new Timer();
+		timer.start();
+		testingApp(appInfo, (info, env) -> {
+			Logcat.clean();
+			String output = Config.v().get(Config.OUTPUT);
+			File outputDir = new File(output);
+			if(! outputDir.exists())
+				outputDir.mkdir();
+			String fileName = String.join(File.separator, output, info.getAppFileName() + ".txt");
+			try(PrintStream printStream = new PrintStream(fileName)) {
+				Log.init(printStream);
+				// Run random testing
+				RandomEventSource eventSource = new RandomEventSource(info, env, TestingOptions.v().getSeed());
+				eventSource.runTestingCycles();
+				timer.stop();
+				Log.println("# Time: " + timer.getDurationInSecond() + " s.");
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.exit(0);
+			}
+		});
 	}
 
 	/**
@@ -93,7 +122,7 @@ public class Main {
 		}
 		testing.accept(appInfo, env);
 	}
-	
+
 	/**
 	 * Launch the app with package name and launchable activity name
 	 */
