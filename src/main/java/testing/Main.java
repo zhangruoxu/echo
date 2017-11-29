@@ -89,7 +89,7 @@ public class Main {
 		try {
 			Thread.sleep(5000);
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 		testing.accept(appInfo, env);
 	}

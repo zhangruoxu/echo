@@ -38,16 +38,17 @@ public class CheckActivityEvent extends InspectEvent {
 		// If current is in current app, then save it to the current activity trace
 		if(info.contains(curAct)) {
 			env.appendActivity(env.driver().currentActivity());
-			// Clean the logcat output
-			Logcat.clean();
+			// Event has been successfully injected, obtain log so that it won't appear at next time
+			Logcat.getLog();
 		} else {
 			// Testing has quit from the app being tested
 			// Obtain logcat to see whether there are exceptions
-			if(Logcat.isException()) {
+			String log = Logcat.getLogAsString();
+			if(Logcat.isException(log)) {
 				// Error occurs
 				// Pint the logcat info then stop testing
 				Log.println("App error.");
-				Log.println(Logcat.getLogAsString());
+				Log.println(log);
 				RandomEventSource.notifyError();
 			} else {
 				// No error happens. 

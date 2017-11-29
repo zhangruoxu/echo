@@ -33,15 +33,14 @@ public class Logcat {
 	
 	// obtain logcat entries as a string
 	public static String getLogAsString() {
-		assert env != null;
 		return String.join("\n", getLog().stream().map(LogEntry::toString).collect(Collectors.toList()));
 	}
 	
 	// whether there are exceptions raised
 	// TODO
 	// Better way to detect exception
-	public static boolean isException() {
-		return getLogAsString().toLowerCase().contains("exception");
+	public static boolean isException(String log) {
+		return log.toLowerCase().contains("exception");
 	}
 	
 	private Logcat() {}
