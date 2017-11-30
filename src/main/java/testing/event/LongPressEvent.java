@@ -36,7 +36,9 @@ public class LongPressEvent extends MotionEvent {
 		int mX = Math.round(p.x);
 		int mY = Math.round(p.y);
 		StringBuilder builder = new StringBuilder();
-		builder.append("[LongPressEvent] Long press (").append(mX).append(", ").append(mY).append(").s");
+		builder.append("# ");
+		builder.append(getID());
+		builder.append(" [LongPressEvent] Long press (").append(mX).append(", ").append(mY).append(").s");
 		return builder.toString();
 	}
 }

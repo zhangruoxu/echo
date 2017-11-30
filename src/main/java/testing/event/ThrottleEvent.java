@@ -36,7 +36,9 @@ public class ThrottleEvent extends Event {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("[ThrottleEvent] A fixed time delay: ").append(mthrottle);
+		builder.append("# ");
+		builder.append(getID());
+		builder.append(" [ThrottleEvent] A fixed time delay: ").append(mthrottle);
 		return builder.toString();
 	}
 	private long mthrottle;

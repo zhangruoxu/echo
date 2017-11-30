@@ -12,6 +12,8 @@ import testing.Env;
  */
 public abstract class Event {
 	protected int eventType;
+	// ID of the event.
+	protected int ID;
     public static final int EVENT_TYPE_KEY = 0;
     public static final int EVENT_TYPE_TOUCH = 1;
     public static final int EVENT_TYPE_TRACKBALL = 2;
@@ -39,6 +41,14 @@ public abstract class Event {
         return eventType;
     }
 	
+    public int getID() {
+    	return ID;
+    }
+    
+    public void setID(int ID) {
+    	this.ID = ID;
+    }
+    
     // Perform the corresponding event 
 	public abstract void injectEvent(AppInfoWrapper info, Env env);
 	

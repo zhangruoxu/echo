@@ -35,7 +35,9 @@ public class LongPressKeyEvent extends Event {
 	@Override
 	public String toString() {
 		StringBuilder builder  = new StringBuilder();
-		builder.append("[LongPressKeyEvent] Long press key: ").append(AndroidKeyCodeWrapper.v().getKeyCodeName(mKeyCode));
+		builder.append("# ");
+		builder.append(getID());
+		builder.append(" [LongPressKeyEvent] Long press key: ").append(AndroidKeyCodeWrapper.v().getKeyCodeName(mKeyCode));
 		return builder.toString();
 	}
 	

@@ -43,7 +43,9 @@ public class DragEvent extends MotionEvent {
 		int toX = Math.round(to.x);
 		int toY = Math.round(to.y);
 		StringBuilder builder = new StringBuilder();
-		builder.append("[DragEvent] Drag from (").append(fromX).append(", ").append(fromY).append(") to (")
+		builder.append("# ");
+		builder.append(getID());
+		builder.append(" [DragEvent] Drag from (").append(fromX).append(", ").append(fromY).append(") to (")
 		.append(toX).append(", ").append(toY).append(").");
 		return builder.toString();
 	}

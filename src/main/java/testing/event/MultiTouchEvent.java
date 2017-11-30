@@ -38,7 +38,9 @@ public class MultiTouchEvent extends MotionEvent {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Multitouch from [");
+		builder.append("# ");
+		builder.append(getID());
+		builder.append(" Multitouch from [");
 		for(int i = 0; i < mFromPointers.size(); i++) {
 			PointF p = mFromPointers.get(i);
 			builder.append("(").append(p.x).append(", ").append(p.y).append("), ");
