@@ -277,7 +277,7 @@ public class RandomEventSource implements EventSource {
 			x = (float) Math.max(Math.min(x + random.nextFloat() * vector.x, dimension.getWidth() - 1), 0);
 			y = (float) Math.max(Math.min(y + random.nextFloat() * vector.y, dimension.getHeight() - 1), 0);
 		}
-		Log.println("# move to " + x + ", " + y);
+//		Log.println("# move to " + x + ", " + y);
 		return new PointF(x, y);
 	}
 

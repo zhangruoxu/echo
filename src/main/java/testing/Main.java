@@ -12,7 +12,6 @@ import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.remote.MobilePlatform;
-import testing.event.Throttle;
 import testing.random.RandomEventSource;
 import util.Config;
 import util.Log;
