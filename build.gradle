@@ -39,5 +39,10 @@ dependencies {
     
     // JGgraphT dependencies
     compile fileTree(dir: 'libs/jgrapht', include: ['*.jar'])
+    
+    // https://mvnrepository.com/artifact/org.xmlunit/xmlunit-core
+    // 
+	testCompile group: 'org.xmlunit', name: 'xmlunit-core', version: '2.5.1'
+	testCompile group: 'org.xmlunit', name: 'xmlunit-matchers', version: '2.5.1'
 }
 
