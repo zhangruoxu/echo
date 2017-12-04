@@ -22,6 +22,7 @@ public class Env {
 		this.height = dimension.getHeight();
 		eventTrace = new LinkedList<>();
 		activityTrance = new LinkedList<>();
+		layoutTrace = new LinkedList<>();
 	}
 	
 	public AndroidDriver<AndroidElement> driver() {
@@ -80,6 +81,22 @@ public class Env {
 		return activityTrance;
 	}
 	
+	/**
+	 * Obtain last layout;
+	 * append current layout to the layout trace;
+	 * obtain the layout trace.
+	 */
+	public String getLastLayout() {
+		return layoutTrace.peekLast();
+	}
+	
+	public void appendLayout(String layout) {
+		layoutTrace.addLast(layout);
+	}
+	
+	public Deque<String> getLayoutTrace() {
+		return layoutTrace;
+	}
 	// Testing driver
 	private AndroidDriver<AndroidElement> driver;
 	// The dimension of the screen
@@ -90,4 +107,6 @@ public class Env {
 	private Deque<Event> eventTrace;
 	// The activity transitions during testing
 	private Deque<String> activityTrance;
+	// Layout trace
+	private Deque<String> layoutTrace;
 }
