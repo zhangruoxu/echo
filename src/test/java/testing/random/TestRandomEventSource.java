@@ -346,6 +346,19 @@ public class TestRandomEventSource {
 	}	
 
 	/**
+	 * Test driver.getPageSource().
+	 */
+	@Test
+	public void test17() {
+		initTesting(Integer.toString(10), (info, env) -> {
+			String page = env.driver().getPageSource();
+			System.out.println(page);
+			page = env.driver().getPageSource();
+			System.out.println(page);
+		});
+	}
+	
+	/**
 	 * Initialize Appium testing
 	 */
 	private void initTesting(String id, BiConsumer<AppInfoWrapper, Env> testing) {
