@@ -17,7 +17,7 @@ public class LayoutComparison {
 	static {
 		diffEngine = new DOMDifferenceEngine();
 		comparisonListener = (comparison, result) -> {
-			System.out.println("Difference found: " + comparison);
+			Log.println("Difference found: " + comparison);
 		};
 		diffEngine.addDifferenceListener(comparisonListener);
 	}

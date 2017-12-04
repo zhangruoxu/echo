@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import testing.event.inspect.CheckActivityEvent;
+import testing.event.inspect.CheckLayoutEvent;
 import util.Log;
 
 /**
@@ -23,7 +24,8 @@ public class EventQueue extends LinkedList<Event> {
 	// Make this as an option.
 	static {
 		inspectEventMetaClz = Arrays.asList(
-			CheckActivityEvent.class
+			CheckActivityEvent.class,
+			CheckLayoutEvent.class
 		);
 	}
 	
