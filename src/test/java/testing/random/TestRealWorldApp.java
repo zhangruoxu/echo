@@ -46,7 +46,8 @@ public class TestRealWorldApp {
 	// Bug found
 	@Test
 	public void testApp4() {
-		testApp(4, 10000, 8888);
+		String[] args = new String[] {"-app", "4", "-event",  "5000", "-throttle", "3000", "-seed", "0"};
+		testing.Main.main(args);
 	}
 	
 	// No bugs found
