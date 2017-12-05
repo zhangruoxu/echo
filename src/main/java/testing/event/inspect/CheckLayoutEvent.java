@@ -11,6 +11,8 @@ import util.Log;
  * This event inspects the layout XML file of current page.
  * Then the layout file is inserted into the layout trace.
  * Current layout compares with the previous one.
+ * 
+ * @author yifei
  */
 public class CheckLayoutEvent extends InspectEvent {
 	@Override
