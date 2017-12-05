@@ -4,6 +4,7 @@ import org.xmlunit.diff.Diff;
 
 import testing.AppInfoWrapper;
 import testing.Env;
+import testing.Layout;
 import util.LayoutComparison;
 import util.Log;
 
@@ -17,15 +18,18 @@ import util.Log;
 public class CheckLayoutEvent extends InspectEvent {
 	@Override
 	public void injectEvent(AppInfoWrapper info, Env env) {
-		String curLayout = env.driver().getPageSource();
-		String lastLayout = env.getLastLayout();
-		Diff diff = LayoutComparison.getDiff(curLayout, lastLayout);
+		String curLayoutContent = env.driver().getPageSource();
+		Layout lastLayout = env.getLastLayout();
+		String lastLayoutContent = null;
+		if(lastLayout != null)
+			lastLayoutContent = lastLayout.getLayoutContent();
+		Diff diff = LayoutComparison.getDiff(curLayoutContent, lastLayoutContent);
 		if(diff != null && diff.hasDifferences()) {
 			System.out.println("====== Differences with previous page:");
 			diff.getDifferences().forEach(Log::println);
 			System.out.println("====== End");
 		}
-		env.appendLayout(curLayout);
+		env.appendLayout(new Layout(curLayoutContent));
 	}
 
 	@Override

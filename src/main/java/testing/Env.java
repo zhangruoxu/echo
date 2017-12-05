@@ -86,15 +86,15 @@ public class Env {
 	 * append current layout to the layout trace;
 	 * obtain the layout trace.
 	 */
-	public String getLastLayout() {
+	public Layout getLastLayout() {
 		return layoutTrace.peekLast();
 	}
 	
-	public void appendLayout(String layout) {
+	public void appendLayout(Layout layout) {
 		layoutTrace.addLast(layout);
 	}
 	
-	public Deque<String> getLayoutTrace() {
+	public Deque<Layout> getLayoutTrace() {
 		return layoutTrace;
 	}
 	// Testing driver
@@ -108,5 +108,5 @@ public class Env {
 	// The activity transitions during testing
 	private Deque<String> activityTrance;
 	// Layout trace
-	private Deque<String> layoutTrace;
+	private Deque<Layout> layoutTrace;
 }
