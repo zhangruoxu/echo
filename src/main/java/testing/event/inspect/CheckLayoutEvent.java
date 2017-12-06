@@ -25,7 +25,7 @@ public class CheckLayoutEvent extends InspectEvent {
 		String lastLayoutContent = null;
 		if(lastLayout == null) {
 			// Current layout does not have any predecessor, add the node into TTG
-			handleNewState(info, env, curLayout);
+			handleNewState(env, curLayout);
 		} else {
 			// Last layout has been found. Add a new edge into TTG (if layout updates are found) 
 			// or update the new event into current TTG node (if layout does not update)
@@ -35,10 +35,10 @@ public class CheckLayoutEvent extends InspectEvent {
 				Log.println("====== Differences with previous page:");
 				diff.getDifferences().forEach(Log::println);
 				Log.println("====== End");
-				handleNewState(info, env, lastLayout, curLayout);
+				handleNewState(env, lastLayout, curLayout);
 			} else {
 				Log.println("Same as the previous layout. ");
-				updateExistingState(info, env, lastLayout);
+				updateExistingState(env, lastLayout);
 			}
 		}
 		// Append the layout trace
@@ -51,17 +51,17 @@ public class CheckLayoutEvent extends InspectEvent {
 	}
 
 	// Insert a new node into TTG
-	private void handleNewState(AppInfoWrapper info, Env env, Layout layout) {
+	private void handleNewState(Env env, Layout layout) {
 		TestingTraceGraph.v().addNode(layout);
 	}
 
 	// Insert an edge into TTG
-	private void handleNewState(AppInfoWrapper appInfo, Env env, Layout from, Layout to) {
+	private void handleNewState(Env env, Layout from, Layout to) {
 		TestingTraceGraph.v().addEdge(from, to, env.getLastEvent());
 	}
 
 	// Update an existing node in TTG
-	private void updateExistingState(AppInfoWrapper appInfo, Env env, Layout from) {
+	private void updateExistingState(Env env, Layout from) {
 		TestingTraceGraph.v().updateState(from, env.getLastEvent());
 	}
 }
