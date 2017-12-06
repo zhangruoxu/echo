@@ -38,7 +38,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     
     // JGgraphT dependencies
-    compile fileTree(dir: 'libs/jgrapht', include: ['*.jar'])
+    // compile fileTree(dir: 'libs/jgrapht', include: ['*.jar'])
+    compile group: 'org.jgrapht', name: 'jgrapht-ext', version:'1.1.0'
     
     // https://mvnrepository.com/artifact/org.xmlunit/xmlunit-core
     // 
