@@ -79,16 +79,6 @@ public class CheckActivityEvent extends InspectEvent {
 		}
 	}
 
-	/**
-	 * return the class name of current activity
-	 */
-	private String getCurrentActivity(Env env) {
-		AndroidDriver<AndroidElement> driver = env.driver();
-		assert driver.getCurrentPackage() != null;
-		assert driver.currentActivity() != null;
-		return driver.getCurrentPackage() + driver.currentActivity();
-	}
-
 	@Override
 	public String toString() {
 		return "[CheckActivityEvent].";

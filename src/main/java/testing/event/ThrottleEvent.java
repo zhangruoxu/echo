@@ -34,6 +34,11 @@ public class ThrottleEvent extends Event {
 	}
 	
 	@Override
+	public boolean isThrottlable() {
+		return false;
+	}
+	
+	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("# ");

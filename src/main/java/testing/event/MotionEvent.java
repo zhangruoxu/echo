@@ -100,6 +100,6 @@ public abstract class MotionEvent extends Event {
 
 	@Override
 	public boolean isThrottlable() {
-		return false;
+		return true;
 	}
 }

@@ -25,11 +25,14 @@ public class CheckLayoutEvent extends InspectEvent {
 			lastLayoutContent = lastLayout.getLayoutContent();
 		Diff diff = LayoutComparison.getDiff(curLayoutContent, lastLayoutContent);
 		if(diff != null && diff.hasDifferences()) {
-			System.out.println("====== Differences with previous page:");
+			Log.println("====== Differences with previous page:");
 			diff.getDifferences().forEach(Log::println);
-			System.out.println("====== End");
+			Log.println("====== End");
+		} else {
+			Log.println("Same as the previous layout. ");
 		}
-		env.appendLayout(new Layout(curLayoutContent));
+		// Append the layout trace
+		env.appendLayout(new Layout(getCurrentActivity(env), curLayoutContent));
 	}
 
 	@Override

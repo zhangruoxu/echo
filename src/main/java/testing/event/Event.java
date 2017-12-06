@@ -55,9 +55,7 @@ public abstract class Event {
 	/**
 	 * @return true if it is safe to throttle after this event, and false otherwise.
 	 */
-	public boolean isThrottlable() {
-		return false;
-	}
+	public abstract boolean isThrottlable();
 
 	public abstract String toString();
 

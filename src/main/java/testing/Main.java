@@ -13,6 +13,7 @@ import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.remote.MobilePlatform;
 import testing.random.RandomEventSource;
+import testing.ttg.TestingTraceGraph;
 import util.Config;
 import util.Log;
 import util.Timer;
@@ -27,6 +28,8 @@ public class Main {
 	
 	public static void main(String[] args) {
 		Config.init(null);
+		// discard old TTG
+		TestingTraceGraph.reset();
 		TestingOptions.v().processOptions(args);
 		System.out.println(TestingOptions.v().toString());
 		// Test 1 app for each time
@@ -47,6 +50,8 @@ public class Main {
 				eventSource.runTestingCycles();
 				timer.stop();
 				Log.println("# Time: " + timer.getDurationInSecond() + " s.");
+				Log.println("Layout trace:");
+				env.getLayoutTrace().forEach(System.out::println);
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(0);
