@@ -50,8 +50,6 @@ public class Main {
 				eventSource.runTestingCycles();
 				timer.stop();
 				Log.println("# Time: " + timer.getDurationInSecond() + " s.");
-				Log.println("Layout trace:");
-				env.getLayoutTrace().forEach(System.out::println);
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(0);

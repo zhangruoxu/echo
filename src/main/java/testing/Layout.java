@@ -23,11 +23,22 @@ public class Layout {
 	}
 
 	public boolean equals(Object o) {
-		return layoutContent.equals(o);
+		if(this == o)
+			return true;
+		if(o == null)
+			return false;
+		if(! this.getClass().equals(o.getClass()))
+			return false;
+		Layout layout = (Layout) o;
+		return activity.equals(layout.activity) && layoutContent.equals(layout.layoutContent);
 	}
 	
 	public int hashCode() {
-		return layoutContent.hashCode();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + activity.hashCode();
+		result = prime * result + layoutContent.hashCode();
+		return result;
 	}
 	
 	@Override
@@ -35,8 +46,7 @@ public class Layout {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Activity: ");
 		builder.append(activity);
-		builder.append("\n");
-		builder.append("Layout:\n");
+		builder.append("Layout: ");
 		builder.append(layoutContent);
 		return builder.toString();
 	}

@@ -1,5 +1,6 @@
 package testing.ttg;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import testing.Layout;
@@ -14,13 +15,10 @@ import testing.event.inspect.InspectEvent;
  * @author yifei
  */
 public class TTGNode {
-	public TTGNode(String _activityName, Layout _layout) {
-		activityName = _activityName;
+	public TTGNode(Layout _layout) {
+		assert _layout != null;
 		layout = _layout;
-	}
-
-	public String getActivityName() {
-		return activityName;
+		events = new ArrayList<>();
 	}
 
 	public Layout getLayout() {
@@ -36,6 +34,7 @@ public class TTGNode {
 		events.add(event);
 	}
 	
+	@Override
 	public boolean equals(Object o) {
 		if(this == o)
 			return true;
@@ -44,20 +43,22 @@ public class TTGNode {
 		if(! this.getClass().equals(o.getClass()))
 			return false;
 		TTGNode node = (TTGNode) o;
-		if(activityName.equals(node.activityName) && layout.equals(node.layout))
-			return true;
-		else return false;
+		return layout.equals(node.layout);
 	}
 
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + activityName.hashCode();
 		result = prime * result + layout.hashCode();
 		return result;
 	}
 
-	private String activityName;
+	@Override
+	public String toString() {
+		return layout.toString();
+	}
+	
 	private Layout layout;
 	private List<Event> events;
 }

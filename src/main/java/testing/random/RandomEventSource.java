@@ -198,7 +198,7 @@ public class RandomEventSource implements EventSource {
 	public static void notifyError() {
 		errorOccured = true;
 	}
-	
+
 	/**
 	 * Testing cycle
 	 */
@@ -213,13 +213,11 @@ public class RandomEventSource implements EventSource {
 			try {
 				event.injectEvent(mAppInfo, env);
 				Log.println(event);
-				if(! (event instanceof InspectEvent)) {
+				if(! (event instanceof InspectEvent || event instanceof ThrottleEvent)) {
 					// Keep the event traces
 					env.appendEvent(event);
-					if(! (event instanceof ThrottleEvent)) {
-						// ThrottleEvent and InspectEvent are not counted.
-						eventCounter++;
-					} 
+					// ThrottleEvent and InspectEvent are not counted.
+					eventCounter++;
 				}
 			} catch (Exception e) {
 				Log.println("## Fail to inject the event " + event);
@@ -277,7 +275,7 @@ public class RandomEventSource implements EventSource {
 			x = (float) Math.max(Math.min(x + random.nextFloat() * vector.x, dimension.getWidth() - 1), 0);
 			y = (float) Math.max(Math.min(y + random.nextFloat() * vector.y, dimension.getHeight() - 1), 0);
 		}
-//		Log.println("# move to " + x + ", " + y);
+		// Log.println("# move to " + x + ", " + y);
 		return new PointF(x, y);
 	}
 

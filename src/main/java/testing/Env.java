@@ -47,7 +47,7 @@ public class Env {
 	 * get the event trace.
 	 */
 	public Event getLastEvent() {
-		return eventTrace.peekFirst();
+		return eventTrace.peekLast();
 	}
 	
 	public void appendEvent(Event event) {
