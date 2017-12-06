@@ -46,7 +46,7 @@ public class Layout {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Activity: ");
 		builder.append(activity);
-		builder.append("Layout: ");
+		builder.append(" Layout: ");
 		builder.append(layoutContent);
 		return builder.toString();
 	}

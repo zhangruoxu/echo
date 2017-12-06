@@ -206,7 +206,8 @@ public class RandomEventSource implements EventSource {
 		final int numberOfEvents = TestingOptions.v().getNumberOfEvents();
 		int eventCounter = 0;
 		adjustEventFactors();
-		while(eventCounter < numberOfEvents 
+		// Inject one more event so that the last one can be inspected.
+		while(eventCounter <= numberOfEvents 
 				&& ! errorOccured) {
 			Event event = getNextEvent();
 			event.setID(eventCounter);

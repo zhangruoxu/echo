@@ -56,7 +56,18 @@ public class TTGNode {
 
 	@Override
 	public String toString() {
-		return layout.toString();
+		StringBuilder builder = new StringBuilder();
+		builder.append("Activity: ");
+		builder.append(layout.getActivity());
+//		builder.append("Layout: ");
+//		builder.append(layout.getLayoutContent());
+		builder.append(" Event: [");
+		for(Event e : events) {
+			builder.append(e);
+			builder.append(" ");
+		}
+		builder.append("]");
+		return builder.toString();
 	}
 	
 	private Layout layout;
