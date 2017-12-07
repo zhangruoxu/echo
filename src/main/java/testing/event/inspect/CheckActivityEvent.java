@@ -9,6 +9,7 @@ import testing.event.KeyEvent;
 import testing.event.Throttle;
 import testing.event.ThrottleEvent;
 import testing.random.RandomEventSource;
+import testing.ttg.TestingTraceGraph;
 import util.Log;
 
 /**
@@ -48,6 +49,8 @@ public class CheckActivityEvent extends InspectEvent {
 				Log.println("App error.");
 				Log.println(log);
 				RandomEventSource.notifyError();
+				// Insert an error state into TTG.
+				TestingTraceGraph.v().addErrorState(env.getLastLayout(), env.getLastEvent());
 			} else {
 				// No error happens. 
 				// Try to return to the app being tested

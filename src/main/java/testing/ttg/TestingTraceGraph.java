@@ -6,6 +6,7 @@ import org.jgrapht.graph.DirectedPseudograph;
 
 import testing.Layout;
 import testing.event.Event;
+import testing.ttg.node.ErrorState;
 import testing.ttg.node.NormalState;
 import testing.ttg.node.NormalStateFactory;
 import testing.ttg.node.TTGNode;
@@ -46,8 +47,8 @@ public class TestingTraceGraph {
 	}
 
 	// TTG operations
-	// Add a new node into TTG
-	public void addNewNode(Layout from, boolean isEntry) {
+	// Add a new state into TTG
+	public void addNewNormalState(Layout from, boolean isEntry) {
 		NormalState fromNode = NormalStateFactory.create(from);
 		if(isEntry) fromNode.setAsEntry();
 		assert ! ttg.containsVertex(fromNode);
@@ -73,6 +74,16 @@ public class TestingTraceGraph {
 		from.addEvent(event);
 	}
 
+	// Add an error state into the TTG
+	public void addErrorState(Layout from, Event event) {
+		NormalState fromState = NormalStateFactory.get(from);
+		TTGNode errorState = new ErrorState();
+		assert ! ttg.containsVertex(errorState);
+		ttg.addVertex(errorState);
+		TTGEdge edge = new TTGEdge(fromState, errorState, event);
+		ttg.addEdge(fromState, errorState, edge);
+	}
+	
 	public DirectedPseudograph<TTGNode, TTGEdge> getTTG() {
 		return ttg;
 	}

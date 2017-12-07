@@ -25,7 +25,7 @@ public class CheckLayoutEvent extends InspectEvent {
 		String lastLayoutContent = null;
 		if(lastLayout == null) {
 			// Current layout does not have any predecessor, add the node into TTG
-			handleNewState(env, curLayout);
+			handleNewNormalState(env, curLayout);
 		} else {
 			// Last layout has been found. Add a new edge into TTG (if layout updates are found) 
 			// or update the new event into current TTG node (if layout does not update)
@@ -51,8 +51,8 @@ public class CheckLayoutEvent extends InspectEvent {
 	}
 
 	// Insert a new node into TTG
-	private void handleNewState(Env env, Layout layout) {
-		TestingTraceGraph.v().addNewNode(layout, true);
+	private void handleNewNormalState(Env env, Layout layout) {
+		TestingTraceGraph.v().addNewNormalState(layout, true);
 	}
 
 	// Insert an edge into TTG
