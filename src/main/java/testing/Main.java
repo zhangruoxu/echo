@@ -14,7 +14,7 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.remote.MobilePlatform;
 import testing.random.RandomEventSource;
 import testing.ttg.TestingTraceGraph;
-import testing.ttg.node.TTGNodeFactory;
+import testing.ttg.node.NormalStateFactory;
 import util.Config;
 import util.Log;
 import util.Timer;
@@ -105,7 +105,7 @@ public class Main {
 	private static void reset() {
 		// discard old TTG and its nodes
 		TestingTraceGraph.reset();
-		TTGNodeFactory.reset();
+		NormalStateFactory.reset();
 	}
 	
 	// simple testing

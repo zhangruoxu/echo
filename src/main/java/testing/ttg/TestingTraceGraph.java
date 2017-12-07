@@ -6,8 +6,9 @@ import org.jgrapht.graph.DirectedPseudograph;
 
 import testing.Layout;
 import testing.event.Event;
+import testing.ttg.node.NormalState;
+import testing.ttg.node.NormalStateFactory;
 import testing.ttg.node.TTGNode;
-import testing.ttg.node.TTGNodeFactory;
 
 /**
  * Testing trace graph (TTG) records the information of testing.
@@ -47,7 +48,7 @@ public class TestingTraceGraph {
 	// TTG operations
 	// Add a new node into TTG
 	public void addNewNode(Layout from, boolean isEntry) {
-		TTGNode fromNode = TTGNodeFactory.create(from);
+		NormalState fromNode = NormalStateFactory.create(from);
 		if(isEntry) fromNode.setAsEntry();
 		assert ! ttg.containsVertex(fromNode);
 		ttg.addVertex(fromNode);
@@ -55,8 +56,8 @@ public class TestingTraceGraph {
 	
 	// Insert an edge into TTG
 	public void addEdge(Layout from, Layout to, Event event) {
-		TTGNode fromNode = TTGNodeFactory.getOrCreate(from);
-		TTGNode toNode = TTGNodeFactory.getOrCreate(to);
+		NormalState fromNode = NormalStateFactory.getOrCreate(from);
+		NormalState toNode = NormalStateFactory.getOrCreate(to);
 		TTGEdge edge = new TTGEdge(fromNode, toNode, event);
 		if(! ttg.containsEdge(edge)) {
 			if(! ttg.containsVertex(fromNode)) ttg.addVertex(fromNode);
@@ -67,7 +68,7 @@ public class TestingTraceGraph {
 
 	// Update the events performed against an existing layout without introducing any layout updates
 	public void updateState(Layout layout, Event event) {
-		TTGNode from = TTGNodeFactory.get(layout);
+		NormalState from = NormalStateFactory.get(layout);
 		assert ttg.containsVertex(from);
 		from.addEvent(event);
 	}

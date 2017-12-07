@@ -6,34 +6,34 @@ import java.util.Map;
 import testing.Layout;
 
 /**
- * This class is a factory for the TTGNode. It manages creation of TTG graph node.
+ * This class is a factory for the NormalState. It manages creation of TTG graph node.
  * It saves a copy of the node which has been created. 
- * The nodes that have been created can be obtained via TTGNodeKey.
+ * The nodes that have been created can be obtained via NormalStateKey.
  * 
  * @author yifei
  */
-public class TTGNodeFactory {
+public class NormalStateFactory {
 	static {
 		nodes = new HashMap<>();
 	}
 	
 	public static boolean contains(Layout layout) {
-		return nodes.containsKey(new TTGNodeKey(layout));
+		return nodes.containsKey(new NormalStateKey(layout));
 	}
 
-	public static TTGNode get(Layout layout) {
-		TTGNodeKey key = new TTGNodeKey(layout);
+	public static NormalState get(Layout layout) {
+		NormalStateKey key = new NormalStateKey(layout);
 		assert nodes.containsKey(key);
 		return nodes.get(key);
 	}
 
-	public static TTGNode create(Layout layout) {
-		TTGNodeKey key = new TTGNodeKey(layout);
+	public static NormalState create(Layout layout) {
+		NormalStateKey key = new NormalStateKey(layout);
 		return create(key);
 	}
 	
-	public static TTGNode getOrCreate(Layout layout) {
-		TTGNodeKey key = new TTGNodeKey(layout);
+	public static NormalState getOrCreate(Layout layout) {
+		NormalStateKey key = new NormalStateKey(layout);
 		if(nodes.containsKey(key))
 			return nodes.get(key);
 		else {
@@ -41,9 +41,9 @@ public class TTGNodeFactory {
 		}
 	}
 	
-	private static TTGNode create(TTGNodeKey key) {
+	private static NormalState create(NormalStateKey key) {
 		assert ! nodes.containsKey(key);
-		TTGNode node = new TTGNode(key);
+		NormalState node = new NormalState(key);
 		nodes.put(key, node);
 		return node;
 	}
@@ -53,10 +53,10 @@ public class TTGNodeFactory {
 		nodes.clear();
 	}
 
-	private static Map<TTGNodeKey, TTGNode> nodes;
+	private static Map<NormalStateKey, NormalState> nodes;
 	
-	static class TTGNodeKey {
-		public TTGNodeKey(Layout _layout) {
+	static class NormalStateKey {
+		public NormalStateKey(Layout _layout) {
 			layout = _layout;
 		}
 		Layout layout;
@@ -69,7 +69,7 @@ public class TTGNodeFactory {
 				return false;
 			if(! getClass().equals(o.getClass()))
 				return false;
-			TTGNodeKey key = (TTGNodeKey) o;
+			NormalStateKey key = (NormalStateKey) o;
 			return layout.equals(key.layout);
 		}
 		
