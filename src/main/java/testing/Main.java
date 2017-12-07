@@ -42,8 +42,7 @@ public class Main {
 			File outputDir = new File(output);
 			if(! outputDir.exists())
 				outputDir.mkdir();
-			String fileName = String.join(File.separator, output, info.getAppFileName() + ".txt");
-			try(PrintStream printStream = new PrintStream(fileName)) {
+			try(PrintStream printStream = new PrintStream(new File(env.getOutputDirectory(), "output.txt"))) {
 				Log.init(printStream);
 				// Run random testing
 				RandomEventSource eventSource = new RandomEventSource(info, env, TestingOptions.v().getSeed());
