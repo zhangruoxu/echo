@@ -5,6 +5,7 @@ import org.jgraph.graph.DefaultEdge;
 import testing.event.Event;
 import testing.event.ThrottleEvent;
 import testing.event.inspect.InspectEvent;
+import testing.ttg.node.TTGNode;
 
 /**
  * TTGEdge represents an app state transition achieved by an event.
@@ -55,7 +56,6 @@ public class TTGEdge extends DefaultEdge {
 		builder.append(target);
 		builder.append("] via ");
 		builder.append(event);
-		builder.append("\n");
 		return builder.toString();
 	}
 	

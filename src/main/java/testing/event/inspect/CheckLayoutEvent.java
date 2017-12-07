@@ -52,7 +52,7 @@ public class CheckLayoutEvent extends InspectEvent {
 
 	// Insert a new node into TTG
 	private void handleNewState(Env env, Layout layout) {
-		TestingTraceGraph.v().addNode(layout);
+		TestingTraceGraph.v().addNewNode(layout, true);
 	}
 
 	// Insert an edge into TTG

@@ -1,4 +1,4 @@
-package testing.ttg;
+package testing.ttg.node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import testing.Layout;
 import testing.event.Event;
 import testing.event.inspect.InspectEvent;
+import testing.ttg.node.TTGNodeFactory.TTGNodeKey;
 
 /**
  * A TTGNode represents a program state during testing. 
@@ -15,12 +16,26 @@ import testing.event.inspect.InspectEvent;
  * @author yifei
  */
 public class TTGNode {
-	public TTGNode(Layout _layout) {
-		assert _layout != null;
-		layout = _layout;
+	/**
+	 * The constructor can be accessed within the same package.
+	 * Only the TTGNodeFactory is able to create the TTGNode.
+	 * Other classes can only create the TTGNode via the TTGNodeFactory.
+	 */
+	TTGNode(TTGNodeKey key) {
+		assert key.layout != null;
+		entry = false;
+		layout = key.layout;
 		events = new ArrayList<>();
 	}
 
+	public boolean isEntry() {
+		return entry;
+	}
+	
+	public void setAsEntry() {
+		entry = true;
+	}
+	
 	public Layout getLayout() {
 		return layout;
 	}
@@ -57,6 +72,8 @@ public class TTGNode {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
+		if(entry)
+			builder.append("#Entry# ");
 		builder.append("Activity: ");
 		builder.append(layout.getActivity());
 //		builder.append("Layout: ");
@@ -70,6 +87,7 @@ public class TTGNode {
 		return builder.toString();
 	}
 	
+	private boolean entry;
 	private Layout layout;
 	private List<Event> events;
 }

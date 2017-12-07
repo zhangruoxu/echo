@@ -6,6 +6,8 @@ import org.jgrapht.graph.DirectedPseudograph;
 
 import testing.Layout;
 import testing.event.Event;
+import testing.ttg.node.TTGNode;
+import testing.ttg.node.TTGNodeFactory;
 
 /**
  * Testing trace graph (TTG) records the information of testing.
@@ -42,45 +44,32 @@ public class TestingTraceGraph {
 		return ttg.outgoingEdgesOf(node);
 	}
 
-	// Add a node into TTG
-	public void addNode(Layout from) {
-		TTGNode fromNode = new TTGNode(from);
+	// TTG operations
+	// Add a new node into TTG
+	public void addNewNode(Layout from, boolean isEntry) {
+		TTGNode fromNode = TTGNodeFactory.create(from);
+		if(isEntry) fromNode.setAsEntry();
 		assert ! ttg.containsVertex(fromNode);
 		ttg.addVertex(fromNode);
 	}
 	
-	// TTG operations
 	// Insert an edge into TTG
 	public void addEdge(Layout from, Layout to, Event event) {
-		TTGNode fromNode = new TTGNode(from);
-		TTGNode toNode = new TTGNode(to);
+		TTGNode fromNode = TTGNodeFactory.getOrCreate(from);
+		TTGNode toNode = TTGNodeFactory.getOrCreate(to);
 		TTGEdge edge = new TTGEdge(fromNode, toNode, event);
 		if(! ttg.containsEdge(edge)) {
-			// TODO
-			// Do we need to check the existence of the fromNode and the toNode in the TTG?
-			ttg.addVertex(fromNode);
-			ttg.addVertex(toNode);
+			if(! ttg.containsVertex(fromNode)) ttg.addVertex(fromNode);
+			if(! ttg.containsVertex(toNode)) ttg.addVertex(toNode);
 			ttg.addEdge(fromNode, toNode, edge);
 		}
 	}
 
 	// Update the events performed against an existing layout without introducing any layout updates
 	public void updateState(Layout layout, Event event) {
-		TTGNode from = new TTGNode(layout);
+		TTGNode from = TTGNodeFactory.get(layout);
 		assert ttg.containsVertex(from);
-		TTGNode node = getVertex(from);
-		node.addEvent(event);
-	}
-
-	// Obtain the node that is equal to the given node from TTG
-	// TODO
-	// More efficient implementation.
-	public TTGNode getVertex(TTGNode node) {
-		if(ttg.containsVertex(node))
-			for(TTGNode n : ttg.vertexSet())
-				if(node.equals(n))
-					return n;
-		return null;
+		from.addEvent(event);
 	}
 
 	public DirectedPseudograph<TTGNode, TTGEdge> getTTG() {
@@ -90,10 +79,13 @@ public class TestingTraceGraph {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		ttg.edgeSet().forEach(builder::append);
+		for(TTGEdge e: ttg.edgeSet()) {
+			builder.append(e);
+			builder.append("\n");
+		}
 		return builder.toString();
 	}
-	
+
 	private TestingTraceGraph() {
 		ttg = new DirectedPseudograph<>(TTGEdge.class);
 	}

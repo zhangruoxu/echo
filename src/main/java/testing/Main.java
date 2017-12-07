@@ -14,6 +14,7 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.remote.MobilePlatform;
 import testing.random.RandomEventSource;
 import testing.ttg.TestingTraceGraph;
+import testing.ttg.node.TTGNodeFactory;
 import util.Config;
 import util.Log;
 import util.Timer;
@@ -28,11 +29,10 @@ public class Main {
 	
 	public static void main(String[] args) {
 		Config.init(null);
-		// discard old TTG
-		TestingTraceGraph.reset();
+		reset();
 		TestingOptions.v().processOptions(args);
 		System.out.println(TestingOptions.v().toString());
-		// Test 1 app for each time
+		// Test one app for each time
 		AppInfoWrapper appInfo = new AppInfoWrapper(TestingOptions.v().getAppPaths().get(0));
 		Timer timer = new Timer();
 		timer.start();
@@ -99,6 +99,13 @@ public class Main {
 		// init Logcat
 		Logcat.init(null, env);
 		return env;
+	}
+	
+	// Reset testing tool
+	private static void reset() {
+		// discard old TTG and its nodes
+		TestingTraceGraph.reset();
+		TTGNodeFactory.reset();
 	}
 	
 	// simple testing
