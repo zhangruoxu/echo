@@ -4,6 +4,7 @@ import io.appium.java_client.android.Activity;
 import io.appium.java_client.android.AndroidKeyCode;
 import testing.AppInfoWrapper;
 import testing.Env;
+import testing.Layout;
 import testing.Logcat;
 import testing.event.KeyEvent;
 import testing.event.Throttle;
@@ -50,7 +51,11 @@ public class CheckActivityEvent extends InspectEvent {
 				Log.println(log);
 				RandomEventSource.notifyError();
 				// Insert an error state into TTG.
-				TestingTraceGraph.v().addErrorState(env.getLastLayout(), env.getLastEvent());
+				Layout lastLayout = env.getLastLayout();
+				if(lastLayout == null)
+					Log.println("No event trace.");					
+				else 
+					TestingTraceGraph.v().addErrorState(env.getLastLayout(), env.getLastEvent());
 			} else {
 				// No error happens. 
 				// Try to return to the app being tested
