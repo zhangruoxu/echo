@@ -90,14 +90,18 @@ public class TestingTraceGraph {
 
 	@Override
 	public String toString() {
+		return toString(ttg);
+	}
+
+	public static String toString(DirectedPseudograph<TTGNode, TTGEdge> graph) {
 		StringBuilder builder = new StringBuilder();
-		for(TTGEdge e: ttg.edgeSet()) {
+		for(TTGEdge e: graph.edgeSet()) {
 			builder.append(e);
 			builder.append("\n");
 		}
 		return builder.toString();
 	}
-
+	
 	private TestingTraceGraph() {
 		ttg = new DirectedPseudograph<>(TTGEdge.class);
 	}

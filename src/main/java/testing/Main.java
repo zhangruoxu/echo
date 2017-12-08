@@ -18,6 +18,7 @@ import testing.ttg.node.NormalStateFactory;
 import util.Config;
 import util.Log;
 import util.Timer;
+import util.graph.TTGWriter;
 
 /**
  * @author yifei
@@ -49,6 +50,10 @@ public class Main {
 				eventSource.runTestingCycles();
 				timer.stop();
 				Log.println("# Time: " + timer.getDurationInSecond() + " s.");
+				// Serialize the graph
+				Log.println("# Serialize the TTG.");
+				File graphFile = new File(env.getOutputDirectory(), "graph");
+				TTGWriter.serializeTTG(graphFile);
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(0);

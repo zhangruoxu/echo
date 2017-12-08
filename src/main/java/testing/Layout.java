@@ -1,12 +1,14 @@
 package testing;
 
+import java.io.Serializable;
+
 /**
  * Layout class represents the layout.
  * Currently, it is the content of the XML file that describes a page.
  * 
  * @author yifei
  */
-public class Layout {
+public class Layout implements Serializable {
 	public Layout(String _activity, String _layoutContent) {
 		assert _activity != null;
 		assert _layoutContent != null;

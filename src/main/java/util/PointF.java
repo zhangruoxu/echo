@@ -1,5 +1,7 @@
 package util;
 
+import java.io.Serializable;
+
 /**
  * PointF holds two float coordinates
  * 
@@ -7,7 +9,7 @@ package util;
  * 
  * @author yifei
  */
-public class PointF {
+public class PointF implements Serializable {
 	public float x;
 	public float y;
 

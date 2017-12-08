@@ -1,5 +1,7 @@
 package testing.event;
 
+import java.io.Serializable;
+
 import testing.AppInfoWrapper;
 import testing.Env;
 
@@ -10,7 +12,7 @@ import testing.Env;
  * 
  * @author yifei
  */
-public abstract class Event {
+public abstract class Event implements Serializable {
 	protected int eventType;
 	// ID of the event.
 	protected int ID;
