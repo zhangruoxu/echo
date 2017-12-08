@@ -8,6 +8,20 @@ import java.io.Serializable;
  * 
  * @author yifei
  */
-public interface TTGNode extends Serializable {
-
+public abstract class TTGNode implements Serializable {
+	public boolean isEntry() {
+		return entry;
+	}
+	
+	public void setAsEntry() {
+		entry = true;
+	}
+	
+	// Whether the TTGNode is the error state.
+	public boolean isErrorState() {
+		return this.getClass().equals(ErrorState.class);
+	}
+	
+	// Whether the TTGNode is the entry node.
+	protected boolean entry;
 }

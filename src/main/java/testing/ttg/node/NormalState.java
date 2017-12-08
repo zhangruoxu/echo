@@ -15,7 +15,7 @@ import testing.ttg.node.NormalStateFactory.NormalStateKey;
  * 
  * @author yifei
  */
-public class NormalState implements TTGNode {
+public class NormalState extends TTGNode {
 	/**
 	 * The constructor can be accessed within the same package.
 	 * Only the NormalStateFactory is able to create the NormalState.
@@ -28,14 +28,6 @@ public class NormalState implements TTGNode {
 		events = new ArrayList<>();
 	}
 
-	public boolean isEntry() {
-		return entry;
-	}
-	
-	public void setAsEntry() {
-		entry = true;
-	}
-	
 	public Layout getLayout() {
 		return layout;
 	}
@@ -87,7 +79,7 @@ public class NormalState implements TTGNode {
 		return builder.toString();
 	}
 	
-	private boolean entry;
+	
 	private Layout layout;
 	private List<Event> events;
 }

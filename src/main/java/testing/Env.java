@@ -1,6 +1,5 @@
 package testing;
 
-import java.io.File;
 import java.util.Deque;
 import java.util.LinkedList;
 
@@ -9,7 +8,6 @@ import org.openqa.selenium.Dimension;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import testing.event.Event;
-import util.Config;
 
 /**
  * This class represents the testing environments.
@@ -25,7 +23,6 @@ public class Env {
 		eventTrace = new LinkedList<>();
 		activityTrance = new LinkedList<>();
 		layoutTrace = new LinkedList<>();
-		initOutputDirectory();
 	}
 
 	public AndroidDriver<AndroidElement> driver() {
@@ -42,10 +39,6 @@ public class Env {
 
 	public int height() {
 		return height;
-	}
-
-	public File getOutputDirectory() {
-		return outputDirectory;
 	}
 
 	/**
@@ -105,35 +98,12 @@ public class Env {
 		return layoutTrace;
 	}
 
-	// Initialize output directory
-	private void initOutputDirectory() {
-		AppInfoWrapper appInfo = new AppInfoWrapper(TestingOptions.v().getAppPaths().get(0));
-		String appName = appInfo.getAppName();
-		assert ! appName.isEmpty();
-		String output = Config.v().get(Config.OUTPUT);
-		String outputDirName = String.join(File.separator, output, appName);
-		File outputDir = new File(outputDirName);
-		if(outputDir.exists() && outputDir.isDirectory()) {
-			// Remove the directory tree
-			System.out.println("# Remove old output directory. ");
-			for(String s : outputDir.list()) {
-				File f = new File(outputDir.getPath(), s);
-				f.delete();
-			}
-			outputDir.delete();
-		} 
-		outputDir.mkdirs();
-		outputDirectory = outputDir;
-	}
-
 	// Testing driver
 	private AndroidDriver<AndroidElement> driver;
 	// The dimension of the screen
 	private Dimension dimension;
 	private int width;
 	private int height;
-	//
-	private File outputDirectory;
 	// Testing event traces
 	private Deque<Event> eventTrace;
 	// The activity transitions during testing

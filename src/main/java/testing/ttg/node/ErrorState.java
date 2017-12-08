@@ -5,8 +5,11 @@ package testing.ttg.node;
  * 
  * @author yifei
  */
-public class ErrorState implements TTGNode {
-
+public class ErrorState extends TTGNode {
+	public ErrorState() {
+		entry = false;
+	}
+	
 	@Override
 	public boolean equals(Object o) {
 		if(this == o)

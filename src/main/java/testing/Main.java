@@ -3,8 +3,10 @@ package testing;
 import java.io.File;
 import java.io.PrintStream;
 import java.net.URL;
+import java.util.List;
 import java.util.function.BiConsumer;
 
+import org.jgrapht.graph.DirectedPseudograph;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import io.appium.java_client.android.AndroidDriver;
@@ -12,9 +14,14 @@ import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.remote.MobilePlatform;
+import testing.event.Event;
+import testing.event.ThrottleEvent;
 import testing.random.RandomEventSource;
+import testing.reduction.TestingTraceReduction;
+import testing.ttg.TTGEdge;
 import testing.ttg.TestingTraceGraph;
 import testing.ttg.node.NormalStateFactory;
+import testing.ttg.node.TTGNode;
 import util.Config;
 import util.Log;
 import util.Timer;
@@ -27,7 +34,7 @@ import util.graph.TTGWriter;
 
 public class Main {
 	private static final String APPIUM_URL = "http://0.0.0.0:4723/wd/hub";
-	
+
 	public static void main(String[] args) {
 		Config.init(null);
 		reset();
@@ -35,6 +42,8 @@ public class Main {
 		System.out.println(TestingOptions.v().toString());
 		// Test one app for each time
 		AppInfoWrapper appInfo = new AppInfoWrapper(TestingOptions.v().getAppPaths().get(0));
+		// clean the output
+		appInfo.cleanOutputDirectory();
 		Timer timer = new Timer();
 		timer.start();
 		testingApp(appInfo, (info, env) -> {
@@ -43,7 +52,7 @@ public class Main {
 			File outputDir = new File(output);
 			if(! outputDir.exists())
 				outputDir.mkdir();
-			try(PrintStream printStream = new PrintStream(new File(env.getOutputDirectory(), "output.txt"))) {
+			try(PrintStream printStream = new PrintStream(new File(appInfo.getOutputDirectory(), "output.txt"))) {
 				Log.init(printStream);
 				// Run random testing
 				RandomEventSource eventSource = new RandomEventSource(info, env, TestingOptions.v().getSeed());
@@ -52,13 +61,15 @@ public class Main {
 				Log.println("# Time: " + timer.getDurationInSecond() + " s.");
 				// Serialize the graph
 				Log.println("# Serialize the TTG.");
-				File graphFile = new File(env.getOutputDirectory(), "graph");
+				File graphFile = new File(appInfo.getOutputDirectory(), "graph");
 				TTGWriter.serializeTTG(graphFile);
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(0);
 			}
 		});
+		System.out.println("Try to replay the error.");
+		replay(appInfo, TestingTraceGraph.v().getTTG());
 	}
 
 	/**
@@ -82,7 +93,7 @@ public class Main {
 		Logcat.init(appInfo, env);
 		return env;
 	}
-	
+
 	/**
 	 * Setup the testing with package name and launchable activity name
 	 */
@@ -104,14 +115,14 @@ public class Main {
 		Logcat.init(null, env);
 		return env;
 	}
-	
+
 	// Reset testing tool
 	private static void reset() {
 		// discard old TTG and its nodes
 		TestingTraceGraph.reset();
 		NormalStateFactory.reset();
 	}
-	
+
 	// simple testing
 	// launch the app, then uninstall it
 	public static void testingApp(AppInfoWrapper appInfo) {
@@ -120,7 +131,7 @@ public class Main {
 		driver.closeApp();
 		driver.removeApp(appInfo.getPkgName());
 	}
-	
+
 	/**
 	 * App testing is implemented as a function interface.
 	 */
@@ -143,5 +154,19 @@ public class Main {
 		Env env = setUp(pkgName, actName);
 		env.driver().resetApp();
 		testing.accept(pkgName, env);
+	}
+
+	// Replay the bug we have found
+	public static void replay(AppInfoWrapper appInfo, DirectedPseudograph<TTGNode, TTGEdge> graph) {
+		List<Event> replayEvents = TestingTraceReduction.reduce(graph);
+		if(replayEvents.isEmpty())
+			System.out.println("# No bug found during testing.");
+		ThrottleEvent throttleEvent = new ThrottleEvent();
+		testingApp(appInfo, (info, env) -> {
+			for(Event event : replayEvents) {
+				event.injectEvent(appInfo, env);
+				throttleEvent.injectEvent(appInfo, env);
+			}
+		});
 	}
 }
