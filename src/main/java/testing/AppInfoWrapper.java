@@ -15,7 +15,7 @@ import util.ManifestParser;
  */
 public class AppInfoWrapper {
 	public AppInfoWrapper(int id) {
-		appPath = AppPathResolver.resolveAppPath(Config.APPDIR, id);
+		appPath = AppPathResolver.resolveAppPath(Config.v().get(Config.APPDIR), id);
 		init();
 	}
 	
@@ -28,6 +28,7 @@ public class AppInfoWrapper {
 		String[] temp = appPath.split(Pattern.quote(File.separator));
 		assert temp.length > 0;
 		appFileName = temp[temp.length - 1];
+		appName = appFileName.split(".apk")[0];
 		ManifestParser parser = new ManifestParser(appPath);
 		pkgName = parser.getPackageName();
 		activityNames = parser.getActivityNames();
@@ -38,6 +39,10 @@ public class AppInfoWrapper {
 	
 	public String getAppPath() {
 		return appPath;
+	}
+	
+	public String getAppName() {
+		return appName;
 	}
 	
 	public String getAppFileName() {
@@ -75,6 +80,7 @@ public class AppInfoWrapper {
 	}
 	
 	private String appPath;
+	private String appName;
 	private String appFileName;
 	private String pkgName;
 	// Activity names that are in the apps

@@ -108,7 +108,7 @@ public class Env {
 	// Initialize output directory
 	private void initOutputDirectory() {
 		AppInfoWrapper appInfo = new AppInfoWrapper(TestingOptions.v().getAppPaths().get(0));
-		String appName = appInfo.getAppFileName().split(".apk")[0];
+		String appName = appInfo.getAppName();
 		assert ! appName.isEmpty();
 		String output = Config.v().get(Config.OUTPUT);
 		String outputDirName = String.join(File.separator, output, appName);

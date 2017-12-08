@@ -19,4 +19,10 @@ public class TTGWriter {
 			e.printStackTrace();
 		}
 	}
+	
+	// write TTG to DOT graph
+	// TODO
+	public static void writeToDot(File graphFile) {
+		
+	} 
 }

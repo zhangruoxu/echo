@@ -16,13 +16,20 @@ import testing.ttg.node.TTGNode;
 public class TTGReader {
 	// Deserialize the TTG.
 	@SuppressWarnings("unchecked")
-	public static DirectedPseudograph<TTGNode, TTGEdge> deserializeTTG(File f) {
+	public static DirectedPseudograph<TTGNode, TTGEdge> deserializeTTG(File graphFile) {
 		DirectedPseudograph<TTGNode, TTGEdge> graph = null;
-		try(ObjectInputStream input = new ObjectInputStream(new FileInputStream(f))) {
+		try(ObjectInputStream input = new ObjectInputStream(new FileInputStream(graphFile))) {
 			graph = (DirectedPseudograph<TTGNode, TTGEdge>) input.readObject();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return graph;
+	}
+	
+	// Read TTG from dot file
+	// TODO
+	public static DirectedPseudograph<TTGNode, TTGEdge> readFromDot(File graphFile) {
+		DirectedPseudograph<TTGNode, TTGEdge> graph = null;
+		return null;
 	}
 }
