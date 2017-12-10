@@ -13,10 +13,10 @@ import testing.ttg.TTGEdge;
 import testing.ttg.node.TTGNode;
 
 /**
- * This class reduces the testing trace to replay the error.
+ * This class reduces TTG to replay error.
  * @author yifei
  */
-public class TestingTraceReduction {
+public class TTGReduction {
 	// Find the shortest paths between two nodes in the graph.
 	public static <V, E> GraphPath<V, E> shortestPath(DirectedPseudograph<V, E> graph, V from, V to) {
 		DijkstraShortestPath<V, E> shortestPath = new DijkstraShortestPath<>(graph);
@@ -24,17 +24,17 @@ public class TestingTraceReduction {
 	}
 
 	// Find the reachable events between two nodes in the graph.
-	public static List<Event> getEventsOnShortestPath(DirectedPseudograph<TTGNode, TTGEdge> graph, TTGNode from, TTGNode to) {
-		return shortestPath(graph, from, to).getEdgeList().stream().map(TTGEdge::getEvent).collect(Collectors.toList());
+	public static List<Event> getEventsOnShortestPath(DirectedPseudograph<TTGNode, TTGEdge> ttg, TTGNode from, TTGNode to) {
+		return shortestPath(ttg, from, to).getEdgeList().stream().map(TTGEdge::getEvent).collect(Collectors.toList());
 	}
 
 	// Reduce the testing trace based on TTG.
-	public static List<Event> reduce(DirectedPseudograph<TTGNode, TTGEdge> graph) {
+	public static List<Event> reduce(DirectedPseudograph<TTGNode, TTGEdge> ttg) {
 		List<Event> events = new ArrayList<>();
-		TTGNode from = graph.vertexSet().stream().filter(TTGNode::isEntry).findFirst().get();
-		Optional<TTGNode> opt = graph.vertexSet().stream().filter(TTGNode::isErrorState).findFirst();
+		TTGNode from = ttg.vertexSet().stream().filter(TTGNode::isEntry).findFirst().get();
+		Optional<TTGNode> opt = ttg.vertexSet().stream().filter(TTGNode::isErrorState).findFirst();
 		if(opt.isPresent())
-			events = getEventsOnShortestPath(graph, from, opt.get());
+			events = getEventsOnShortestPath(ttg, from, opt.get());
 		return events;
 	}
 }

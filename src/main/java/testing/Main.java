@@ -17,7 +17,7 @@ import io.appium.java_client.remote.MobilePlatform;
 import testing.event.Event;
 import testing.event.ThrottleEvent;
 import testing.random.RandomEventSource;
-import testing.reduction.TestingTraceReduction;
+import testing.reduction.TTGReduction;
 import testing.ttg.TTGEdge;
 import testing.ttg.TestingTraceGraph;
 import testing.ttg.node.NormalStateFactory;
@@ -68,8 +68,10 @@ public class Main {
 				System.exit(0);
 			}
 		});
-		System.out.println("Try to replay the error.");
-		replay(appInfo, TestingTraceGraph.v().getTTG());
+		if(TestingOptions.v().isReplay()) {
+			System.out.println("Try to replay the error.");
+			replay(appInfo, TestingTraceGraph.v().getTTG());
+		}
 	}
 
 	/**
@@ -158,7 +160,7 @@ public class Main {
 
 	// Replay the bug we have found
 	public static void replay(AppInfoWrapper appInfo, DirectedPseudograph<TTGNode, TTGEdge> graph) {
-		List<Event> replayEvents = TestingTraceReduction.reduce(graph);
+		List<Event> replayEvents = TTGReduction.reduce(graph);
 		if(replayEvents.isEmpty())
 			System.out.println("# No bug found during testing.");
 		ThrottleEvent throttleEvent = new ThrottleEvent();

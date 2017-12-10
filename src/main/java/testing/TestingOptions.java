@@ -24,6 +24,8 @@ public class TestingOptions {
 	private int numberOfEvents = 5000;
 	
 	private int seed = 0;
+	
+	private boolean replay = false;
 
 	public String getEmulatorName() {
 		return emulatorName;
@@ -47,6 +49,10 @@ public class TestingOptions {
 	
 	public int getSeed() {
 		return seed;
+	}
+	
+	public boolean isReplay() {
+		return replay;
 	}
 	
 	private TestingOptions() {}
@@ -95,6 +101,9 @@ public class TestingOptions {
 				} catch (Exception e) {
 					Log.println(args[i + 1] + " is not a valid integer. Use 0 as seed.");
 				}
+			// whether replay the error
+			else if(arg.equals("-replay"))
+				replay = true;
 		}
 		// assert emulatorName != null;
 		assert appPaths != null && ! appPaths.isEmpty();
