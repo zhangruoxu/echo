@@ -2,18 +2,27 @@ package testing.random;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiConsumer;
 
 import org.junit.Test;
 
+import io.appium.java_client.android.AndroidKeyCode;
 import testing.AppInfoWrapper;
 import testing.Env;
 import testing.Logcat;
 import testing.Main;
+import testing.TestUtil;
 import testing.TestingOptions;
+import testing.event.Event;
+import testing.event.KeyEvent;
 import testing.event.Throttle;
+import testing.event.ThrottleEvent;
+import testing.ttg.TestingTraceGraph;
+import testing.ttg.node.TTGNode;
 import util.Config;
 import util.Log;
 import util.Timer;
@@ -46,8 +55,16 @@ public class TestRealWorldApp {
 	// Bug found
 	@Test
 	public void testApp4() {
-		String[] args = new String[] {"-app", "4", "-event",  "5000", "-throttle", "3000", "-seed", "0"};
+		String[] args = new String[] {"-app", "4", "-event",  "5000", "-throttle", "500", "-seed", "0"};
 		testing.Main.main(args);
+		Set<TTGNode> nodes = TestingTraceGraph.v().vertexSet();
+		System.out.println("TTG");
+		System.out.println(TestingTraceGraph.v());
+		for(TTGNode n : nodes) {
+			System.out.println("# Node: " + n);
+			System.out.println("# Outging edges: ");
+			TestingTraceGraph.v().outgoingEdgesOf(n).forEach(System.out::println);
+		} 
 	}
 	
 	// No bugs found
@@ -133,7 +150,7 @@ public class TestRealWorldApp {
 	private void testApp(int i, int events, int seed) {
 		Timer timer = new Timer();
 		timer.start();
-		initTesting(Integer.toString(i), (info, env) -> {
+		TestUtil.initTesting(Integer.toString(i), (info, env) -> {
 			System.out.println(info.getPkgName());
 			Logcat.clean();
 			Throttle.v().init(500);
@@ -154,15 +171,5 @@ public class TestRealWorldApp {
 				System.exit(0);
 			}
 		});
-	}
-	
-	/**
-	 * Initialize Appium testing
-	 */
-	private void initTesting(String id, BiConsumer<AppInfoWrapper, Env> testing) {
-		Config.init(null);
-		String[] args = new String[] {"-app", id, "-emulator", "Nexus_5_API_19"};
-		TestingOptions.v().processOptions(args);
-		TestingOptions.v().getAppPaths().stream().map(AppInfoWrapper::new).forEach(i -> Main.testingApp(i, testing));
 	}
 }
