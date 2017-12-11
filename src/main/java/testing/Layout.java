@@ -2,6 +2,8 @@ package testing;
 
 import java.io.Serializable;
 
+import util.LayoutComparison;
+
 /**
  * Layout class represents the layout.
  * Currently, it is the content of the XML file that describes a page.
@@ -32,15 +34,12 @@ public class Layout implements Serializable {
 		if(! this.getClass().equals(o.getClass()))
 			return false;
 		Layout layout = (Layout) o;
-		return activity.equals(layout.activity) && layoutContent.equals(layout.layoutContent);
+		return activity.equals(layout.activity) && 
+				! LayoutComparison.hasDiff(layoutContent, layout.layoutContent);
 	}
 	
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + activity.hashCode();
-		result = prime * result + layoutContent.hashCode();
-		return result;
+		return LayoutComparison.hashCode(this);
 	}
 	
 	@Override

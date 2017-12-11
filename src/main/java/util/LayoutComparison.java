@@ -14,6 +14,9 @@ import org.xmlunit.diff.DOMDifferenceEngine;
 import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.DifferenceEngine;
 import org.xmlunit.diff.DifferenceEvaluator;
+import org.xmlunit.util.Predicate;
+
+import testing.Layout;
 
 /**
  * This class compares two XML files.
@@ -26,17 +29,23 @@ public class LayoutComparison {
 	// A lambda expression, which defines the comparison. 
 	// It is used to ignore some attributes in the XML file during comparison.
 	private static DifferenceEvaluator diffEvaluator;
+	// A lambda Expression, which is used to filter out the attributes that are not considered during comparison.
+	private static Predicate<Attr> attrFilter;
 	// A set that contains the name of the attributes which are ignorable during comparison.
-	private final static Set<String> ignoreAttributes = new HashSet<>(Arrays.asList(
-			"focused"));
+	private final static Set<String> ignoreAttributes;
 
 	static {
+		ignoreAttributes = new HashSet<>(Arrays.asList(
+					"focused"));
+		
 		diffEngine = new DOMDifferenceEngine();
 		
 		comparisonListener = (comparison, result) -> {
 			Log.println("Difference found: " + comparison);
 		};
 
+		diffEngine.addDifferenceListener(comparisonListener);
+		
 		diffEvaluator = (comparison, outcome) -> {
 			if(outcome == ComparisonResult.EQUAL)
 				return ComparisonResult.EQUAL;
@@ -50,7 +59,11 @@ public class LayoutComparison {
 			return outcome;
 		};
 
-		diffEngine.addDifferenceListener(comparisonListener);
+		attrFilter = (attr) -> {
+			if(ignoreAttributes.contains(attr.getName()))
+					return false;
+			else return true;
+		};
 	}
 
 	/**
@@ -82,7 +95,8 @@ public class LayoutComparison {
 				.ignoreWhitespace()
 				.normalizeWhitespace()
 				// apply the difference evaluator
-				.withDifferenceEvaluator(diffEvaluator)
+//				.withDifferenceEvaluator(diffEvaluator)
+				.withAttributeFilter(attrFilter)
 				.build();
 		return diff;
 	}
@@ -95,5 +109,20 @@ public class LayoutComparison {
 		if(diff == null)
 			return true;
 		return getDiff(a, b).hasDifferences();
+	}
+	
+	/**
+	 * Because the XML comparison applies special difference evaluator. 
+	 * The hashCode() method also needs to apply the same difference evaluator 
+	 * so that the hash code of two equally XML strings are the same. 
+	 * 
+	 * FIXME
+	 */
+	public static int hashCode(Layout layout) {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + layout.getActivity().hashCode();
+		result = prime * result + layout.getLayoutContent().hashCode();
+		return result;
 	}
 }

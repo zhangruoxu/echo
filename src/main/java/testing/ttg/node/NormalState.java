@@ -68,8 +68,8 @@ public class NormalState extends TTGNode {
 			builder.append("#Entry# ");
 		builder.append("Activity: ");
 		builder.append(layout.getActivity());
-//		builder.append("Layout: ");
-//		builder.append(layout.getLayoutContent());
+		builder.append("Layout: ");
+		builder.append(layout.getLayoutContent());
 		builder.append(" Event: [");
 		for(Event e : events) {
 			builder.append(e);

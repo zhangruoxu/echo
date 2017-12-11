@@ -31,7 +31,8 @@ public class CheckLayoutEvent extends InspectEvent {
 			// or update the new event into current TTG node (if layout does not update)
 			lastLayoutContent = lastLayout.getLayoutContent();
 			Diff diff = LayoutComparison.getDiff(curLayoutContent, lastLayoutContent);
-			if(diff != null && diff.hasDifferences()) {
+			assert diff != null;
+			if(diff.hasDifferences()) {
 				Log.println("====== Differences with previous page:");
 				diff.getDifferences().forEach(Log::println);
 				Log.println("====== End");
