@@ -22,15 +22,13 @@ public class CheckLayoutEvent extends InspectEvent {
 		String curLayoutContent = env.driver().getPageSource();
 		Layout curLayout = new Layout(getCurrentActivity(env), curLayoutContent);
 		Layout lastLayout = env.getLastLayout();
-		String lastLayoutContent = null;
 		if(lastLayout == null) {
 			// Current layout does not have any predecessor, add the node into TTG
 			handleNewNormalState(env, curLayout);
 		} else {
 			// Last layout has been found. Add a new edge into TTG (if layout updates are found) 
 			// or update the new event into current TTG node (if layout does not update)
-			lastLayoutContent = lastLayout.getLayoutContent();
-			Diff diff = LayoutComparison.getDiff(curLayoutContent, lastLayoutContent);
+			Diff diff = LayoutComparison.getDiff(lastLayout, curLayout);
 			assert diff != null;
 			if(diff.hasDifferences()) {
 				Log.println("====== Differences with previous page:");

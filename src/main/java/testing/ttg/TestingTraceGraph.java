@@ -57,7 +57,7 @@ public class TestingTraceGraph {
 	
 	// Insert an edge into TTG
 	public void addEdge(Layout from, Layout to, Event event) {
-		NormalState fromNode = NormalStateFactory.getOrCreate(from);
+		NormalState fromNode = NormalStateFactory.get(from);
 		NormalState toNode = NormalStateFactory.getOrCreate(to);
 		TTGEdge edge = new TTGEdge(fromNode, toNode, event);
 		if(! ttg.containsEdge(edge)) {

@@ -15,7 +15,8 @@ public class Layout implements Serializable {
 		assert _activity != null;
 		assert _layoutContent != null;
 		activity = _activity;
-		layoutContent = _layoutContent;
+		// Remove the ignorable attributes in the layout XML 
+		layoutContent = LayoutComparison.removeIgnorableAttributes(_layoutContent);
 	}
 	
 	public String getLayoutContent() {
@@ -35,11 +36,21 @@ public class Layout implements Serializable {
 			return false;
 		Layout layout = (Layout) o;
 		return activity.equals(layout.activity) && 
-				! LayoutComparison.hasDiff(layoutContent, layout.layoutContent);
+				! LayoutComparison.hasDiff(this, layout);
 	}
 	
+	/**
+	 * Because the XML comparison applies special difference evaluator. 
+	 * The hashCode() method also needs to apply the same difference evaluator 
+	 * so that the hash code of two equally XML strings are the same. 
+	 */
+	@Override
 	public int hashCode() {
-		return LayoutComparison.hashCode(this);
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + activity.hashCode();
+		result = prime * result + layoutContent.hashCode();
+		return result;
 	}
 	
 	@Override
