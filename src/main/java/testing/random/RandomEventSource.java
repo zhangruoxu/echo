@@ -223,6 +223,9 @@ public class RandomEventSource implements EventSource {
 			} catch (Exception e) {
 				Log.println("## Fail to inject the event " + event);
 				e.printStackTrace();
+				// Remove the inspecting and throttling events following the events that are failed to be injected
+				while(mQ.peekFirst() instanceof InspectEvent || mQ.peekFirst() instanceof ThrottleEvent)
+					mQ.removeFirst();
 			}
 		}
 	}
