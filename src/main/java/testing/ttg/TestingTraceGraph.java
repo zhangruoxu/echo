@@ -28,6 +28,10 @@ public class TestingTraceGraph {
 	public static void reset() {
 		singleton = null;
 	}
+	
+	public NormalState getLastNormalState() {
+		return lastNormalState;
+	}
 
 	// Delegate methods of DirectedPseudograph.
 	public Set<TTGNode> vertexSet() {
@@ -53,35 +57,37 @@ public class TestingTraceGraph {
 		if(isEntry) fromNode.setAsEntry();
 		assert ! ttg.containsVertex(fromNode);
 		ttg.addVertex(fromNode);
+		lastNormalState = fromNode;
 	}
 	
 	// Insert an edge into TTG
-	public void addEdge(Layout from, Layout to, Event event) {
-		NormalState fromNode = NormalStateFactory.get(from);
+	public void addEdge(NormalState from, Layout to, Event event) {
+		assert ttg.containsVertex(from);
 		NormalState toNode = NormalStateFactory.getOrCreate(to);
-		TTGEdge edge = new TTGEdge(fromNode, toNode, event);
+		TTGEdge edge = new TTGEdge(from, toNode, event);
 		if(! ttg.containsEdge(edge)) {
-			if(! ttg.containsVertex(fromNode)) ttg.addVertex(fromNode);
-			if(! ttg.containsVertex(toNode)) ttg.addVertex(toNode);
-			ttg.addEdge(fromNode, toNode, edge);
+			if(! ttg.containsVertex(toNode))
+				ttg.addVertex(toNode);
+			ttg.addEdge(from, toNode, edge);
 		}
+		lastNormalState = toNode;
 	}
 
 	// Update the events performed against an existing layout without introducing any layout updates
-	public void updateState(Layout layout, Event event) {
-		NormalState from = NormalStateFactory.get(layout);
+	public void updateState(NormalState from, Event event) {
 		assert ttg.containsVertex(from);
 		from.addEvent(event);
+		lastNormalState = from;
 	}
 
 	// Add an error state into the TTG
-	public void addErrorState(Layout from, Event event) {
-		NormalState fromState = NormalStateFactory.get(from);
+	public void addErrorState(NormalState from, Event event) {
+		assert ttg.containsVertex(from);
 		TTGNode errorState = new ErrorState();
 		assert ! ttg.containsVertex(errorState);
 		ttg.addVertex(errorState);
-		TTGEdge edge = new TTGEdge(fromState, errorState, event);
-		ttg.addEdge(fromState, errorState, edge);
+		TTGEdge edge = new TTGEdge(from, errorState, event);
+		ttg.addEdge(from, errorState, edge);
 	}
 	
 	public DirectedPseudograph<TTGNode, TTGEdge> getTTG() {
@@ -104,8 +110,10 @@ public class TestingTraceGraph {
 	
 	private TestingTraceGraph() {
 		ttg = new DirectedPseudograph<>(TTGEdge.class);
+		lastNormalState = null;
 	}
 	
 	private DirectedPseudograph<TTGNode, TTGEdge> ttg;
+	private NormalState lastNormalState;
 	private static TestingTraceGraph singleton;
 }

@@ -6,6 +6,7 @@ import testing.AppInfoWrapper;
 import testing.Env;
 import testing.Layout;
 import testing.ttg.TestingTraceGraph;
+import testing.ttg.node.NormalState;
 import util.LayoutComparison;
 import util.Log;
 
@@ -21,23 +22,24 @@ public class CheckLayoutEvent extends InspectEvent {
 	public void injectEvent(AppInfoWrapper info, Env env) {
 		String curLayoutContent = env.driver().getPageSource();
 		Layout curLayout = new Layout(getCurrentActivity(env), curLayoutContent);
-		Layout lastLayout = env.getLastLayout();
-		if(lastLayout == null) {
+		NormalState lastNormalState = TestingTraceGraph.v().getLastNormalState();
+		if(lastNormalState == null) {
 			// Current layout does not have any predecessor, add the node into TTG
 			handleNewNormalState(env, curLayout);
 		} else {
 			// Last layout has been found. Add a new edge into TTG (if layout updates are found) 
 			// or update the new event into current TTG node (if layout does not update)
+			Layout lastLayout = lastNormalState.getLayout();
 			Diff diff = LayoutComparison.getDiff(lastLayout, curLayout);
 			assert diff != null;
 			if(diff.hasDifferences()) {
 				Log.println("====== Differences with previous page:");
 				diff.getDifferences().forEach(Log::println);
 				Log.println("====== End");
-				handleNewState(env, lastLayout, curLayout);
+				handleNewState(env, lastNormalState, curLayout);
 			} else {
 				Log.println("Same as the previous layout. ");
-				updateExistingState(env, lastLayout);
+				updateExistingState(env, lastNormalState);
 			}
 		}
 		// Append the layout trace
@@ -55,12 +57,12 @@ public class CheckLayoutEvent extends InspectEvent {
 	}
 
 	// Insert an edge into TTG
-	private void handleNewState(Env env, Layout from, Layout to) {
+	private void handleNewState(Env env, NormalState from, Layout to) {
 		TestingTraceGraph.v().addEdge(from, to, env.getLastEvent());
 	}
 
 	// Update an existing node in TTG
-	private void updateExistingState(Env env, Layout from) {
+	private void updateExistingState(Env env, NormalState from) {
 		TestingTraceGraph.v().updateState(from, env.getLastEvent());
 	}
 }

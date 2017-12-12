@@ -86,6 +86,7 @@ public class Env {
 	 * append current layout to the layout trace;
 	 * obtain the layout trace.
 	 */
+	@Deprecated
 	public Layout getLastLayout() {
 		return layoutTrace.peekLast();
 	}
