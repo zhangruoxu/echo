@@ -2,25 +2,16 @@ package testing.random;
 
 import java.io.File;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiConsumer;
 
 import org.junit.Test;
 
-import io.appium.java_client.android.AndroidKeyCode;
-import testing.AppInfoWrapper;
-import testing.Env;
 import testing.Logcat;
-import testing.Main;
 import testing.TestUtil;
 import testing.TestingOptions;
-import testing.event.Event;
-import testing.event.KeyEvent;
 import testing.event.Throttle;
-import testing.event.ThrottleEvent;
 import testing.ttg.TestingTraceGraph;
 import testing.ttg.node.TTGNode;
 import util.Config;
@@ -37,7 +28,8 @@ public class TestRealWorldApp {
 	// Bug found
 	@Test
 	public void testApp1() {
-		testApp(1,  10000, 0);
+		String[] args = new String[] {"-app", "1", "-event",  "5000", "-throttle", "500", "-seed", "0"};
+		testing.Main.main(args);
 	}
 	
 	// Appium crashes
@@ -49,7 +41,8 @@ public class TestRealWorldApp {
 	// Bug found
 	@Test
 	public void testApp3() {
-		testApp(3,  10000, 0);
+		String[] args = new String[] {"-app", "3", "-event",  "5000", "-throttle", "500", "-seed", "0"};
+		testing.Main.main(args);
 	}
 	
 	// Bug found
@@ -82,7 +75,8 @@ public class TestRealWorldApp {
 	// NullPointerException
 	@Test
 	public void testApp7() {
-		testApp(7,  10000, 0);
+		String[] args = new String[] {"-app", "7", "-event",  "5000", "-throttle", "500", "-seed", "0"};
+		testing.Main.main(args);
 	}
 
 	// No bugs found up to 1177 events
