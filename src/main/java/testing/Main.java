@@ -48,10 +48,6 @@ public class Main {
 		timer.start();
 		testingApp(appInfo, (info, env) -> {
 			Logcat.clean();
-			String output = Config.v().get(Config.OUTPUT);
-			File outputDir = new File(output);
-			if(! outputDir.exists())
-				outputDir.mkdir();
 			try(PrintStream printStream = new PrintStream(new File(appInfo.getOutputDirectory(), "output.txt"))) {
 				Log.init(printStream);
 				// Run random testing
@@ -164,11 +160,16 @@ public class Main {
 		if(replayEvents.isEmpty())
 			System.out.println("# No bug found during testing.");
 		ThrottleEvent throttleEvent = new ThrottleEvent();
+		Timer timer = new Timer();
+		timer.start();
 		testingApp(appInfo, (info, env) -> {
 			for(Event event : replayEvents) {
 				event.injectEvent(appInfo, env);
 				throttleEvent.injectEvent(appInfo, env);
 			}
 		});
+		timer.stop();
+		System.out.println("# Finish replay.");
+		System.out.println("# Time: " + timer.getDurationInSecond() + " s.");
 	}
 }
