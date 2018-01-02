@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 
-import testing.ttg.TestingTraceGraph;
+import reduction.ttg.TestingTraceGraph;
 
 /**
  * This class dumps TTG to a file.

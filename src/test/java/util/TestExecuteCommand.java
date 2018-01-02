@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.junit.Test;
 
-import testing.Logcat;
+import monkey.util.Logcat;
 
 public class TestExecuteCommand {
 	

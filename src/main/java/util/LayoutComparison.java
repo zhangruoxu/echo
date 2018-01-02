@@ -27,7 +27,7 @@ import org.xmlunit.diff.DifferenceEngine;
 import org.xmlunit.diff.DifferenceEvaluator;
 import org.xmlunit.util.Predicate;
 
-import testing.Layout;
+import monkey.util.Layout;
 
 /**
  * This class compares two XML files.

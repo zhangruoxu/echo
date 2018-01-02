@@ -6,10 +6,10 @@ import java.util.function.BiConsumer;
 import org.junit.Test;
 import org.xmlunit.diff.Diff;
 
-import testing.AppInfoWrapper;
-import testing.Env;
-import testing.Main;
-import testing.TestingOptions;
+import monkey.Main;
+import monkey.util.AppInfoWrapper;
+import monkey.util.Env;
+import monkey.util.TestingOptions;
 
 /**
  * Test the class LayOutComparison
