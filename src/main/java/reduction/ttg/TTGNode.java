@@ -1,6 +1,8 @@
-package reduction.ttg.node;
+package reduction.ttg;
 
 import java.io.Serializable;
+
+import reduction.ttg.node.ErrorState;
 
 /**
  * TTGNode represents testing state during testing. 

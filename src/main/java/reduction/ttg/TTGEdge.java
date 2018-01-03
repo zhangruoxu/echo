@@ -5,7 +5,6 @@ import org.jgraph.graph.DefaultEdge;
 import monkey.event.Event;
 import monkey.event.ThrottleEvent;
 import reduction.event.InspectEvent;
-import reduction.ttg.node.TTGNode;
 
 /**
  * TTGEdge represents an app state transition achieved by an event.

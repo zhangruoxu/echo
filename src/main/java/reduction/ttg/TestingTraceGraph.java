@@ -9,7 +9,6 @@ import monkey.util.Layout;
 import reduction.ttg.node.ErrorState;
 import reduction.ttg.node.NormalState;
 import reduction.ttg.node.NormalStateFactory;
-import reduction.ttg.node.TTGNode;
 
 /**
  * Testing trace graph (TTG) records the information of testing.

@@ -1,5 +1,7 @@
 package reduction.ttg.node;
 
+import reduction.ttg.TTGNode;
+
 /**
  * This class represents an error state during testing.
  * 

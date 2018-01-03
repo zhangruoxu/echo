@@ -10,8 +10,8 @@ import org.jgrapht.graph.DirectedPseudograph;
 
 import monkey.event.Event;
 import reduction.ttg.TTGEdge;
+import reduction.ttg.TTGNode;
 import reduction.ttg.node.NormalState;
-import reduction.ttg.node.TTGNode;
 
 /**
  * This class provides utility method being used during TTG reduction.

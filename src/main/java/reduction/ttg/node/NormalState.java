@@ -6,6 +6,7 @@ import java.util.List;
 import monkey.event.Event;
 import monkey.util.Layout;
 import reduction.event.InspectEvent;
+import reduction.ttg.TTGNode;
 import reduction.ttg.node.NormalStateFactory.NormalStateKey;
 
 /**

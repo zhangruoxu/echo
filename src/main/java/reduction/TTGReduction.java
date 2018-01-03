@@ -12,9 +12,9 @@ import org.jgrapht.graph.DirectedPseudograph;
 import heros.solver.Pair;
 import monkey.event.Event;
 import reduction.ttg.TTGEdge;
+import reduction.ttg.TTGNode;
 import reduction.ttg.node.ErrorState;
 import reduction.ttg.node.NormalState;
-import reduction.ttg.node.TTGNode;
 
 /**
  * This class reduces TTG to replay error.

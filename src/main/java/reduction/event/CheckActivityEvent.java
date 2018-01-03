@@ -8,7 +8,6 @@ import monkey.event.ThrottleEvent;
 import monkey.random.RandomEventSource;
 import monkey.util.AppInfoWrapper;
 import monkey.util.Env;
-import monkey.util.Layout;
 import monkey.util.Logcat;
 import reduction.ttg.TestingTraceGraph;
 import reduction.ttg.node.NormalState;

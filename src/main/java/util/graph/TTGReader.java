@@ -7,7 +7,7 @@ import java.io.ObjectInputStream;
 import org.jgrapht.graph.DirectedPseudograph;
 
 import reduction.ttg.TTGEdge;
-import reduction.ttg.node.TTGNode;
+import reduction.ttg.TTGNode;
 
 /**
  * This class constructs the TTG via a file.

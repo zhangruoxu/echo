@@ -1,4 +1,4 @@
-package monkey.ttg;
+package reduction.ttg;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,7 +16,6 @@ import monkey.event.ThrottleEvent;
 import monkey.util.AppInfoWrapper;
 import reduction.TTGReduction;
 import reduction.ttg.TTGEdge;
-import reduction.ttg.node.TTGNode;
 import reduction.util.TTGReductionHelper;
 import util.Config;
 import util.graph.TTGReader;
