@@ -29,4 +29,9 @@ public interface EventSource {
      *         file can not open from script source etc
      */
     public boolean validate();
+    
+    /**
+     * This method is invoked to notify the EventSource that an error occurs during testing.
+     */
+    public void notifyError();
 }

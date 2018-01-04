@@ -26,6 +26,7 @@ import reduction.ttg.TTGEdge;
 import reduction.ttg.TTGNode;
 import reduction.ttg.TestingTraceGraph;
 import reduction.ttg.node.NormalStateFactory;
+import reduction.util.TTGReductionHelper;
 import util.Config;
 import util.Log;
 import util.Timer;
@@ -43,9 +44,11 @@ public class Main {
 		Config.init(null);
 		reset();
 		TestingOptions.v().processOptions(args);
-		System.out.println(TestingOptions.v().toString());
 		// Test one app for each time
 		AppInfoWrapper appInfo = new AppInfoWrapper(TestingOptions.v().getAppPaths().get(0));
+		System.out.println("Test app " + appInfo.getPkgName());
+		System.out.println("Options: ");
+		System.out.println(TestingOptions.v().toString());
 		// clean the output
 		appInfo.cleanOutputDirectory();
 		Timer timer = new Timer();
@@ -56,6 +59,7 @@ public class Main {
 				Log.init(printStream);
 				// Run random testing
 				RandomEventSource eventSource = new RandomEventSource(info, env, TestingOptions.v().getSeed());
+				env.addEventSource(eventSource);
 				eventSource.runTestingCycles();
 				timer.stop();
 				Log.println("# Time: " + timer.getDurationInSecond() + " s.");
@@ -147,6 +151,7 @@ public class Main {
 			e.printStackTrace();
 		}
 		testing.accept(appInfo, env);
+		env.driver().closeApp();
 	}
 
 	/**
@@ -160,9 +165,15 @@ public class Main {
 
 	// Replay the bug we have found
 	public static void replay(AppInfoWrapper appInfo, DirectedPseudograph<TTGNode, TTGEdge> graph) {
+		int before = TTGReductionHelper.getEvents(graph).size();
 		List<Event> replayEvents = TTGReduction.reduce(graph);
-		if(replayEvents.isEmpty())
+		int after = replayEvents.size();
+		System.out.println("# Events before reduction: " + before);
+		System.out.println("# Events after reduction: " + after);
+		if(replayEvents.isEmpty()) {
 			System.out.println("# No bug found during testing.");
+			return;
+		}
 		ThrottleEvent throttleEvent = new ThrottleEvent();
 		Timer timer = new Timer();
 		timer.start();

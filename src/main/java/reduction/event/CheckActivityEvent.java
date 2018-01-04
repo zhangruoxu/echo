@@ -49,7 +49,7 @@ public class CheckActivityEvent extends InspectEvent {
 				// Pint the logcat info then stop testing
 				Log.println("App error.");
 				Log.println(log);
-				RandomEventSource.notifyError();
+				env.eventSource().notifyError();
 				// Insert an error state into TTG.
 				NormalState lastNormalState = TestingTraceGraph.v().getLastNormalState();
 				if(lastNormalState == null)

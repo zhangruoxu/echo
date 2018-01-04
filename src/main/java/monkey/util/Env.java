@@ -8,6 +8,7 @@ import org.openqa.selenium.Dimension;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import monkey.event.Event;
+import monkey.event.EventSource;
 
 /**
  * This class represents the testing environments.
@@ -23,6 +24,7 @@ public class Env {
 		eventTrace = new LinkedList<>();
 		activityTrance = new LinkedList<>();
 		layoutTrace = new LinkedList<>();
+		
 	}
 
 	public AndroidDriver<AndroidElement> driver() {
@@ -98,6 +100,14 @@ public class Env {
 	public Deque<Layout> getLayoutTrace() {
 		return layoutTrace;
 	}
+	
+	public void addEventSource(EventSource _eventSource) {
+		eventSource = _eventSource;
+	}
+	
+	public EventSource eventSource() {
+		return eventSource;
+	}
 
 	// Testing driver
 	private AndroidDriver<AndroidElement> driver;
@@ -111,4 +121,6 @@ public class Env {
 	private Deque<String> activityTrance;
 	// Layout trace
 	private Deque<Layout> layoutTrace;
+	// The source of testing event
+	private EventSource eventSource;
 }
