@@ -19,6 +19,10 @@ public abstract class TTGNode implements Serializable {
 		entry = true;
 	}
 	
+	public int getID() {
+		return id;
+	}
+	
 	// Whether the TTGNode is the error state.
 	public boolean isErrorState() {
 		return this.getClass().equals(ErrorState.class);
@@ -26,4 +30,5 @@ public abstract class TTGNode implements Serializable {
 	
 	// Whether the TTGNode is the entry node.
 	protected boolean entry;
+	protected int id;
 }

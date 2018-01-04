@@ -10,6 +10,7 @@ import reduction.ttg.TTGNode;
 public class ErrorState extends TTGNode {
 	public ErrorState() {
 		entry = false;
+		id= -1;
 	}
 	
 	@Override

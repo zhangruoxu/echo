@@ -22,8 +22,9 @@ public class NormalState extends TTGNode {
 	 * Only the NormalStateFactory is able to create the NormalState.
 	 * Other classes can only create the NormalState via the NormalStateFactory.
 	 */
-	NormalState(NormalStateKey key) {
+	NormalState(int _id, NormalStateKey key) {
 		assert key.layout != null;
+		id = _id;
 		entry = false;
 		layout = key.layout;
 		events = new ArrayList<>();
@@ -65,9 +66,11 @@ public class NormalState extends TTGNode {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
+		builder.append("#ID ");
+		builder.append(id);
 		if(entry)
-			builder.append("#Entry# ");
-		builder.append("Activity: ");
+			builder.append(" #Entry# ");
+		builder.append(" Activity: ");
 		builder.append(layout.getActivity());
 		builder.append(" Layout: ");
 		builder.append(layout.getLayoutContent());
@@ -76,7 +79,7 @@ public class NormalState extends TTGNode {
 //			builder.append(e);
 //			builder.append(" ");
 //		}
-		builder.append("]");
+// 		builder.append("]");
 		return builder.toString();
 	}
 	

@@ -20,6 +20,14 @@ public class TTGEdge extends DefaultEdge {
 		event = _event;
 	}
 	
+	public TTGNode getSource() {
+		return (TTGNode) source;
+	}
+	
+	public TTGNode getTarget() {
+		return (TTGNode) target;
+	}
+	
 	public Event getEvent() {
 		return event;
 	}
@@ -50,8 +58,15 @@ public class TTGEdge extends DefaultEdge {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("From [");
-		builder.append(source);
+		builder.append(getSource().getID());
 		builder.append("] to [");
+		builder.append(getTarget().getID());
+		builder.append("] via ");
+		builder.append(event);
+		builder.append(". ");
+		builder.append("Source: [");
+		builder.append(source);
+		builder.append("] Target: [");
 		builder.append(target);
 		builder.append("] via ");
 		builder.append(event);

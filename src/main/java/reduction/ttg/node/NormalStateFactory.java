@@ -15,6 +15,7 @@ import monkey.util.Layout;
 public class NormalStateFactory {
 	static {
 		nodes = new HashMap<>();
+		id = 0;
 	}
 	
 	public static boolean contains(Layout layout) {
@@ -43,17 +44,20 @@ public class NormalStateFactory {
 	
 	private static NormalState create(NormalStateKey key) {
 		assert ! nodes.containsKey(key);
-		NormalState node = new NormalState(key);
+		NormalState node = new NormalState(id, key);
 		nodes.put(key, node);
+		id++;
 		return node;
 	}
 	
 	// Discard all the nodes.
 	public static void reset() {
 		nodes.clear();
+		id = 0;
 	}
 
 	private static Map<NormalStateKey, NormalState> nodes;
+	private static int id;
 	
 	static class NormalStateKey {
 		public NormalStateKey(Layout _layout) {
