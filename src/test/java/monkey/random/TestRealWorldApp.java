@@ -128,13 +128,12 @@ public class TestRealWorldApp {
 	 */
 	@Test
 	public void testBuggyApps() {
-		List<String> buggyAppIDs = Arrays.asList(
-				"10", "11", "12", "13", "14", "15", "16", 
-				"1", "25", "29", "30", "31", "32", "33", "34", 
-				"35", "36", "39", "3", "44", "45", "48", "4", 
-				"51", "53", "54", "5", "61", "68", "6", "7", "9");
-		for(String id : buggyAppIDs) {
-			String[] args = new String[] {"-app", id, "-event",  "5000", "-throttle", "500", "-seed", "0"};
+		List<String> buggyAppIDs = Arrays.asList("1", "4", "5", "6", "7", 
+				"9", "10", "11", "12", "13", "14", "15", "16", "25", "29", 
+				"30", "31", "32", "33", "34", "35", "36", "39", "44", "45", 
+				"48", "51", "53", "54", "61", "68");
+		for(int i = 0; i < 2; i++) {
+			String[] args = new String[] {"-app", buggyAppIDs.get(i), "-event",  "10", "-throttle", "500", "-seed", "0", "-replay"};
 			monkey.Main.main(args);
 		}
 	}

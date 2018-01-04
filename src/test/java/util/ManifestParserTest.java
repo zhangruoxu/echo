@@ -2,6 +2,7 @@ package util;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +89,7 @@ public class ManifestParserTest {
 	public void test9() {
 		Config.init(null);
 		Map<String, String> pkgName2AppPath = new HashMap<>();
+		Map<String, String> pkgName2AppName = new HashMap<>();
 		for(int i = 1; i <= 69; i++) {
 			String appPath = AppPathResolver.resolveAppPath(Config.v().get(Config.APPDIR), i);
 			if(appPath == null)
@@ -97,16 +99,20 @@ public class ManifestParserTest {
 			ManifestParser parser = new ManifestParser(appPath);
 //			System.out.println(parser.getPackageName());
 			pkgName2AppPath.put(parser.getPackageName(), appPath);
+			pkgName2AppName.put(parser.getPackageName(), appName);
 		}
 
-		List<String> buggyApps = Arrays.asList("jp.gr.java_conf.hatalab.mnv", "com.bwx.bequick", "org.liberty.android.fantastischmemo", "net.fercanet.LNM", "ch.blinkenlights.battery", "com.zoffcc.applications.aagtl", "com.eleybourn.bookcatalogue", "net.sf.andbatdog.batterydog", "com.evancharlton.mileage", "a2dp.Vol", "caldwell.ben.bites", "com.morphoss.acal", "com.chmod0.manpages", "com.gluegadget.hndroid", "org.beide.bomber", "cri.sanity", "es.senselesssolutions.gpl.weightchart", "org.passwordmaker.android", "com.google.android.photostream", "org.jtb.alogcat", "com.hectorone.multismssender", "com.teleca.jamendo", "com.templaro.opsiz.aka", "hu.vsza.adsdroid", "i4nc4mp.myLock", "org.jessies.dalvikexplorer", "com.example.amazed", "com.addi", "org.dnaq.dialer2", "com.fsck.k9", "org.scoutant.blokish", "com.beust.android.translate");
+		List<String> buggyApps = Arrays.asList("a2dp.Vol", "com.zoffcc.applications.aagtl", "com.morphoss.acal", "com.addi", "hu.vsza.adsdroid", "org.jtb.alogcat", "com.example.amazed", "com.templaro.opsiz.aka", "org.liberty.android.fantastischmemo", "net.sf.andbatdog.batterydog", "ch.blinkenlights.battery", "caldwell.ben.bites", "org.scoutant.blokish", "org.beide.bomber", "com.eleybourn.bookcatalogue", "org.jessies.dalvikexplorer", "org.dnaq.dialer2", "com.gluegadget.hndroid", "com.teleca.jamendo", "com.fsck.k9", "net.fercanet.LNM", "com.chmod0.manpages", "com.evancharlton.mileage", "jp.gr.java_conf.hatalab.mnv", "com.hectorone.multismssender", "i4nc4mp.myLock", "org.passwordmaker.android", "com.google.android.photostream", "com.bwx.bequick", "cri.sanity", "com.beust.android.translate", "es.senselesssolutions.gpl.weightchart");
+		buggyApps.sort((a, b) -> a.compareTo(b) );
 		File destDir = new File("C:\\Users\\yifei\\Desktop\\buggy");
 		try {
 			for(String s : buggyApps) {
 				String appPath = pkgName2AppPath.get(s);
-				if(appPath == null)
-					continue;
+//				if(appPath == null)
+//					System.out.println(s + "does not exist.");
 				FileUtils.copyFileToDirectory(new File(appPath), destDir);
+				System.out.println(pkgName2AppName.get(s).split("_")[0] + " " + s);
+//				System.out.println(s + " " + pkgName2AppName.get(s));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

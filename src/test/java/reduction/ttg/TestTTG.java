@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DirectedPseudograph;
 import org.junit.Test;
 
@@ -26,12 +27,29 @@ import util.graph.TTGReader;
  */
 public class TestTTG {
 	
+	// Testing the app 1.
+	@Test
+	public void test1() {
+		testingTTG(1);
+		AppInfoWrapper appInfo = new AppInfoWrapper(1);
+		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
+		Main.replay(appInfo, ttg);
+	}
 	// Testing the app 4.
 	@Test
 	public void test4() {
 		testingTTG(4);
 		AppInfoWrapper appInfo = new AppInfoWrapper(4);
 		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
+		GraphPath<TTGNode, TTGEdge> path = TTGReduction.shortestPath(ttg);
+		System.out.println("# Nodes: " + ttg.vertexSet().size());
+		System.out.println("# Edges: " + ttg.edgeSet().size());
+		System.out.println("# Path length: " + path.getLength());
+		System.out.println("# Node on the path: ");
+		path.getVertexList().forEach(System.out::println);
+		System.out.println("# Events: ");
+		TTGReductionHelper.getEvents(ttg).forEach(System.out::println);
+		System.out.println(TestingTraceGraph.toString(ttg));
 		Main.replay(appInfo, ttg);
 	}
 	
