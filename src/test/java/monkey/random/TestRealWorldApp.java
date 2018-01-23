@@ -128,12 +128,16 @@ public class TestRealWorldApp {
 	 */
 	@Test
 	public void testBuggyApps() {
-		List<String> buggyAppIDs = Arrays.asList("1", "4", "5", "6", "7", 
-				"9", "10", "11", "12", "13", "14", "15", "16", "25", "29", 
-				"30", "31", "32", "33", "34", "35", "36", "39", "44", "45", 
-				"48", "51", "53", "54", "61", "68");
-		for(int i = 0; i < 2; i++) {
-			String[] args = new String[] {"-app", buggyAppIDs.get(i), "-event",  "10", "-throttle", "500", "-seed", "0", "-replay"};
+		List<Integer> buggyAppIDs = Arrays.asList(
+				// finding bugs successfully
+				// 1, 4, 6, 7, 9, 10, 12, 16, 31, 32, 33, 34, 35, 36, 39, 45, 48, 53, 54, 68
+				// fail to find bugs
+				// 5, 11, 13, 14, 15, 25, 29, 30, 44, 51, 54
+				// error
+				// 2, 29, 51
+				);
+		for(int i = 0; i < Math.min(5, buggyAppIDs.size()); i++) {
+			String[] args = new String[] {"-app", buggyAppIDs.get(i).toString(), "-event",  "10000", "-throttle", "200", "-seed", "0"};
 			monkey.Main.main(args);
 		}
 	}

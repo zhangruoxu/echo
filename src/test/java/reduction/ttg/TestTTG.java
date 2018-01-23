@@ -13,8 +13,10 @@ import monkey.Main;
 import monkey.TestUtil;
 import monkey.event.Event;
 import monkey.event.KeyEvent;
+import monkey.event.Throttle;
 import monkey.event.ThrottleEvent;
 import monkey.util.AppInfoWrapper;
+import polyglot.ast.Lit;
 import reduction.TTGReduction;
 import reduction.ttg.TTGEdge;
 import reduction.util.TTGReductionHelper;
@@ -27,17 +29,40 @@ import util.graph.TTGReader;
  */
 public class TestTTG {
 	
+	private void printTTGInfo(DirectedPseudograph<TTGNode, TTGEdge> ttg) {
+		GraphPath<TTGNode, TTGEdge> shortestPath = TTGReduction.shortestPath(ttg);
+		System.out.println("# Nodes: " + ttg.vertexSet().size());
+		System.out.println("# Edges: " + ttg.edgeSet().size());
+		System.out.println("# Shortest path length: " + shortestPath.getLength());
+		System.out.println(TestingTraceGraph.toString(ttg));
+	}
+	
 	// Testing the app 1.
 	@Test
 	public void test1() {
+		String[] args = new String[] {"-app", "1", "-event",  "5000", "-throttle", "500", "-seed", "0"};
+		monkey.Main.main(args);
+	}
+	
+	// Replay the app 1.
+	@Test
+	public void replay1() {
 		testingTTG(1);
 		AppInfoWrapper appInfo = new AppInfoWrapper(1);
 		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
 		Main.replay(appInfo, ttg);
 	}
+	
 	// Testing the app 4.
 	@Test
 	public void test4() {
+		String[] args = new String[] {"-app", "4", "-event",  "5000", "-throttle", "500", "-seed", "0"};
+		monkey.Main.main(args);
+	}
+	
+	// Replay the app 4.
+	@Test
+	public void replay4() {
 		testingTTG(4);
 		AppInfoWrapper appInfo = new AppInfoWrapper(4);
 		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
@@ -53,10 +78,97 @@ public class TestTTG {
 		Main.replay(appInfo, ttg);
 	}
 	
-	// Testing app 7.
+	// Testing the app 6.
+	@Test
+	public void test6() {
+		String[] args = new String[] {"-app", "6", "-event",  "5000", "-throttle", "500", "-seed", "0"};
+		monkey.Main.main(args);
+	}
+	
+	// Replay the app 6.
+	@Test
+	public void replay6() {
+		testingTTG(6);
+		AppInfoWrapper appInfo = new AppInfoWrapper(6);
+		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
+		printTTGInfo(ttg);
+		Main.replay(appInfo, ttg);
+	}
+	
+	// Testing the app 7.
+	// No bug found up to 5000 events.
 	@Test
 	public void test7() {
-		testingTTG(7);
+		String[] args = new String[] {"-app", "7", "-event",  "5000", "-throttle", "500", "-seed", "0"};
+		monkey.Main.main(args);
+	}
+	
+	// Replay app 7.
+	@Test
+	public void replay10() {
+		testingTTG(10);
+		AppInfoWrapper appInfo = new AppInfoWrapper(10);
+		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
+		printTTGInfo(ttg);
+		Main.replay(appInfo, ttg);
+	}
+	
+	@Test
+	public void replay12() {
+		testingTTG(12);
+		AppInfoWrapper appInfo = new AppInfoWrapper(12);
+		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
+		printTTGInfo(ttg);
+		Main.replay(appInfo, ttg);
+	}
+	
+	@Test
+	public void replay16() {
+		testingTTG(16);
+		AppInfoWrapper appInfo = new AppInfoWrapper(16);
+		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
+		printTTGInfo(ttg);
+		Main.replay(appInfo, ttg);
+	}
+	
+	@Test
+	public void replay31() {
+		testingTTG(31);
+		AppInfoWrapper appInfo = new AppInfoWrapper(31);
+		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
+		printTTGInfo(ttg);
+		Main.replay(appInfo, ttg);
+	}
+	
+	@Test
+	public void replay34() {
+		testingTTG(34);
+		AppInfoWrapper appInfo = new AppInfoWrapper(34);
+		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
+		printTTGInfo(ttg);
+		Main.replay(appInfo, ttg);
+	}
+	
+	@Test
+	public void replay45() {
+		testingTTG(45);
+		AppInfoWrapper appInfo = new AppInfoWrapper(45);
+		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
+		printTTGInfo(ttg);
+		// Initialize throttle time
+		Throttle.v().init(200);
+		Main.replay(appInfo, ttg);
+	}
+	
+	@Test
+	public void replay48() {
+		testingTTG(34);
+		AppInfoWrapper appInfo = new AppInfoWrapper(48);
+		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
+		printTTGInfo(ttg);
+		// Initialize throttle time
+		Throttle.v().init(200);
+		Main.replay(appInfo, ttg);
 	}
 	
 	public DirectedPseudograph<TTGNode, TTGEdge> getTTG(AppInfoWrapper appInfo) {
