@@ -151,6 +151,11 @@ public class Main {
 			e.printStackTrace();
 		}
 		testing.accept(appInfo, env);
+		try {
+			Thread.sleep(5000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		env.driver().closeApp();
 	}
 
@@ -167,6 +172,7 @@ public class Main {
 	public static void replay(AppInfoWrapper appInfo, DirectedPseudograph<TTGNode, TTGEdge> graph) {
 		int before = TTGReductionHelper.getEvents(graph).size();
 		List<Event> replayEvents = TTGReduction.reduce(graph);
+//		List<Event> replayEvents = TTGReductionHelper.getEvents(graph);
 		int after = replayEvents.size();
 		System.out.println("# Events before reduction: " + before);
 		System.out.println("# Events after reduction: " + after);
@@ -180,7 +186,9 @@ public class Main {
 		testingApp(appInfo, (info, env) -> {
 			for(Event event : replayEvents) {
 				event.injectEvent(appInfo, env);
+				System.out.println(event);
 				throttleEvent.injectEvent(appInfo, env);
+				System.out.println(throttleEvent);
 			}
 		});
 		timer.stop();
