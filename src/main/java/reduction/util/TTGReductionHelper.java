@@ -2,7 +2,6 @@ package reduction.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,12 +23,7 @@ public class TTGReductionHelper {
 		events.addAll(getEventsFromNode(ttg));
 		events.addAll(getEventsFromEdge(ttg));
 		// Sort the events according to its ID
-		events.sort(new Comparator<Event>() {
-			@Override
-			public int compare(Event e1, Event e2) {
-				return Integer.compare(e1.getID(), e2.getID());
-			}
-		});
+		events.sort((e1, e2) -> Integer.compare(e1.getID(), e2.getID()));
 		return events;
 	}
 	
