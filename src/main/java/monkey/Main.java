@@ -21,6 +21,8 @@ import monkey.util.AppInfoWrapper;
 import monkey.util.Env;
 import monkey.util.Logcat;
 import monkey.util.TestingOptions;
+import reduction.ShortestPathFinder;
+import reduction.SimpleEventCollector;
 import reduction.TTGReduction;
 import reduction.ttg.TTGEdge;
 import reduction.ttg.TTGNode;
@@ -171,7 +173,7 @@ public class Main {
 	// Replay the bug we have found
 	public static void replay(AppInfoWrapper appInfo, DirectedPseudograph<TTGNode, TTGEdge> graph) {
 		int before = TTGReductionHelper.getEvents(graph).size();
-		List<Event> replayEvents = TTGReduction.reduce(graph);
+		List<Event> replayEvents = TTGReduction.reduce(graph, ShortestPathFinder.class, SimpleEventCollector.class);
 //		List<Event> replayEvents = TTGReductionHelper.getEvents(graph);
 		int after = replayEvents.size();
 		System.out.println("# Events before reduction: " + before);
