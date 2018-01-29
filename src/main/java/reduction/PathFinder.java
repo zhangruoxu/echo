@@ -5,11 +5,11 @@ import java.util.Optional;
 
 import org.jgrapht.graph.DirectedPseudograph;
 
-import heros.solver.Pair;
 import reduction.ttg.TTGEdge;
 import reduction.ttg.TTGNode;
 import reduction.ttg.node.ErrorState;
 import reduction.ttg.node.NormalState;
+import soot.toolkits.scalar.Pair;
 
 /**
  * This class generates a path from the entry to error state 

@@ -7,7 +7,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DirectedPseudograph;
 
-import heros.solver.Pair;
+import soot.toolkits.scalar.Pair;
 import monkey.event.Event;
 import reduction.ttg.TTGEdge;
 import reduction.ttg.TTGNode;

@@ -66,6 +66,7 @@ public class SimpleEventCollector implements EventCollector {
 			if(curNodeOutgoingEdge != null) {
 				int curNodeIncomingEdgeEventID = curNodeIncomingEdge.getEvent().getID();
 				int curNodeOutgoingEdgeEventID = curNodeOutgoingEdge.getEvent().getID();
+				assert curNodeIncomingEdgeEventID < curNodeOutgoingEdgeEventID;
 				assert curNode instanceof NormalState;
 				List<Event> curNodeEvents = ((NormalState) curNode).getEvents();
 				curNodeEvents.sort((e1, e2) -> Integer.compare(e1.getID(), e2.getID()));
@@ -84,8 +85,8 @@ public class SimpleEventCollector implements EventCollector {
 			curNodeOutgoingEdge = curNodeIncomingEdge;
 		}
 		/**
-		 * Because the nodes are visited and the events are collected in reverse order, 
-		 * the event list 
+		 * The event list is reversed here 
+		 * because the nodes are visited and the events are collected backwardly.
 		 */
 		Collections.reverse(events);
 		return events;
