@@ -2,12 +2,16 @@ package reduction.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 import org.jgrapht.graph.DirectedPseudograph;
 
 import monkey.event.Event;
+import monkey.event.ThrottleEvent;
+import reduction.event.LogcatTraceEvent;
 import reduction.ttg.TTGEdge;
 import reduction.ttg.TTGNode;
 import reduction.ttg.node.NormalState;
@@ -36,5 +40,20 @@ public class TTGReductionHelper {
 	// Collect events from edges.
 	public static List<Event> getEventsFromEdge(DirectedPseudograph<TTGNode, TTGEdge> ttg) {
 		return ttg.edgeSet().stream().map(TTGEdge::getEvent).collect(Collectors.toList());
+	}
+	
+	// Construct event queue for replaying. 
+	public static Queue<Event> getEventQueueForReplay(List<Event> reducedEvents) {
+		Queue<Event> eventQueue = new LinkedList<>();
+		// 1. Insert an reduced event.
+		// 2. Insert a logcat event to check the logcat output.
+		// Insert throttling event between them.
+		for(Event event : reducedEvents) {
+			eventQueue.add(event);
+			eventQueue.add(new ThrottleEvent());
+			eventQueue.add(new LogcatTraceEvent());
+			eventQueue.add(new ThrottleEvent());
+		}
+		return eventQueue;
 	}
 }

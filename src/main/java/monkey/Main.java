@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.PrintStream;
 import java.net.URL;
 import java.util.List;
+import java.util.Queue;
 import java.util.function.BiConsumer;
 
 import org.jgrapht.graph.DirectedPseudograph;
@@ -56,7 +57,8 @@ public class Main {
 		Timer timer = new Timer();
 		timer.start();
 		testingApp(appInfo, (info, env) -> {
-			Logcat.clean();
+			// Clean old logcat output.
+			Logcat.getLogAsString();
 			try(PrintStream printStream = new PrintStream(new File(appInfo.getOutputDirectory(), "output.txt"))) {
 				Log.init(printStream);
 				// Run random testing
@@ -175,6 +177,7 @@ public class Main {
 		int before = TTGReductionHelper.getEvents(graph).size();
 		List<Event> replayEvents = TTGReduction.reduce(graph, ShortestPathFinder.class, SimpleEventCollector.class);
 //		List<Event> replayEvents = TTGReductionHelper.getEvents(graph);
+		Queue<Event> replayEventQueue = TTGReductionHelper.getEventQueueForReplay(replayEvents);
 		int after = replayEvents.size();
 		System.out.println("# Events before reduction: " + before);
 		System.out.println("# Events after reduction: " + after);
@@ -182,15 +185,22 @@ public class Main {
 			System.out.println("# No bug found during testing.");
 			return;
 		}
-		ThrottleEvent throttleEvent = new ThrottleEvent();
 		Timer timer = new Timer();
 		timer.start();
 		testingApp(appInfo, (info, env) -> {
-			for(Event event : replayEvents) {
-				event.injectEvent(appInfo, env);
-				System.out.println(event);
-				throttleEvent.injectEvent(appInfo, env);
-				System.out.println(throttleEvent);
+			// Clean old logcat output
+			Logcat.getLogAsString();
+			while(! replayEventQueue.isEmpty()) {
+				Event event = replayEventQueue.peek();
+				assert event != null;
+				try {
+					System.out.println(event);
+					event.injectEvent(appInfo, env);
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
+				}
+				replayEventQueue.remove();
 			}
 		});
 		timer.stop();
