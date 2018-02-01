@@ -7,23 +7,22 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DirectedPseudograph;
 
-import soot.toolkits.scalar.Pair;
 import monkey.event.Event;
 import reduction.ttg.TTGEdge;
 import reduction.ttg.TTGNode;
-import reduction.ttg.node.ErrorState;
-import reduction.ttg.node.NormalState;
 
 /**
  * This class generates the shortest path from the entry to the error state on the TTG.
  * 
  * @author yifei
  */
-public class ShortestPathFinder implements PathFinder {
+public class DijkstraShortestPathFinder implements PathFinder {
 	@Override
 	public List<TTGNode> findPath(DirectedPseudograph<TTGNode, TTGEdge> ttg) {
 		// Find the shortest path from entry event to error event
 		GraphPath<TTGNode, TTGEdge> path = shortestPath(ttg);
+		System.out.println("Selected node ID: ");
+		path.getVertexList().forEach(n -> System.out.println(n.getID()));
 		return path.getVertexList();
 	}
 
@@ -41,13 +40,15 @@ public class ShortestPathFinder implements PathFinder {
 
 	// Find the shortest paths between the entry node to the error state node on the TTG.
 	public static GraphPath<TTGNode, TTGEdge> shortestPath(DirectedPseudograph<TTGNode, TTGEdge> ttg) {
-		Pair<NormalState, ErrorState> pair = PathFinder.getNodes(ttg);
-		return ShortestPathFinder.shortestPath(ttg, pair.getO1(), pair.getO2());
+		TTGNode source = PathFinder.getEntryNode(ttg);
+		TTGNode sink = PathFinder.getErrorNode(ttg);
+		return DijkstraShortestPathFinder.shortestPath(ttg, source, sink);
 	}
 
 	// Find the reachable events from the entry node to the error state on the TTG.
 	public static List<Event> getEventsOnShortestPath(DirectedPseudograph<TTGNode, TTGEdge> ttg) {
-		Pair<NormalState, ErrorState> pair = PathFinder.getNodes(ttg);
-		return ShortestPathFinder.getEventsOnShortestPath(ttg, pair.getO1(), pair.getO2());
+		TTGNode source = PathFinder.getEntryNode(ttg);
+		TTGNode sink = PathFinder.getErrorNode(ttg);
+		return DijkstraShortestPathFinder.getEventsOnShortestPath(ttg, source, sink);
 	}
 }

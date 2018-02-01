@@ -16,13 +16,12 @@ import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.remote.MobilePlatform;
 import monkey.event.Event;
-import monkey.event.ThrottleEvent;
 import monkey.random.RandomEventSource;
 import monkey.util.AppInfoWrapper;
 import monkey.util.Env;
 import monkey.util.Logcat;
 import monkey.util.TestingOptions;
-import reduction.ShortestPathFinder;
+import reduction.DijkstraShortestPathFinder;
 import reduction.SimpleEventCollector;
 import reduction.TTGReduction;
 import reduction.ttg.TTGEdge;
@@ -175,12 +174,14 @@ public class Main {
 	// Replay the bug we have found
 	public static void replay(AppInfoWrapper appInfo, DirectedPseudograph<TTGNode, TTGEdge> graph) {
 		int before = TTGReductionHelper.getEvents(graph).size();
-		List<Event> replayEvents = TTGReduction.reduce(graph, ShortestPathFinder.class, SimpleEventCollector.class);
+		List<Event> replayEvents = TTGReduction.reduce(graph, DijkstraShortestPathFinder.class, SimpleEventCollector.class);
 //		List<Event> replayEvents = TTGReductionHelper.getEvents(graph);
 		Queue<Event> replayEventQueue = TTGReductionHelper.getEventQueueForReplay(replayEvents);
 		int after = replayEvents.size();
 		System.out.println("# Events before reduction: " + before);
 		System.out.println("# Events after reduction: " + after);
+		System.out.println("Replay events:");
+		replayEvents.forEach(System.out::println);
 		if(replayEvents.isEmpty()) {
 			System.out.println("# No bug found during testing.");
 			return;

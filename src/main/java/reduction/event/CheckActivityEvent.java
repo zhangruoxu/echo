@@ -5,7 +5,6 @@ import io.appium.java_client.android.AndroidKeyCode;
 import monkey.event.KeyEvent;
 import monkey.event.Throttle;
 import monkey.event.ThrottleEvent;
-import monkey.random.RandomEventSource;
 import monkey.util.AppInfoWrapper;
 import monkey.util.Env;
 import monkey.util.Logcat;

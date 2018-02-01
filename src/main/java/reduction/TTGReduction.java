@@ -9,6 +9,7 @@ import org.jgrapht.graph.DirectedPseudograph;
 import monkey.event.Event;
 import reduction.ttg.TTGEdge;
 import reduction.ttg.TTGNode;
+import util.Log;
 
 /**
  * This class reduces TTG to replay error.
@@ -38,6 +39,7 @@ public class TTGReduction {
 			e.printStackTrace();
 			System.exit(0);
 		}
+		Log.println("Use " + pathFinderClz.getName() + " as path finder.");
 		// First, find nodes in a path from the entry node to error state node.
 		List<TTGNode> nodesOnPath = shortestPathFinder.findPath(ttg);
 		// Then, collect events from the path. 

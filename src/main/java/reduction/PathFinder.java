@@ -3,13 +3,13 @@ package reduction;
 import java.util.List;
 import java.util.Optional;
 
+import org.jgrapht.graph.AbstractGraph;
 import org.jgrapht.graph.DirectedPseudograph;
 
 import reduction.ttg.TTGEdge;
 import reduction.ttg.TTGNode;
 import reduction.ttg.node.ErrorState;
 import reduction.ttg.node.NormalState;
-import soot.toolkits.scalar.Pair;
 
 /**
  * This class generates a path from the entry to error state 
@@ -21,13 +21,31 @@ public interface PathFinder {
 	public abstract List<TTGNode> findPath(DirectedPseudograph<TTGNode, TTGEdge> ttg);
 	
 	// Return the entry node and the error state node on the TTG.
-	public static Pair<NormalState, ErrorState> getNodes(DirectedPseudograph<TTGNode, TTGEdge> ttg) {
+//	public static Pair<NormalState, ErrorState> getNodes(DirectedPseudograph<TTGNode, TTGEdge> ttg) {
+//		Optional<TTGNode> fromOpt = ttg.vertexSet().stream().filter(TTGNode::isEntry).findFirst();
+//		Optional<TTGNode> toOpt = ttg.vertexSet().stream().filter(TTGNode::isErrorState).findFirst();
+//		if(! fromOpt.isPresent())
+//			throw new RuntimeException("Entry state node is not found. ");
+//		if(! toOpt.isPresent())
+//			throw new RuntimeException("Error state node is not found. ");
+//		return new Pair<NormalState, ErrorState>((NormalState) fromOpt.get(), (ErrorState) toOpt.get());
+//	}
+	
+	// Return the entry node on the TTG. 
+	// An runtime exception is raised if the entry node does not exist.
+	public static NormalState getEntryNode(AbstractGraph<TTGNode, TTGEdge> ttg) {
 		Optional<TTGNode> fromOpt = ttg.vertexSet().stream().filter(TTGNode::isEntry).findFirst();
-		Optional<TTGNode> toOpt = ttg.vertexSet().stream().filter(TTGNode::isErrorState).findFirst();
 		if(! fromOpt.isPresent())
 			throw new RuntimeException("Entry state node is not found. ");
+		return (NormalState) fromOpt.get();
+	}
+	
+	// Return the error state node on the TTG. 
+	// An runtime exception is raised if the entry node does not exist.
+	public static ErrorState getErrorNode(AbstractGraph<TTGNode, TTGEdge> ttg) {
+		Optional<TTGNode> toOpt = ttg.vertexSet().stream().filter(TTGNode::isErrorState).findFirst();
 		if(! toOpt.isPresent())
 			throw new RuntimeException("Error state node is not found. ");
-		return new Pair<NormalState, ErrorState>((NormalState) fromOpt.get(), (ErrorState) toOpt.get());
+		return (ErrorState) toOpt.get();
 	}
 }
