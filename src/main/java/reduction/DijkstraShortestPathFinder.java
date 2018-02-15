@@ -21,8 +21,6 @@ public class DijkstraShortestPathFinder implements PathFinder {
 	public List<TTGNode> findPath(DirectedPseudograph<TTGNode, TTGEdge> ttg) {
 		// Find the shortest path from entry event to error event
 		GraphPath<TTGNode, TTGEdge> path = shortestPath(ttg);
-		System.out.println("Selected node ID: ");
-		path.getVertexList().forEach(n -> System.out.println(n.getID()));
 		return path.getVertexList();
 	}
 

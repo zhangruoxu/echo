@@ -46,9 +46,9 @@ public class LayoutComparison {
 	private final static Set<String> ignorableAttrs;
 
 	static {
-		ignorableAttrs = new HashSet<>(Arrays.asList(
-				"focused"));
-//		ignorableAttrs = new HashSet<>();
+//		ignorableAttrs = new HashSet<>(Arrays.asList(
+//				"focused"));
+		ignorableAttrs = new HashSet<>();
 
 		diffEngine = new DOMDifferenceEngine();
 

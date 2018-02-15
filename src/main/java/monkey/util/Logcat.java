@@ -21,9 +21,8 @@ public class Logcat {
 	}
 	
 	// Clean logcat output
-	@Deprecated
 	public static void clean() {
-		ExecuteCommand.exec(cleanCmdDir, Config.v().get(Config.ADB), "logcat", "-c");
+		getLogAsString();
 	}
 	
 	// obtain logcat entries

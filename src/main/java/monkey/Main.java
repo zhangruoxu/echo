@@ -57,7 +57,7 @@ public class Main {
 		timer.start();
 		testingApp(appInfo, (info, env) -> {
 			// Clean old logcat output.
-			Logcat.getLogAsString();
+			Logcat.clean();
 			try(PrintStream printStream = new PrintStream(new File(appInfo.getOutputDirectory(), "output.txt"))) {
 				Log.init(printStream);
 				// Run random testing
@@ -190,7 +190,7 @@ public class Main {
 		timer.start();
 		testingApp(appInfo, (info, env) -> {
 			// Clean old logcat output
-			Logcat.getLogAsString();
+			Logcat.clean();
 			while(! replayEventQueue.isEmpty()) {
 				Event event = replayEventQueue.peek();
 				assert event != null;
