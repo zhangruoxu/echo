@@ -22,7 +22,7 @@ import monkey.util.Env;
 import monkey.util.Logcat;
 import monkey.util.TestingOptions;
 import reduction.DijkstraShortestPathFinder;
-import reduction.SimpleEventCollector;
+import reduction.ShortestPathEventCollector;
 import reduction.TTGReduction;
 import reduction.ttg.TTGEdge;
 import reduction.ttg.TTGNode;
@@ -174,7 +174,7 @@ public class Main {
 	// Replay the bug we have found
 	public static void replay(AppInfoWrapper appInfo, DirectedPseudograph<TTGNode, TTGEdge> graph) {
 		int before = TTGReductionHelper.getEvents(graph).size();
-		List<Event> replayEvents = TTGReduction.reduce(graph, DijkstraShortestPathFinder.class, SimpleEventCollector.class);
+		List<Event> replayEvents = TTGReduction.reduce(graph, DijkstraShortestPathFinder.class, ShortestPathEventCollector.class);
 //		List<Event> replayEvents = TTGReductionHelper.getEvents(graph);
 		Queue<Event> replayEventQueue = TTGReductionHelper.getEventQueueForReplay(replayEvents);
 		int after = replayEvents.size();

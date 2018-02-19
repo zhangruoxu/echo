@@ -2,6 +2,7 @@ package reduction;
 
 import java.util.List;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DirectedPseudograph;
 
 import monkey.event.Event;
@@ -13,7 +14,9 @@ import reduction.ttg.TTGNode;
  * 
  * @see reduction.PathFinder
  * @author yifei
+ * @param <V>
+ * @param <E>
  */
 public interface EventCollector {
-	public abstract List<Event> collectEventsOnPath(DirectedPseudograph<TTGNode, TTGEdge> ttg, List<TTGNode> nodesOnPath);
+	public abstract List<Event> collectEventsOnPath(DirectedPseudograph<TTGNode, TTGEdge> ttg, GraphPath<TTGNode, TTGEdge> path);
 }

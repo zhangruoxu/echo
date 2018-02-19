@@ -1,8 +1,8 @@
 package reduction;
 
-import java.util.List;
 import java.util.Optional;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.graph.AbstractGraph;
 import org.jgrapht.graph.DirectedPseudograph;
 
@@ -16,9 +16,11 @@ import reduction.ttg.node.NormalState;
  * in the TTG according to some strategy.
  * 
  * @author yifei
+ * @param <V>
+ * @param <E>
  */
 public interface PathFinder {
-	public abstract List<TTGNode> findPath(DirectedPseudograph<TTGNode, TTGEdge> ttg);
+	public abstract GraphPath<TTGNode, TTGEdge> findPath(DirectedPseudograph<TTGNode, TTGEdge> ttg);
 	// Return the entry node on the TTG. 
 	// An runtime exception is raised if the entry node does not exist.
 	public static NormalState getEntryNode(AbstractGraph<TTGNode, TTGEdge> ttg) {

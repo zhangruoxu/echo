@@ -18,10 +18,9 @@ import reduction.ttg.TTGNode;
  */
 public class DijkstraShortestPathFinder implements PathFinder {
 	@Override
-	public List<TTGNode> findPath(DirectedPseudograph<TTGNode, TTGEdge> ttg) {
+	public GraphPath<TTGNode, TTGEdge> findPath(DirectedPseudograph<TTGNode, TTGEdge> ttg) {
 		// Find the shortest path from entry event to error event
-		GraphPath<TTGNode, TTGEdge> path = shortestPath(ttg);
-		return path.getVertexList();
+		return shortestPath(ttg);
 	}
 
 	// Find the reachable events between two nodes on the graph.

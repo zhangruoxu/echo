@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DirectedPseudograph;
 
 import monkey.event.Event;
@@ -41,8 +42,8 @@ public class TTGReduction {
 		}
 		Log.println("Use " + pathFinderClz.getName() + " as path finder.");
 		// First, find nodes in a path from the entry node to error state node.
-		List<TTGNode> nodesOnPath = shortestPathFinder.findPath(ttg);
+		GraphPath<TTGNode, TTGEdge> path = shortestPathFinder.findPath(ttg);
 		// Then, collect events from the path. 
-		return eventCollector.collectEventsOnPath(ttg, nodesOnPath);
+		return eventCollector.collectEventsOnPath(ttg, path);
 	}
 }
