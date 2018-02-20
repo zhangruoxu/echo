@@ -57,6 +57,8 @@ public class TestingTraceGraph {
 		assert ! ttg.containsVertex(fromNode);
 		ttg.addVertex(fromNode);
 		lastNormalState = fromNode;
+		// Create a new event sequence in the NormalState node.
+		fromNode.createNewEventSeq();
 	}
 	
 	// Insert an edge into TTG
@@ -70,6 +72,10 @@ public class TestingTraceGraph {
 			ttg.addEdge(from, toNode, edge);
 		}
 		lastNormalState = toNode;
+		/**
+		 * The state <i>from</i> transfers to the state <i>to</i>, so that an new event sequence of the to state is created.
+		 */
+		toNode.createNewEventSeq();
 	}
 
 	// Update the events performed against an existing layout without introducing any layout updates

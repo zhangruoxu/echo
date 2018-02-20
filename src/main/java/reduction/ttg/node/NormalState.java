@@ -1,7 +1,10 @@
 package reduction.ttg.node;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import monkey.event.Event;
 import monkey.util.Layout;
@@ -13,6 +16,9 @@ import reduction.ttg.node.NormalStateFactory.NormalStateKey;
  * A NormalState represents an error-free tesing state during testing. 
  * Program state includes the activity name and the XML layout file content of current page.
  * An event may not trigger state transition. The events that are performed over the same state are aggregated together.
+ * 
+ * Events are organized as event sequences and stored into a list. 
+ * Once a transfer happens, a new event sequence is created and appended to the end of event sequence list. 
  * 
  * @author yifei
  */
@@ -27,20 +33,35 @@ public class NormalState extends TTGNode {
 		id = _id;
 		entry = false;
 		layout = key.layout;
-		events = new ArrayList<>();
+		eventSeqs = new LinkedList<>();
 	}
 
 	public Layout getLayout() {
 		return layout;
 	}
 
+	// Return events stored in current state.
 	public List<Event> getEvents() {
-		return events;
+		return eventSeqs.stream().flatMap(Collection::stream).collect(Collectors.toList());
+	}
+	
+	public Deque<Deque<Event>> getEventSeqs() {
+		return eventSeqs;
 	}
 
+	// Add an event to the last event sequence.
 	public void addEvent(Event event) {
 		assert ! (event instanceof InspectEvent);
-		events.add(event);
+		eventSeqs.getLast().add(event);
+	}
+	
+	// Create a new event sequence and add it to the event sequence queue.
+	// This happens in two scenarios: 
+	// 1. A state is newly created;
+	// 2. A state transfers to an existing state.
+	public void createNewEventSeq() {
+		LinkedList<Event> eventSeq = new LinkedList<>();
+		eventSeqs.add(eventSeq);
 	}
 	
 	@Override
@@ -85,5 +106,5 @@ public class NormalState extends TTGNode {
 	
 	
 	private Layout layout;
-	private List<Event> events;
+	private Deque<Deque<Event>> eventSeqs;
 }
