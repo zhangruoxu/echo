@@ -13,7 +13,7 @@ import reduction.ttg.TTGNode;
 import reduction.ttg.node.NormalState;
 
 /**
- * Collect events against the given Path.
+ * Collect events against the given path.
  * @author yifei
  */
 public class PathEventCollector implements EventCollector {
