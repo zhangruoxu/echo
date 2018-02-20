@@ -16,8 +16,6 @@ import reduction.ttg.node.NormalState;
  * in the TTG according to some strategy.
  * 
  * @author yifei
- * @param <V>
- * @param <E>
  */
 public interface PathFinder {
 	public abstract GraphPath<TTGNode, TTGEdge> findPath(DirectedPseudograph<TTGNode, TTGEdge> ttg);

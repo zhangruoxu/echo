@@ -14,8 +14,6 @@ import reduction.ttg.TTGNode;
  * 
  * @see reduction.PathFinder
  * @author yifei
- * @param <V>
- * @param <E>
  */
 public interface EventCollector {
 	public abstract List<Event> collectEventsOnPath(DirectedPseudograph<TTGNode, TTGEdge> ttg, GraphPath<TTGNode, TTGEdge> path);
