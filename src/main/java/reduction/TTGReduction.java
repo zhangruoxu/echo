@@ -31,10 +31,10 @@ public class TTGReduction {
 			return new ArrayList<>();
 		
 		// Use reflection to create instances of PathFinder and EventCollector.
-		PathFinder shortestPathFinder = null;
+		PathFinder pathFinder = null;
 		EventCollector eventCollector = null;
 		try {
-			shortestPathFinder = pathFinderClz.newInstance();
+			pathFinder = pathFinderClz.newInstance();
 			eventCollector = eventCollectorClz.newInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -42,7 +42,7 @@ public class TTGReduction {
 		}
 		Log.println("Use " + pathFinderClz.getName() + " as path finder.");
 		// First, find nodes in a path from the entry node to error state node.
-		GraphPath<TTGNode, TTGEdge> path = shortestPathFinder.findPath(ttg);
+		GraphPath<TTGNode, TTGEdge> path = pathFinder.findPath(ttg);
 		// Then, collect events from the path. 
 		return eventCollector.collectEventsOnPath(ttg, path);
 	}
