@@ -22,7 +22,9 @@ import monkey.util.Env;
 import monkey.util.Logcat;
 import monkey.util.TestingOptions;
 import reduction.DijkstraShortestPathFinder;
+import reduction.EventCollector;
 import reduction.PathEventCollector;
+import reduction.PathFinder;
 import reduction.TTGReduction;
 import reduction.ttg.TTGEdge;
 import reduction.ttg.TTGNode;
@@ -171,10 +173,11 @@ public class Main {
 		testing.accept(pkgName, env);
 	}
 
-	// Replay the bug we have found
-	public static void replay(AppInfoWrapper appInfo, DirectedPseudograph<TTGNode, TTGEdge> graph) {
+	// Replay the bug with given path finder and event collector.
+	public static void replay(AppInfoWrapper appInfo, DirectedPseudograph<TTGNode, TTGEdge> graph, 
+			Class<? extends PathFinder> pathFinderClz, Class<? extends EventCollector> eventCollectorClz) {
 		int before = TTGReductionHelper.getEvents(graph).size();
-		List<Event> replayEvents = TTGReduction.reduce(graph, DijkstraShortestPathFinder.class, PathEventCollector.class);
+		List<Event> replayEvents = TTGReduction.reduce(graph, pathFinderClz, eventCollectorClz);
 //		List<Event> replayEvents = TTGReductionHelper.getEvents(graph);
 		Queue<Event> replayEventQueue = TTGReductionHelper.getEventQueueForReplay(replayEvents);
 		int after = replayEvents.size();
@@ -207,10 +210,10 @@ public class Main {
 		timer.stop();
 		System.out.println("# Finish replay.");
 		System.out.println("# Time: " + timer.getDurationInSecond() + " s.");
-		String log = Logcat.getLogAsString();
-		if(Logcat.isException(log))
-			System.out.println(log);
-		else
-			Log.println("No exception found.");
+	}
+	
+	// Replay the bug with the DijkstraShortestPathFinder and PathEventCollector.
+	public static void replay(AppInfoWrapper appInfo, DirectedPseudograph<TTGNode, TTGEdge> graph) {
+		replay(appInfo, graph, DijkstraShortestPathFinder.class, PathEventCollector.class);
 	}
 }
