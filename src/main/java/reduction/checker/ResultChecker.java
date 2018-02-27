@@ -1,4 +1,4 @@
-package reduction;
+package reduction.checker;
 
 import java.util.ArrayList;
 import java.util.Deque;
@@ -9,6 +9,8 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DirectedPseudograph;
 
 import monkey.event.Event;
+import reduction.EventCollector;
+import reduction.PathFinder;
 import reduction.ttg.TTGEdge;
 import reduction.ttg.TTGNode;
 import reduction.ttg.node.ErrorState;
@@ -18,7 +20,7 @@ import reduction.ttg.node.NormalState;
  * Check the results of event reduction.
  * @author yifei
  */
-public class ReductionChecker {
+public class ResultChecker {
 	// This method checks the event sequences of given TTG.
 	public static void check(DirectedPseudograph<TTGNode, TTGEdge> ttg, 
 			Class<? extends PathFinder> pathFinderClz, Class<? extends EventCollector> eventCollectorClz) {
@@ -29,7 +31,7 @@ public class ReductionChecker {
 				System.out.println(node);
 			else {
 				NormalState normalState = (NormalState) node;
-				System.out.println("# " + normalState.getID());
+				System.out.println("# " + normalState.getID() + ", outdegree " + ttg.outDegreeOf(node));
 				System.out.println("#Event sequence: " + normalState.getEventSeqs().size());
 				for(Deque<Event> eventSeq : normalState.getEventSeqs()) {
 					if(eventSeq.isEmpty())
@@ -57,6 +59,7 @@ public class ReductionChecker {
 				e.printStackTrace();
 				System.exit(0);
 			}
+			System.out.println("Shortest path info: ");
 			GraphPath<TTGNode, TTGEdge> path = pathFinder.findPath(ttg);
 			List<TTGNode> nodesOnPath = path.getVertexList();
 			List<TTGEdge> edgesOnPath = path.getEdgeList();
@@ -77,6 +80,17 @@ public class ReductionChecker {
 				System.out.println("Outgoing edges: ");
 				outgoingEdges.stream().map(TTGEdge::getEvent).map(Event::getID).forEach(j -> System.out.println("  #" + j));
 			}
+			System.out.println();
+			assert eventCollectorClz != EventCollector.class;
+			EventCollector eventCollector = null;
+			try {
+				eventCollector = eventCollectorClz.newInstance();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			List<Event> reducedEvents = eventCollector.collectEventsOnPath(ttg, path);
+			System.out.println("Reduced events ID:");
+			reducedEvents.stream().map(Event::getID).forEach(System.out::println);
 		}
 	}
 }
