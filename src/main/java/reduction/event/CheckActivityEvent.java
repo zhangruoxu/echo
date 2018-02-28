@@ -57,29 +57,14 @@ public class CheckActivityEvent extends InspectEvent {
 					TestingTraceGraph.v().addErrorState(lastNormalState, env.getLastEvent());
 			} else {
 				// No error happens. 
-				// Try to return to the app being tested
-				for(int i = 0; i < 5; i++) {
-					if(info.contains(getCurrentActivity(env)))
-						break;
-					new KeyEvent(AndroidKeyCode.BACK).injectEvent(info, env);
-					new ThrottleEvent(Throttle.v().getThrottleDuration() * 2).injectEvent(info, env);
-				}
-				// If testing does not return to the app, we relaunch the app.
-				if(! info.contains(getCurrentActivity(env))) {
-					String firstAct = env.getFirstActivity();
-					String lastAct = env.getLastActivity();
-					if(firstAct != null && firstAct.equals(lastAct)) {
-						// Start the first activity during testing.
-						// Using the launching app API all the app data are lost.
-						// The app is relaunched via starting the first activity in the testing trace.
-						Activity mainActivity = new Activity(info.getPkgName(), firstAct);
-						env.driver().startActivity(mainActivity);
-					}
-					else {
-						Log.println("# Warning: testing has been distracted from the app " + info.getPkgName());
-						System.exit(0);
-					}
-				}
+				/**
+				 * Try to return to the app being tested by pressing back button.
+				 * If it does not return to the app being tested, 
+				 * start the first activity in the activity transition trace during testing. 
+				 */
+				pressingBackToReturnToTargetApp(info, env);
+				if(! info.contains(getCurrentActivity(env)))
+					startFirstActivity(info, env);
 			}
 		}
 	}
@@ -87,5 +72,37 @@ public class CheckActivityEvent extends InspectEvent {
 	@Override
 	public String toString() {
 		return "[CheckActivityEvent].";
+	}
+
+	// Try to return to the app being tested pressing the back button.
+	private void pressingBackToReturnToTargetApp(AppInfoWrapper info, Env env) {
+		for(int i = 0; i < 5; i++) {
+			if(info.contains(getCurrentActivity(env)))
+				break;
+			new KeyEvent(AndroidKeyCode.BACK).injectEvent(info, env);
+			new ThrottleEvent(Throttle.v().getThrottleDuration() * 2).injectEvent(info, env);
+		}
+	}
+
+	// The app is exit during testing. Start the first activity in the activity transition trace.
+	private void startFirstActivity(AppInfoWrapper info, Env env) {
+		// If testing does not return to the app, we relaunch the app.
+		String firstAct = env.getFirstActivity();
+		String lastAct = env.getLastActivity();
+		if(firstAct != null && firstAct.equals(lastAct)) {
+			// Start the first activity during testing.
+			// Using the launching app API all the app data are lost.
+			// The app is relaunched via starting the first activity in the testing trace.
+			Activity mainActivity = new Activity(info.getPkgName(), firstAct);
+			env.driver().startActivity(mainActivity);
+		}
+		else {
+			Log.println("# Warning: testing has been distracted from the app " + info.getPkgName());
+			System.exit(0);
+		}
+	}
+	
+	private void retestApp(AppInfoWrapper info, Env env) {
+		
 	}
 }
