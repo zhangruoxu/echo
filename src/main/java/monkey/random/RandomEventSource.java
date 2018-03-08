@@ -14,6 +14,7 @@ import monkey.event.KeyEvent;
 import monkey.event.MultiTouchEvent;
 import monkey.event.TapEvent;
 import monkey.event.ThrottleEvent;
+import monkey.exception.TestFailureException;
 import monkey.util.AppInfoWrapper;
 import monkey.util.Env;
 import monkey.util.TestingOptions;
@@ -201,8 +202,9 @@ public class RandomEventSource implements EventSource {
 
 	/**
 	 * Testing cycle
+	 * @throws TestFailureException 
 	 */
-	public void runTestingCycles() {
+	public void runTestingCycles() throws TestFailureException {
 		final int numberOfEvents = TestingOptions.v().getNumberOfEvents();
 		int eventCounter = 0;
 		adjustEventFactors();
@@ -220,7 +222,10 @@ public class RandomEventSource implements EventSource {
 					// ThrottleEvent and InspectEvent are not counted.
 					eventCounter++;
 				}
-			} catch (Exception e) {
+			} catch (TestFailureException e) {
+				throw e;
+			} 
+			catch (Exception e) {
 				Log.println("## Fail to inject the event " + event);
 				e.printStackTrace();
 				// Remove the inspecting and throttling events following the events that are failed to be injected

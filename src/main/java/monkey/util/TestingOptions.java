@@ -3,6 +3,7 @@ package monkey.util;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 import monkey.event.Throttle;
 import util.AppPathResolver;
@@ -49,6 +50,10 @@ public class TestingOptions {
 	
 	public int getSeed() {
 		return seed;
+	}
+	
+	public void setRandomSeed() {
+		seed = ThreadLocalRandom.current().nextInt();
 	}
 	
 	public boolean isReplay() {

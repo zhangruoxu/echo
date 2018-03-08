@@ -19,6 +19,7 @@ import monkey.event.KeyEvent;
 import monkey.event.TapEvent;
 import monkey.event.Throttle;
 import monkey.event.ThrottleEvent;
+import monkey.exception.TestFailureException;
 import monkey.random.RandomEventSource;
 import monkey.util.AppInfoWrapper;
 import monkey.util.Env;
@@ -48,7 +49,9 @@ public class TestRandomEventSource {
 				System.out.println(event);
 				try {
 					event.injectEvent(info, env);
-				} catch (Exception e) {
+				} catch (TestFailureException e) {
+				} 
+				catch (Exception e) {
 					e.printStackTrace();
 					failedEvents.add(event);
 				}
@@ -91,10 +94,14 @@ public class TestRandomEventSource {
 	@Test
 	public void test4() {
 		initTesting("0", (info, env) -> {
-			AndroidDriver<AndroidElement> d = env.driver();
-			System.out.println("# Height: " + d.manage().window().getSize().getHeight());
-			System.out.println("# Width: " + d.manage().window().getSize().getWidth());
-			new TapEvent().addFrom(0, new PointF(1, 1775)).injectEvent(info, env);
+			try {
+				AndroidDriver<AndroidElement> d = env.driver();
+				System.out.println("# Height: " + d.manage().window().getSize().getHeight());
+				System.out.println("# Width: " + d.manage().window().getSize().getWidth());
+				new TapEvent().addFrom(0, new PointF(1, 1775)).injectEvent(info, env);
+			} catch (TestFailureException e) {
+				// TODO: handle exception
+			}
 		});
 	}
 
@@ -104,7 +111,11 @@ public class TestRandomEventSource {
 	@Test
 	public void test5() {
 		initTesting("0", (info, d) -> {
-			new DragEvent().addFromTo(0, new PointF(398, 1388),  new PointF(365, 1371)).injectEvent(info, d);
+			try {
+				new DragEvent().addFromTo(0, new PointF(398, 1388),  new PointF(365, 1371)).injectEvent(info, d);
+			}catch (TestFailureException e) {
+				// TODO: handle exception
+			}
 		});
 	}
 
@@ -115,10 +126,14 @@ public class TestRandomEventSource {
 	@Test
 	public void test6() {
 		initTesting("0", (info, env) -> {
-			Throttle.v().init(1000);
-			new KeyEvent(AndroidKeyCode.KEYCODE_CONTACTS).injectEvent(info, env);
-			new ThrottleEvent().injectEvent(info, env);
-			new CheckActivityEvent().injectEvent(info, env);
+			try {
+				Throttle.v().init(1000);
+				new KeyEvent(AndroidKeyCode.KEYCODE_CONTACTS).injectEvent(info, env);
+				new ThrottleEvent().injectEvent(info, env);
+				new CheckActivityEvent().injectEvent(info, env);
+			} catch (TestFailureException e) {
+				// TODO: handle exception
+			}
 		});
 	}
 
@@ -144,7 +159,9 @@ public class TestRandomEventSource {
 					event.injectEvent(info, env);
 					if(!( event instanceof ThrottleEvent || event instanceof InspectEvent))
 						eventCounter++;
-				} catch (Exception e) {
+				} catch (TestFailureException e) {
+					// TODO: handle exception
+				}catch (Exception e) {
 					e.printStackTrace();
 					failedEvents.add(event);
 				}
@@ -167,16 +184,20 @@ public class TestRandomEventSource {
 		Timer timer = new Timer();
 		timer.start();
 		initTesting("0", (info, env) -> {
-			Throttle.v().init(500);
-			TestingOptions.v().setNumberOfEvents(100);
-			RandomEventSource eventSource = new RandomEventSource(info, env, 10000);
-			eventSource.runTestingCycles();
-			Deque<Event> eventTraces = env.getEventTrace();
-			System.out.println("## Event traces: " + eventTraces.size());
-			System.out.println("## ThrottleEvent: " + eventTraces.stream().filter(ThrottleEvent.class::isInstance).count());
-			Deque<String> activityTrace = env.getActivityTrace();
-			System.out.println("Activity trace: ");
-			activityTrace.forEach(System.out::println);
+			try {
+				Throttle.v().init(500);
+				TestingOptions.v().setNumberOfEvents(100);
+				RandomEventSource eventSource = new RandomEventSource(info, env, 10000);
+				eventSource.runTestingCycles();
+				Deque<Event> eventTraces = env.getEventTrace();
+				System.out.println("## Event traces: " + eventTraces.size());
+				System.out.println("## ThrottleEvent: " + eventTraces.stream().filter(ThrottleEvent.class::isInstance).count());
+				Deque<String> activityTrace = env.getActivityTrace();
+				System.out.println("Activity trace: ");
+				activityTrace.forEach(System.out::println);
+			} catch (TestFailureException e) {
+				// TODO: handle exception
+			}
 		});
 		timer.stop();
 		System.out.println("# Time: " + timer.getDurationInSecond() + "s.");
@@ -214,7 +235,9 @@ public class TestRandomEventSource {
 					eventSource.runTestingCycles();
 					timer.stop();
 					Log.println("# Time: " + timer.getDurationInSecond() + " s.");
-				} catch (Exception e) {
+				} catch (TestFailureException e) {
+					// TODO: handle exception
+				}catch (Exception e) {
 					e.printStackTrace();
 					System.exit(0);
 				}
@@ -228,14 +251,18 @@ public class TestRandomEventSource {
 	@Test
 	public void test11() {
 		initTesting("1", (info, env) -> {
-			Throttle.v().init(1000);
-			new TapEvent().addFrom(0, new PointF(522, 836)).injectEvent(info, env);
-			new ThrottleEvent().injectEvent(info, env);
-			new KeyEvent(AndroidKeyCode.BACK).injectEvent(info, env);
-			new ThrottleEvent().injectEvent(info, env);
-			new KeyEvent(AndroidKeyCode.KEYCODE_BUTTON_B).injectEvent(info, env);
-			new ThrottleEvent().injectEvent(info, env);
-			new CheckActivityEvent().injectEvent(info, env);
+			try {
+				Throttle.v().init(1000);
+				new TapEvent().addFrom(0, new PointF(522, 836)).injectEvent(info, env);
+				new ThrottleEvent().injectEvent(info, env);
+				new KeyEvent(AndroidKeyCode.BACK).injectEvent(info, env);
+				new ThrottleEvent().injectEvent(info, env);
+				new KeyEvent(AndroidKeyCode.KEYCODE_BUTTON_B).injectEvent(info, env);
+				new ThrottleEvent().injectEvent(info, env);
+				new CheckActivityEvent().injectEvent(info, env);
+			} catch (TestFailureException e) {
+				// TODO: handle exception
+			}
 		});
 	}
 
@@ -245,11 +272,15 @@ public class TestRandomEventSource {
 	@Test
 	public void test12() {
 		initTesting("0", (info, env) -> {
-			Throttle.v().init(1000);
-			new ThrottleEvent().injectEvent(info, env);
-			new KeyEvent(AndroidKeyCode.KEYCODE_BUTTON_B).injectEvent(info, env);
-			new ThrottleEvent().injectEvent(info, env);
-			new CheckActivityEvent().injectEvent(info, env);
+			try {
+				Throttle.v().init(1000);
+				new ThrottleEvent().injectEvent(info, env);
+				new KeyEvent(AndroidKeyCode.KEYCODE_BUTTON_B).injectEvent(info, env);
+				new ThrottleEvent().injectEvent(info, env);
+				new CheckActivityEvent().injectEvent(info, env);
+			}catch (TestFailureException e) {
+				// TODO: handle exception
+			}
 		});
 	}
 
@@ -259,16 +290,20 @@ public class TestRandomEventSource {
 	@Test
 	public void test13() {
 		initTesting("0", (info, env) -> {
-			Throttle.v().init(500);
-			TestingOptions.v().setNumberOfEvents(100);
-			RandomEventSource eventSource = new RandomEventSource(info, env, 10000);
-			eventSource.runTestingCycles();
-			Deque<Event> eventTrace = env.getEventTrace();
-			System.out.println("## Event trace: " + eventTrace.size());
-			System.out.println("## ThrottleEvent: " + eventTrace.stream().filter(ThrottleEvent.class::isInstance).count());
-			Deque<String> activityTrace = env.getActivityTrace();
-			System.out.println("Activity trace: ");
-			activityTrace.forEach(System.out::println);
+			try {
+				Throttle.v().init(500);
+				TestingOptions.v().setNumberOfEvents(100);
+				RandomEventSource eventSource = new RandomEventSource(info, env, 10000);
+				eventSource.runTestingCycles();
+				Deque<Event> eventTrace = env.getEventTrace();
+				System.out.println("## Event trace: " + eventTrace.size());
+				System.out.println("## ThrottleEvent: " + eventTrace.stream().filter(ThrottleEvent.class::isInstance).count());
+				Deque<String> activityTrace = env.getActivityTrace();
+				System.out.println("Activity trace: ");
+				activityTrace.forEach(System.out::println);
+			}catch (TestFailureException e) {
+				// TODO: handle exception
+			}
 		});
 	}
 
@@ -279,26 +314,31 @@ public class TestRandomEventSource {
 	@Test
 	public void test14() {
 		initTesting("0", (info, env) -> {
-			Throttle.v().init(500);
-			new CheckActivityEvent().injectEvent(info, env);
-			new ThrottleEvent().injectEvent(info, env);
-			new TapEvent().addFrom(0, new PointF(522, 838)).injectEvent(info, env);
-			new ThrottleEvent().injectEvent(info, env);
-			new CheckActivityEvent().injectEvent(info, env);
-			new KeyEvent(AndroidKeyCode.KEYCODE_BACK).injectEvent(info, env);
-			new ThrottleEvent().injectEvent(info, env);
-			new CheckActivityEvent().injectEvent(info, env);
-			new KeyEvent(AndroidKeyCode.KEYCODE_BACK).injectEvent(info, env);
-			new ThrottleEvent().injectEvent(info, env);
-			new CheckActivityEvent().injectEvent(info, env);
+			try {
+				Throttle.v().init(500);
+				new CheckActivityEvent().injectEvent(info, env);
+				new ThrottleEvent().injectEvent(info, env);
+				new TapEvent().addFrom(0, new PointF(522, 838)).injectEvent(info, env);
+				new ThrottleEvent().injectEvent(info, env);
+				new CheckActivityEvent().injectEvent(info, env);
+				new KeyEvent(AndroidKeyCode.KEYCODE_BACK).injectEvent(info, env);
+				new ThrottleEvent().injectEvent(info, env);
+				new CheckActivityEvent().injectEvent(info, env);
+				new KeyEvent(AndroidKeyCode.KEYCODE_BACK).injectEvent(info, env);
+				new ThrottleEvent().injectEvent(info, env);
+				new CheckActivityEvent().injectEvent(info, env);
 
-			Deque<Event> eventTrace = env.getEventTrace();
-			System.out.println("## Event trace: " + eventTrace.size());
-			System.out.println("## ThrottleEvent: " + eventTrace.stream().filter(ThrottleEvent.class::isInstance).count());
-			Deque<String> activityTrace = env.getActivityTrace();
-			System.out.println("Activity trace: ");
-			activityTrace.forEach(System.out::println);
+				Deque<Event> eventTrace = env.getEventTrace();
+				System.out.println("## Event trace: " + eventTrace.size());
+				System.out.println("## ThrottleEvent: " + eventTrace.stream().filter(ThrottleEvent.class::isInstance).count());
+				Deque<String> activityTrace = env.getActivityTrace();
+				System.out.println("Activity trace: ");
+				activityTrace.forEach(System.out::println);
+			} catch (Throwable e) {
+				// TODO: handle exception
+			}
 		});
+
 	}
 
 	/**
@@ -307,11 +347,15 @@ public class TestRandomEventSource {
 	@Test
 	public void test15() {
 		initTesting("6", (info, env) -> {
-			Throttle.v().init(500);
-			new TapEvent().addFrom(0, new PointF(565, 571)).injectEvent(info, env);
-			new ThrottleEvent().injectEvent(info, env);
-			new TapEvent().addFrom(0, new PointF(565, 310)).injectEvent(info, env);
-			new ThrottleEvent().injectEvent(info, env);
+			try {
+				Throttle.v().init(500);
+				new TapEvent().addFrom(0, new PointF(565, 571)).injectEvent(info, env);
+				new ThrottleEvent().injectEvent(info, env);
+				new TapEvent().addFrom(0, new PointF(565, 310)).injectEvent(info, env);
+				new ThrottleEvent().injectEvent(info, env);
+			} catch (TestFailureException e) {
+				// TODO: handle exception
+			}
 		});
 	}
 
@@ -337,6 +381,8 @@ public class TestRandomEventSource {
 				eventSource.runTestingCycles();
 				timer.stop();
 				Log.println("# Time: " + timer.getDurationInSecond() + " s.");
+			} catch (TestFailureException e) {
+				// TODO: handle exception
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(0);
@@ -358,7 +404,7 @@ public class TestRandomEventSource {
 			System.out.println(page);
 		});
 	}
-	
+
 	/**
 	 * Initialize Appium testing
 	 */

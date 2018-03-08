@@ -1,10 +1,15 @@
 package reduction.event;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import io.appium.java_client.android.Activity;
 import io.appium.java_client.android.AndroidKeyCode;
 import monkey.event.KeyEvent;
 import monkey.event.Throttle;
 import monkey.event.ThrottleEvent;
+import monkey.exception.TestFailureException;
 import monkey.util.AppInfoWrapper;
 import monkey.util.Env;
 import monkey.util.Logcat;
@@ -26,16 +31,26 @@ import util.Log;
  * @author yifei
  */
 public class CheckActivityEvent extends InspectEvent {
+	static {
+		errorAndroidActivities = new HashSet<>(Arrays.asList(
+				"com.android.settings.inputmethod.InputMethodAndSubtypeEnablerActivity",
+				"com.android.settings.applications.InstalledAppDetails"
+				));
+	}
+
 	public CheckActivityEvent() {
 		super();
 	}
 
 	@Override
-	public void injectEvent(AppInfoWrapper info, Env env) {
+	public void injectEvent(AppInfoWrapper info, Env env) throws TestFailureException {
 		String curAct = getCurrentActivity(env);
 		Log.println("# Current activity: " + curAct);
-		// If current is in current app, then save it to the current activity trace
-		if(info.contains(curAct)) {
+		if(curAct == null) {
+			Log.println("Current activity is not available.");
+			System.exit(0);
+		} else if(info.contains(curAct)) {
+			// If current is in current app, then save it to the current activity trace
 			env.appendActivity(env.driver().currentActivity());
 			// Event has been successfully injected, obtain log so that it won't appear at next time
 			Logcat.getLog();
@@ -43,7 +58,24 @@ public class CheckActivityEvent extends InspectEvent {
 			// Testing has quit from the app being tested
 			// Obtain logcat to see whether there are exceptions
 			String log = Logcat.getLogAsString();
-			if(Logcat.isException(log)) {
+			if(! Logcat.isException(log)) {
+				// No error happens. 
+				/**
+				 * Try to return to the app being tested by pressing back button.
+				 * If it does not return to the app being tested, 
+				 * start the first activity in the activity transition trace during testing. 
+				 */
+				pressingBackToReturnToTargetApp(info, env);
+				if(! info.contains(getCurrentActivity(env)))
+					startFirstActivity(info, env);
+			} else if(Logcat.isException(log) && errorAndroidActivities.contains(curAct)) {
+				// Error occurs 
+				/**
+				 *  The error is not caused by app's activities, so that we test the app again.
+				 *  This is achieved by raising a TestFailureException, which is handled by the main testing loop. 
+				 */
+				throw new TestFailureException();
+			} else if(Logcat.isException(log) && ! errorAndroidActivities.contains(curAct)) {
 				// Error occurs
 				// Pint the logcat info then stop testing
 				Log.println("App error.");
@@ -56,15 +88,8 @@ public class CheckActivityEvent extends InspectEvent {
 				else 
 					TestingTraceGraph.v().addErrorState(lastNormalState, env.getLastEvent());
 			} else {
-				// No error happens. 
-				/**
-				 * Try to return to the app being tested by pressing back button.
-				 * If it does not return to the app being tested, 
-				 * start the first activity in the activity transition trace during testing. 
-				 */
-				pressingBackToReturnToTargetApp(info, env);
-				if(! info.contains(getCurrentActivity(env)))
-					startFirstActivity(info, env);
+				// skip
+				Log.println("#### Unreachable here.");
 			}
 		}
 	}
@@ -101,8 +126,6 @@ public class CheckActivityEvent extends InspectEvent {
 			System.exit(0);
 		}
 	}
-	
-	private void retestApp(AppInfoWrapper info, Env env) {
-		
-	}
+
+	private static Set<String> errorAndroidActivities;
 }

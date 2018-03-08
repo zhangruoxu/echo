@@ -6,13 +6,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import org.jgrapht.graph.DirectedPseudograph;
 import org.junit.Test;
 
 import monkey.TestUtil;
 import monkey.event.Throttle;
+import monkey.exception.TestFailureException;
 import monkey.random.RandomEventSource;
 import monkey.util.Logcat;
 import monkey.util.TestingOptions;
+import reduction.ttg.TTGEdge;
 import reduction.ttg.TTGNode;
 import reduction.ttg.TestingTraceGraph;
 import util.Config;
@@ -135,11 +138,18 @@ public class TestRealWorldApp {
 				// 5, 11, 13, 14, 15, 25, 29, 30, 44, 51, 54
 				// error
 				// 2, 29, 51
+//				32, 33, 36, 39, 9
+				31
 				);
 		for(int i = 0; i < Math.min(5, buggyAppIDs.size()); i++) {
-			String[] args = new String[] {"-app", buggyAppIDs.get(i).toString(), "-event",  "10000", "-throttle", "200", "-seed", "0"};
+			String[] args = new String[] {"-app", buggyAppIDs.get(i).toString(), "-event",  "10000", "-throttle", "300", "-seed", "0"};
 			monkey.Main.main(args);
 		}
+		DirectedPseudograph<TTGNode, TTGEdge> ttg = TestingTraceGraph.v().getTTG();
+		Set<TTGNode> nodes = ttg.vertexSet();
+		Set<TTGEdge> edges = ttg.edgeSet();
+		System.out.println("#Node: " + nodes.size());
+		System.out.println("#Edge: " + edges.size());
 	}
 	
 	/**
@@ -164,7 +174,9 @@ public class TestRealWorldApp {
 				eventSource.runTestingCycles();
 				timer.stop();
 				Log.println("# Time: " + timer.getDurationInSecond() + " s.");
-			} catch (Exception e) {
+			} catch (TestFailureException e) {
+				// TODO: handle exception
+			}catch (Exception e) {
 				e.printStackTrace();
 				System.exit(0);
 			}

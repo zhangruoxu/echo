@@ -16,6 +16,7 @@ import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.remote.MobilePlatform;
 import monkey.event.Event;
+import monkey.exception.TestFailureException;
 import monkey.random.RandomEventSource;
 import monkey.util.AppInfoWrapper;
 import monkey.util.Env;
@@ -46,37 +47,10 @@ public class Main {
 
 	public static void main(String[] args) {
 		Config.init(null);
-		reset();
 		TestingOptions.v().processOptions(args);
 		// Test one app for each time
 		AppInfoWrapper appInfo = new AppInfoWrapper(TestingOptions.v().getAppPaths().get(0));
-		System.out.println("Test app " + appInfo.getPkgName());
-		System.out.println("Options: ");
-		System.out.println(TestingOptions.v().toString());
-		// clean the output
-		appInfo.cleanOutputDirectory();
-		Timer timer = new Timer();
-		timer.start();
-		testingApp(appInfo, (info, env) -> {
-			// Clean old logcat output.
-			Logcat.clean();
-			try(PrintStream printStream = new PrintStream(new File(appInfo.getOutputDirectory(), "output.txt"))) {
-				Log.init(printStream);
-				// Run random testing
-				RandomEventSource eventSource = new RandomEventSource(info, env, TestingOptions.v().getSeed());
-				env.addEventSource(eventSource);
-				eventSource.runTestingCycles();
-				timer.stop();
-				Log.println("# Time: " + timer.getDurationInSecond() + " s.");
-				// Serialize the graph
-				Log.println("# Serialize the TTG.");
-				File graphFile = new File(appInfo.getOutputDirectory(), "graph");
-				TTGWriter.serializeTTG(graphFile);
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.exit(0);
-			}
-		});
+		testingApp(appInfo);
 		if(TestingOptions.v().isReplay()) {
 			System.out.println("Try to replay the error.");
 			replay(appInfo, TestingTraceGraph.v().getTTG());
@@ -134,13 +108,55 @@ public class Main {
 		NormalStateFactory.reset();
 	}
 
-	// simple testing
-	// launch the app, then uninstall it
+	// Testing an app. 
 	public static void testingApp(AppInfoWrapper appInfo) {
 		Env env = setUp(appInfo);
-		AndroidDriver<AndroidElement> driver = env.driver();
-		driver.closeApp();
-		driver.removeApp(appInfo.getPkgName());
+		final int timesForTesting = 5;
+		int i = 0;
+		for( ; i < timesForTesting; i++) {
+			env.driver().resetApp();
+			// Wait for app loading
+			try {
+				Thread.sleep(5000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			System.out.println("Test app " + appInfo.getPkgName());
+			System.out.println("Options: ");
+			System.out.println(TestingOptions.v().toString());
+			reset();
+			// clean the output
+			appInfo.cleanOutputDirectory();
+			Timer timer = new Timer();
+			timer.start();
+			// Clean old logcat output.
+			Logcat.clean();
+			try(PrintStream printStream = new PrintStream(new File(appInfo.getOutputDirectory(), "output.txt"))) {
+				Log.init(printStream);
+				// Run random testing
+				RandomEventSource eventSource = new RandomEventSource(appInfo, env, TestingOptions.v().getSeed());
+				env.addEventSource(eventSource);
+				eventSource.runTestingCycles();
+				timer.stop();
+				Log.println("# Time: " + timer.getDurationInSecond() + " s.");
+				// Serialize the graph
+				Log.println("# Serialize the TTG.");
+				File graphFile = new File(appInfo.getOutputDirectory(), "graph");
+				TTGWriter.serializeTTG(graphFile);
+			} catch (TestFailureException e) {
+				// Catch the TestFailureException. Retest the app with an randomly generated seed.
+				System.out.println("# Errors occurs during testing. Retesting the app with a randomly generated seed again. ");
+				TestingOptions.v().setRandomSeed();
+				reset();
+				continue;
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.exit(0);
+			}
+			break;
+		}
+		System.out.println("## Testing cycle: " + i);
+		env.driver().closeApp();
 	}
 
 	/**
@@ -178,7 +194,7 @@ public class Main {
 			Class<? extends PathFinder> pathFinderClz, Class<? extends EventCollector> eventCollectorClz) {
 		int before = TTGReductionHelper.getEvents(graph).size();
 		List<Event> replayEvents = TTGReduction.reduce(graph, pathFinderClz, eventCollectorClz);
-//		List<Event> replayEvents = TTGReductionHelper.getEvents(graph);
+		//		List<Event> replayEvents = TTGReductionHelper.getEvents(graph);
 		Queue<Event> replayEventQueue = TTGReductionHelper.getEventQueueForReplay(replayEvents);
 		int after = replayEvents.size();
 		System.out.println("# Events before reduction: " + before);
@@ -200,7 +216,10 @@ public class Main {
 				try {
 					System.out.println(event);
 					event.injectEvent(appInfo, env);
-				} catch (Exception e) {
+				} catch (TestFailureException e) {
+					System.out.println("Test failure occurs during replaying. ");
+				}
+				catch (Exception e) {
 					e.printStackTrace();
 					continue;
 				}
@@ -211,7 +230,7 @@ public class Main {
 		System.out.println("# Finish replay.");
 		System.out.println("# Time: " + timer.getDurationInSecond() + " s.");
 	}
-	
+
 	// Replay the bug with the DijkstraShortestPathFinder and PathEventCollector.
 	public static void replay(AppInfoWrapper appInfo, DirectedPseudograph<TTGNode, TTGEdge> graph) {
 		replay(appInfo, graph, DijkstraShortestPathFinder.class, PathEventCollector.class);

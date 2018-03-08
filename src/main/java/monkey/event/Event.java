@@ -2,6 +2,7 @@ package monkey.event;
 
 import java.io.Serializable;
 
+import monkey.exception.TestFailureException;
 import monkey.util.AppInfoWrapper;
 import monkey.util.Env;
 
@@ -52,7 +53,7 @@ public abstract class Event implements Serializable {
 	}
 
 	// Perform the corresponding event 
-	public abstract void injectEvent(AppInfoWrapper info, Env env);
+	public abstract void injectEvent(AppInfoWrapper info, Env env) throws TestFailureException;
 
 	/**
 	 * @return true if it is safe to throttle after this event, and false otherwise.
