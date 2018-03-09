@@ -129,8 +129,8 @@ public class CheckActivityEvent extends InspectEvent {
 		private static Set<Pattern> errorAndroidActNamePatterns;
 		static {
 			errorAndroidActNamePatterns = Arrays.asList(
-					"com.android\\.settings\\.inputmethod\\..+",
-					"com.android\\.settings\\.applications\\.InstalledAppDetails" 
+					"com\\.android\\.settings\\.inputmethod\\..+",
+					"com\\.android\\.settings\\.applications\\..+" 
 					).stream().map(Pattern::compile).collect(Collectors.toSet());
 		}
 
