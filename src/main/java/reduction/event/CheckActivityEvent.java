@@ -1,8 +1,9 @@
 package reduction.event;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import io.appium.java_client.android.Activity;
 import io.appium.java_client.android.AndroidKeyCode;
@@ -31,13 +32,6 @@ import util.Log;
  * @author yifei
  */
 public class CheckActivityEvent extends InspectEvent {
-	static {
-		errorAndroidActivities = new HashSet<>(Arrays.asList(
-				"com.android.settings.inputmethod.InputMethodAndSubtypeEnablerActivity",
-				"com.android.settings.applications.InstalledAppDetails"
-				));
-	}
-
 	public CheckActivityEvent() {
 		super();
 	}
@@ -62,20 +56,20 @@ public class CheckActivityEvent extends InspectEvent {
 				// No error happens. 
 				/**
 				 * Try to return to the app being tested by pressing back button.
-				 * If it does not return to the app being tested, 
-				 * start the first activity in the activity transition trace during testing. 
+				 * If it does not return to the app being tested, retest the app.
 				 */
 				pressingBackToReturnToTargetApp(info, env);
 				if(! info.contains(getCurrentActivity(env)))
-					startFirstActivity(info, env);
-			} else if(Logcat.isException(log) && errorAndroidActivities.contains(curAct)) {
+					throw new TestFailureException();
+			} else if(Logcat.isException(log) && ActivityChecker.isErrorAndroidActivity(curAct)) {
 				// Error occurs 
 				/**
 				 *  The error is not caused by app's activities, so that we test the app again.
 				 *  This is achieved by raising a TestFailureException, which is handled by the main testing loop. 
 				 */
+				System.out.println("#### Error is triggered by an Android activity " + curAct);
 				throw new TestFailureException();
-			} else if(Logcat.isException(log) && ! errorAndroidActivities.contains(curAct)) {
+			} else if(Logcat.isException(log) && ! ActivityChecker.isErrorAndroidActivity(curAct)) {
 				// Error occurs
 				// Pint the logcat info then stop testing
 				Log.println("App error.");
@@ -127,5 +121,24 @@ public class CheckActivityEvent extends InspectEvent {
 		}
 	}
 
-	private static Set<String> errorAndroidActivities;
+	/**
+	 * ActivityChecker checks whether a given activity name is an activity from Android system that may trigger an error.
+	 * This error are not considered as app bug.
+	 */
+	private static class ActivityChecker {
+		private static Set<Pattern> errorAndroidActNamePatterns;
+		static {
+			errorAndroidActNamePatterns = Arrays.asList(
+					"com.android\\.settings\\.inputmethod\\..+",
+					"com.android\\.settings\\.applications\\.InstalledAppDetails" 
+					).stream().map(Pattern::compile).collect(Collectors.toSet());
+		}
+
+		public static boolean isErrorAndroidActivity(String actName) {
+			for(Pattern p : errorAndroidActNamePatterns)
+				if(p.matcher(actName).matches())
+					return true;
+			return false;
+		}
+	} 
 }

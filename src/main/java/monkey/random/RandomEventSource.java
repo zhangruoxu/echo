@@ -223,6 +223,7 @@ public class RandomEventSource implements EventSource {
 					eventCounter++;
 				}
 			} catch (TestFailureException e) {
+				// TestFailureException is thrown to let the caller of this method to handle it.
 				throw e;
 			} 
 			catch (Exception e) {
