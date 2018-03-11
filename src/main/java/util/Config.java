@@ -20,6 +20,7 @@ public class Config {
 	public static final String OUTPUT = "output";
 	public static final String SDK = "SDK";
 	public static final String ADB = "ADB";
+	public static final String SYSACTS = "system-activities";
 
 	// Default names of configuration file
 	public static final String CONFIG = "config.properties";

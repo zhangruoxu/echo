@@ -1,6 +1,9 @@
 package reduction.event;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -16,6 +19,7 @@ import monkey.util.Env;
 import monkey.util.Logcat;
 import reduction.ttg.TestingTraceGraph;
 import reduction.ttg.node.NormalState;
+import util.Config;
 import util.Log;
 
 /**
@@ -59,8 +63,11 @@ public class CheckActivityEvent extends InspectEvent {
 				 * If it does not return to the app being tested, retest the app.
 				 */
 				pressingBackToReturnToTargetApp(info, env);
-				if(! info.contains(getCurrentActivity(env)))
+				if(! info.contains(getCurrentActivity(env))) {
+					System.out.println("App exits. Restart the testing again.");
+					Log.println("App exits. Restart the testing again.");
 					throw new TestFailureException();
+				}
 			} else if(Logcat.isException(log) && ActivityChecker.isErrorAndroidActivity(curAct)) {
 				// Error occurs 
 				/**
@@ -125,13 +132,17 @@ public class CheckActivityEvent extends InspectEvent {
 	 * ActivityChecker checks whether a given activity name is an activity from Android system that may trigger an error.
 	 * This error are not considered as app bug.
 	 */
-	private static class ActivityChecker {
+	public static class ActivityChecker {
 		private static Set<Pattern> errorAndroidActNamePatterns;
 		static {
-			errorAndroidActNamePatterns = Arrays.asList(
-					"com\\.android\\.settings\\.inputmethod\\..+",
-					"com\\.android\\.settings\\.applications\\..+" 
-					).stream().map(Pattern::compile).collect(Collectors.toSet());
+			errorAndroidActNamePatterns = new HashSet<>();
+			try(BufferedReader reader = new BufferedReader(new FileReader(Config.v().get(Config.SYSACTS)))) {
+				String temp = null;
+				while((temp = reader.readLine()) != null)
+					errorAndroidActNamePatterns.add(Pattern.compile(temp));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		public static boolean isErrorAndroidActivity(String actName) {

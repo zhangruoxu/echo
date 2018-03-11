@@ -25,6 +25,7 @@ import monkey.exception.TestFailureException;
 import monkey.util.AppInfoWrapper;
 import monkey.util.Env;
 import monkey.util.TestingOptions;
+import reduction.event.CheckActivityEvent.ActivityChecker;
 import soot.toolkits.scalar.Pair;
 import util.Config;
 import util.AndroidKeyCodeWrapper;
@@ -232,6 +233,18 @@ public class MainTest {
 		});
 	}
 
+	/**
+	 * Test read regular expressions from file.
+	 */
+	@Test
+	public void test15() {
+		Config.init(null);
+		System.out.println(ActivityChecker.isErrorAndroidActivity("com.android.settings.inputmethod.test"));
+		System.out.println(ActivityChecker.isErrorAndroidActivity("com.android.settings.inputmethod."));
+		System.out.println(ActivityChecker.isErrorAndroidActivity("com.android.settings.applications.test"));
+		System.out.println(ActivityChecker.isErrorAndroidActivity("com.android.providers.media.test"));
+	}
+	
 	/**
 	 * Initialize Appium testing
 	 */

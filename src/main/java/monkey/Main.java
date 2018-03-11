@@ -111,7 +111,7 @@ public class Main {
 	// Testing an app. 
 	public static void testingApp(AppInfoWrapper appInfo) {
 		Env env = setUp(appInfo);
-		final int timesForTesting = 5;
+		final int timesForTesting = 20;
 		int i = 0;
 		for( ; i < timesForTesting; i++) {
 			env.driver().resetApp();
