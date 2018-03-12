@@ -48,10 +48,7 @@ public class CheckActivityEvent extends InspectEvent {
 			Log.println("Current activity is not available.");
 			System.exit(0);
 		} else if(info.contains(curAct)) {
-			// If current is in current app, then save it to the current activity trace
-			env.appendActivity(env.driver().currentActivity());
-			// Event has been successfully injected, obtain log so that it won't appear at next time
-			Logcat.getLog();
+			checkActivitySuccess(info, env);
 		} else {
 			// Testing has quit from the app being tested
 			// Obtain logcat to see whether there are exceptions
@@ -67,6 +64,8 @@ public class CheckActivityEvent extends InspectEvent {
 					System.out.println("App exits. Restart the testing again.");
 					Log.println("App exits. Restart the testing again.");
 					throw new TestFailureException();
+				} else {
+					checkActivitySuccess(info, env);
 				}
 			} else if(Logcat.isException(log) && ActivityChecker.isErrorAndroidActivity(curAct)) {
 				// Error occurs 
@@ -110,6 +109,13 @@ public class CheckActivityEvent extends InspectEvent {
 		}
 	}
 
+	private void checkActivitySuccess(AppInfoWrapper info, Env env) {
+		// If current is in current app, then save it to the current activity trace
+		env.appendActivity(env.driver().currentActivity());
+		// Event has been successfully injected, obtain log so that it won't appear at next time
+		Logcat.getLog();
+	}
+	
 	// The app is exit during testing. Start the first activity in the activity transition trace.
 	private void startFirstActivity(AppInfoWrapper info, Env env) {
 		// If testing does not return to the app, we relaunch the app.
