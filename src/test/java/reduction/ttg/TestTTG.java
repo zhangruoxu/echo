@@ -21,6 +21,7 @@ import monkey.event.Throttle;
 import monkey.event.ThrottleEvent;
 import monkey.exception.TestFailureException;
 import monkey.util.AppInfoWrapper;
+import monkey.util.TestingOptions;
 import reduction.DijkstraShortestPathFinder;
 import reduction.EventCollector;
 import reduction.PathEventCollector;
@@ -137,7 +138,7 @@ public class TestTTG {
 		Class<? extends PathFinder> pathFinder = WeightedGraphShorthestPathFinder.class;
 		Class<? extends EventCollector> eventCollector = PathEventCollector.class;
 		ResultChecker.check(ttg, pathFinder, eventCollector);
-		// Main.replay(appInfo, ttg, pathFinder, eventCollector);
+		Main.replay(appInfo, ttg, pathFinder, eventCollector);
 	}
 
 	@Test
@@ -319,6 +320,7 @@ public class TestTTG {
 
 	private void testingTTG(int id) {
 		Config.init(null);
+		TestingOptions.v().setPortNumber(4725);
 		AppInfoWrapper appInfo = new AppInfoWrapper(id);
 		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
 		System.out.println("#Node: " + ttg.vertexSet().size());

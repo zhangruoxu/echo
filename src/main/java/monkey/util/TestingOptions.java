@@ -21,12 +21,14 @@ public class TestingOptions {
 	private List<String> appPaths = null;
 
 	private int throttle = 500;
-	
+
 	private int numberOfEvents = 5000;
-	
+
 	private int seed = 0;
-	
+
 	private boolean replay = false;
+
+	private int portNumber = 4723;
 
 	public String getEmulatorName() {
 		return emulatorName;
@@ -35,11 +37,11 @@ public class TestingOptions {
 	public List<String> getAppPaths() {
 		return appPaths;
 	}
-	
+
 	public int getThrottle() {
 		return throttle;
 	}
-	
+
 	public int getNumberOfEvents() {
 		return numberOfEvents;
 	}
@@ -47,17 +49,25 @@ public class TestingOptions {
 	public void setNumberOfEvents(int numberOfEvents) {
 		this.numberOfEvents = numberOfEvents;
 	}
-	
+
 	public int getSeed() {
 		return seed;
 	}
-	
+
 	public void setRandomSeed() {
 		seed = ThreadLocalRandom.current().nextInt();
 	}
-	
+
 	public boolean isReplay() {
 		return replay;
+	}
+
+	public int getPortNumber() {
+		return portNumber;
+	}
+	
+	public void setPortNumber(int _portNumber) {
+		portNumber = _portNumber;
 	}
 	
 	private TestingOptions() {}
@@ -70,8 +80,9 @@ public class TestingOptions {
 		for(int i = 0; i < args.length; i++) {
 			String arg = args[i];
 			// process emulator name
-			if(arg.equals("-emulator"))
+			if(arg.equals("-emulator")) {
 				emulatorName = args[i + 1];
+			}
 			// process app paths
 			else if(arg.equals("-app")) {
 				List<Integer> appIds = new ArrayList<>();
@@ -85,30 +96,43 @@ public class TestingOptions {
 				appPaths = AppPathResolver.resolveAppPaths(Config.v().get(Config.APPDIR), appIds);
 			}
 			// process throttle time
-			else if(arg.equals("-throttle"))
+			else if(arg.equals("-throttle")) {
 				try {
 					throttle = Integer.valueOf(args[i + 1]);
 					Throttle.v().init(throttle);
 				} catch (Exception e) {
 					Log.println(args[i + 1] + " is not a valid throttle time. Use 500 ms.");
 				}
+			}
 			// process the number of test cases
-			else if(arg.equals("-event"))
+			else if(arg.equals("-event")) {
 				try {
 					numberOfEvents = Integer.valueOf(args[i + 1]);
 				} catch (Exception e) {
 					Log.println(args[i + 1] + " is not a valid integer. Inject 5000 events.");
 				}
+			}
 			// process the seed
-			else if(arg.equals("-seed"))
+			else if(arg.equals("-seed")) {
 				try {
 					seed = Integer.valueOf(args[i + 1]);
 				} catch (Exception e) {
 					Log.println(args[i + 1] + " is not a valid integer. Use 0 as seed.");
 				}
+			}
 			// whether replay the error
-			else if(arg.equals("-replay"))
+			else if(arg.equals("-replay")) {
 				replay = true;
+			}
+			// port number of the Appium server
+			else if(arg.equals("-port")) {
+				try {
+					portNumber = Integer.valueOf(args[i + 1]);
+				} catch (Exception e) {
+					Log.println(args[i + 1] + " is not a valid integer. Use 4723 as port number.");
+				}
+			}
+
 		}
 		// assert emulatorName != null;
 		assert appPaths != null && ! appPaths.isEmpty();
@@ -130,7 +154,7 @@ public class TestingOptions {
 		}
 		return buffer.toString();
 	}
-	
+
 	/**
 	 * Multithread-safe singleton holder.
 	 */

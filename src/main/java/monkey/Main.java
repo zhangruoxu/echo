@@ -43,7 +43,7 @@ import util.graph.TTGWriter;
  */
 
 public class Main {
-	private static final String APPIUM_URL = "http://0.0.0.0:4723/wd/hub";
+	private static final String APPIUM_URL_TEMPLATE = "http://0.0.0.0:%d/wd/hub";
 
 	public static void main(String[] args) {
 		Config.init(null);
@@ -68,7 +68,10 @@ public class Main {
 		capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, MobilePlatform.ANDROID);
 		AndroidDriver<AndroidElement> driver = null;
 		try {
-			driver = new AndroidDriver<>(new URL(APPIUM_URL), capabilities);
+			final String appiumURL = String.format(APPIUM_URL_TEMPLATE, TestingOptions.v().getPortNumber());
+			Log.println("## Appium URL: " + appiumURL);
+			System.out.println("## Appium URL: " + appiumURL);
+			driver = new AndroidDriver<>(new URL(appiumURL), capabilities);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
@@ -90,7 +93,7 @@ public class Main {
 		capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, MobilePlatform.ANDROID);
 		AndroidDriver<AndroidElement> driver = null;
 		try {
-			driver = new AndroidDriver<>(new URL(APPIUM_URL), capabilities);
+			driver = new AndroidDriver<>(new URL(APPIUM_URL_TEMPLATE), capabilities);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(0);
