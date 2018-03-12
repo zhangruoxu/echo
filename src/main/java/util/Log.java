@@ -14,7 +14,7 @@ public class Log {
 	public static void init(PrintStream out) {
 		output = new ArrayList<>();
 		output.add(out);
-		output.add(System.out);
+//		output.add(System.out);
 	}
 	
 	public static void println(String info) {

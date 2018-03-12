@@ -138,8 +138,9 @@ public class TestRealWorldApp {
 				// 5, 11, 13, 14, 15, 25, 29, 30, 44, 51, 54
 				// error
 				// 2, 29, 51
-//				32, 33, 36, 39, 9
-				31
+//				32, 33, 36, 39, 39
+				// 31,
+				44
 				);
 		for(int i = 0; i < Math.min(5, buggyAppIDs.size()); i++) {
 			String[] args = new String[] {"-app", buggyAppIDs.get(i).toString(), "-event",  "10000", "-throttle", "300", "-seed", "0"};
