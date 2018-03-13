@@ -1,12 +1,17 @@
 package reduction.ttg;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.imageio.ImageIO;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DirectedPseudograph;
@@ -30,6 +35,7 @@ import reduction.TTGReduction;
 import reduction.WeightedGraphShorthestPathFinder;
 import reduction.checker.ResultChecker;
 import reduction.ttg.TTGEdge;
+import reduction.ttg.node.NormalState;
 import reduction.util.TTGReductionHelper;
 import soot.toolkits.scalar.Pair;
 import util.Config;
@@ -78,17 +84,33 @@ public class TestTTG {
 		testingTTG(4);
 		AppInfoWrapper appInfo = new AppInfoWrapper(4);
 		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
-		//		GraphPath<TTGNode, TTGEdge> path = TTGReduction.shortestPath(ttg);
-		//		System.out.println("# Nodes: " + ttg.vertexSet().size());
-		//		System.out.println("# Edges: " + ttg.edgeSet().size());
-		//		System.out.println("# Path length: " + path.getLength());
-		//		System.out.println("# Node on the path: ");
-		//		path.getVertexList().forEach(System.out::println);
-		//		System.out.println("# Events: ");
-		//		TTGReductionHelper.getEvents(ttg).forEach(System.out::println);
-		//		System.out.println(TestingTraceGraph.toString(ttg));
 		Throttle.v().init(500);
-		Main.replay(appInfo, ttg);
+		Class<? extends PathFinder> pathFinder = DijkstraShortestPathFinder.class;
+		Class<? extends EventCollector> eventCollector = PathEventCollector.class;
+		Main.replay(appInfo, ttg, pathFinder, eventCollector);
+		ResultChecker.check(ttg, pathFinder, eventCollector);
+		
+		System.out.println("# Obtain the screenshot:");
+		for(TTGNode node : ttg.vertexSet()) {
+			if(node instanceof NormalState) {
+				NormalState normalState = (NormalState) node;
+				BufferedImage img = null;
+				try {
+					img = ImageIO.read(new ByteArrayInputStream(normalState.getScreenshot()));
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				int stateID = normalState.getID();
+				File outputFile = new File(String.join(File.separator, Config.v().get(Config.OUTPUT), stateID + ".jpg"));
+				try {
+					ImageIO.write(img, "jpg", outputFile);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {}
+		}
 	}
 
 	// Testing the app 6.

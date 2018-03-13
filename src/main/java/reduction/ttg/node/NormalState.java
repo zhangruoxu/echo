@@ -55,6 +55,16 @@ public class NormalState extends TTGNode {
 		eventSeqs.getLast().add(event);
 	}
 	
+	public byte[] getScreenshot() {
+		return screenshot;
+	}
+	
+	public void initScreenshot(byte[] screenshot) {
+		if(this.screenshot == null) {
+			this.screenshot = screenshot;
+		} else {}
+	}
+	
 	// Create a new event sequence and add it to the event sequence queue.
 	// This happens in two scenarios: 
 	// 1. A state is newly created;
@@ -107,4 +117,5 @@ public class NormalState extends TTGNode {
 	
 	private Layout layout;
 	private Deque<Deque<Event>> eventSeqs;
+	private byte[] screenshot;
 }
