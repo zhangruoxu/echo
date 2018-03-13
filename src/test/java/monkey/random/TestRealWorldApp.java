@@ -140,10 +140,10 @@ public class TestRealWorldApp {
 				// 2, 29, 51
 //				32, 33, 36, 39, 39
 				// 31,
-				44
+				4
 				);
 		for(int i = 0; i < Math.min(5, buggyAppIDs.size()); i++) {
-			String[] args = new String[] {"-app", buggyAppIDs.get(i).toString(), "-event",  "10000", "-throttle", "300", "-seed", "0"};
+			String[] args = new String[] {"-app", buggyAppIDs.get(i).toString(), "-event",  "10000", "-throttle", "1000", "-seed", "0"};
 			monkey.Main.main(args);
 		}
 		DirectedPseudograph<TTGNode, TTGEdge> ttg = TestingTraceGraph.v().getTTG();

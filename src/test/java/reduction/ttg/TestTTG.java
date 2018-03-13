@@ -149,6 +149,17 @@ public class TestTTG {
 		Main.replay(appInfo, ttg);
 	}
 
+	// Replay app 7.
+	@Test
+	public void replay9() {
+		testingTTG(9);
+		AppInfoWrapper appInfo = new AppInfoWrapper(9);
+		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
+		//		printTTGInfo(ttg);
+		Throttle.v().init(500);
+		Main.replay(appInfo, ttg);
+	}
+	
 	// Replay app 10.
 	@Test
 	public void replay10() {
@@ -248,6 +259,16 @@ public class TestTTG {
 	public void replay39() {
 		testingTTG(39);
 		AppInfoWrapper appInfo = new AppInfoWrapper(39);
+		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
+		//		printTTGInfo(ttg);
+		Throttle.v().init(500);
+		Main.replay(appInfo, ttg);
+	}
+	
+	@Test
+	public void replay44() {
+		testingTTG(44);
+		AppInfoWrapper appInfo = new AppInfoWrapper(44);
 		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
 		//		printTTGInfo(ttg);
 		Throttle.v().init(500);
