@@ -27,7 +27,7 @@ public class TestingTraceGraph {
 	public static void reset() {
 		singleton = null;
 	}
-	
+
 	public NormalState getLastNormalState() {
 		return lastNormalState;
 	}
@@ -60,7 +60,21 @@ public class TestingTraceGraph {
 		// Create a new event sequence in the NormalState node.
 		fromNode.createNewEventSeq();
 	}
-	
+
+	// TTG operations
+	// Add a new state into TTG and capture the screenshot
+	// New method added in screenshot branch
+	public void addNewNormalState(Layout from, boolean isEntry, byte[] screenshot) {
+		NormalState fromNode = NormalStateFactory.create(from);
+		if(isEntry) fromNode.setAsEntry();
+		assert ! ttg.containsVertex(fromNode);
+		ttg.addVertex(fromNode);
+		lastNormalState = fromNode;
+		// Create a new event sequence in the NormalState node.
+		fromNode.createNewEventSeq();
+		fromNode.initScreenshot(screenshot);
+	}
+
 	// Insert an edge into TTG
 	public void addEdge(NormalState from, Layout to, Event event) {
 		assert ttg.containsVertex(from);
@@ -76,6 +90,26 @@ public class TestingTraceGraph {
 		 * The state <i>from</i> transfers to the state <i>to</i>, so that an new event sequence of the to state is created.
 		 */
 		toNode.createNewEventSeq();
+	}
+
+	// Insert an edge into TTG
+	// Screenshot is captured
+	// New method added in screenshot branch
+	public void addEdge(NormalState from, Layout to, Event event, byte[] screenshot) {
+		assert ttg.containsVertex(from);
+		NormalState toNode = NormalStateFactory.getOrCreate(to);
+		TTGEdge edge = new TTGEdge(from, toNode, event);
+		if(! ttg.containsEdge(edge)) {
+			if(! ttg.containsVertex(toNode))
+				ttg.addVertex(toNode);
+			ttg.addEdge(from, toNode, edge);
+		}
+		lastNormalState = toNode;
+		/**
+		 * The state <i>from</i> transfers to the state <i>to</i>, so that an new event sequence of the to state is created.
+		 */
+		toNode.createNewEventSeq();
+		toNode.initScreenshot(screenshot);
 	}
 
 	// Update the events performed against an existing layout without introducing any layout updates
@@ -94,7 +128,7 @@ public class TestingTraceGraph {
 		TTGEdge edge = new TTGEdge(from, errorState, event);
 		ttg.addEdge(from, errorState, edge);
 	}
-	
+
 	public DirectedPseudograph<TTGNode, TTGEdge> getTTG() {
 		return ttg;
 	}
@@ -112,12 +146,12 @@ public class TestingTraceGraph {
 		}
 		return builder.toString();
 	}
-	
+
 	private TestingTraceGraph() {
 		ttg = new DirectedPseudograph<>(TTGEdge.class);
 		lastNormalState = null;
 	}
-	
+
 	private DirectedPseudograph<TTGNode, TTGEdge> ttg;
 	private NormalState lastNormalState;
 	private static TestingTraceGraph singleton;

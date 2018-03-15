@@ -1,5 +1,6 @@
 package reduction.event;
 
+import org.openqa.selenium.OutputType;
 import org.xmlunit.diff.Diff;
 
 import monkey.util.AppInfoWrapper;
@@ -25,7 +26,8 @@ public class CheckLayoutEvent extends InspectEvent {
 		NormalState lastNormalState = TestingTraceGraph.v().getLastNormalState();
 		if(lastNormalState == null) {
 			// Current layout does not have any predecessor, add the node into TTG
-			handleNewNormalState(env, curLayout);
+			// Modified in screenshot branch
+			handleNewNormalState(env, curLayout, obtainScreenshot(info, env));
 		} else {
 			// Last layout has been found. Add a new edge into TTG (if layout updates are found) 
 			// or update the new event into current TTG node (if layout does not update)
@@ -36,7 +38,8 @@ public class CheckLayoutEvent extends InspectEvent {
 				Log.println("====== Differences with previous page:");
 				diff.getDifferences().forEach(Log::println);
 				Log.println("====== End");
-				handleNewState(env, lastNormalState, curLayout);
+				// Modified in screenshot branch
+				handleNewState(env, lastNormalState, curLayout, obtainScreenshot(info, env));
 			} else {
 				Log.println("Same as the previous layout. ");
 				updateExistingState(env, lastNormalState);
@@ -55,14 +58,31 @@ public class CheckLayoutEvent extends InspectEvent {
 	private void handleNewNormalState(Env env, Layout layout) {
 		TestingTraceGraph.v().addNewNormalState(layout, true);
 	}
+	
+	// Insert a new node into TTG
+	// New method added in screenshot branch
+	private void handleNewNormalState(Env env, Layout layout, byte[] screenshot) {
+		TestingTraceGraph.v().addNewNormalState(layout, true, screenshot);
+	}
 
 	// Insert an edge into TTG
 	private void handleNewState(Env env, NormalState from, Layout to) {
 		TestingTraceGraph.v().addEdge(from, to, env.getLastEvent());
 	}
+	
+	// Insert an edge into TTG
+	// New method added in screenshot branch
+	private void handleNewState(Env env, NormalState from, Layout to, byte[] screenshot) {
+		TestingTraceGraph.v().addEdge(from, to, env.getLastEvent(), screenshot);
+	}
 
 	// Update an existing node in TTG
 	private void updateExistingState(Env env, NormalState from) {
 		TestingTraceGraph.v().updateState(from, env.getLastEvent());
+	}
+	
+	// Obtain the screenshot
+	private byte[] obtainScreenshot(AppInfoWrapper info, Env env) {
+		return env.driver().getScreenshotAs(OutputType.BYTES);
 	}
 }
