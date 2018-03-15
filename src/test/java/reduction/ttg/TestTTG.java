@@ -5,10 +5,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
@@ -31,14 +28,14 @@ import reduction.DijkstraShortestPathFinder;
 import reduction.EventCollector;
 import reduction.PathEventCollector;
 import reduction.PathFinder;
-import reduction.TTGReduction;
 import reduction.WeightedGraphShorthestPathFinder;
 import reduction.checker.ResultChecker;
 import reduction.ttg.TTGEdge;
 import reduction.ttg.node.NormalState;
+import reduction.util.ImageDumper;
 import reduction.util.TTGReductionHelper;
-import soot.toolkits.scalar.Pair;
 import util.Config;
+import util.Log;
 import util.graph.TTGReader;
 
 /**
@@ -87,27 +84,29 @@ public class TestTTG {
 		Throttle.v().init(500);
 		Class<? extends PathFinder> pathFinder = DijkstraShortestPathFinder.class;
 		Class<? extends EventCollector> eventCollector = PathEventCollector.class;
-		Main.replay(appInfo, ttg, pathFinder, eventCollector);
-		ResultChecker.check(ttg, pathFinder, eventCollector);
+		// Main.replay(appInfo, ttg, pathFinder, eventCollector);
+		// ResultChecker.check(ttg, pathFinder, eventCollector);
 		
 		System.out.println("# Obtain the screenshot:");
+		File screenshotDir = new File(String.join(File.separator, appInfo.getOutputDirectory(), "screenshot"));
+		if(screenshotDir.exists() && screenshotDir.isDirectory()) {
+			// Remove the directory tree
+			System.out.println("# Remove old output directory. ");
+			for(String s : screenshotDir.list()) {
+				File f = new File(screenshotDir.getPath(), s);
+				f.delete();
+			}
+			screenshotDir.delete();
+		} 
+		screenshotDir.mkdirs();
 		for(TTGNode node : ttg.vertexSet()) {
 			if(node instanceof NormalState) {
 				NormalState normalState = (NormalState) node;
-				BufferedImage img = null;
-				try {
-					img = ImageIO.read(new ByteArrayInputStream(normalState.getScreenshot()));
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				int stateID = normalState.getID();
-				File outputFile = new File(String.join(File.separator, Config.v().get(Config.OUTPUT), stateID + ".jpg"));
-				try {
-					ImageIO.write(img, "jpg", outputFile);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if(normalState.getScreenshot() != null) {
+					ImageDumper.dumpImage(normalState.getScreenshot(), screenshotDir.getAbsolutePath(), Integer.toString(normalState.getID()));
+				} else {
+					Log.println("Screenshot is not captured at this node.");
+					System.out.println("Screenshot is not captured at this node.");
 				}
 			} else {}
 		}
