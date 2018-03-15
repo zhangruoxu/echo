@@ -6,6 +6,7 @@ import org.xmlunit.diff.Diff;
 import monkey.util.AppInfoWrapper;
 import monkey.util.Env;
 import monkey.util.Layout;
+import monkey.util.TestingOptions;
 import reduction.ttg.TestingTraceGraph;
 import reduction.ttg.node.NormalState;
 import util.LayoutComparison;
@@ -26,8 +27,12 @@ public class CheckLayoutEvent extends InspectEvent {
 		NormalState lastNormalState = TestingTraceGraph.v().getLastNormalState();
 		if(lastNormalState == null) {
 			// Current layout does not have any predecessor, add the node into TTG
-			// Modified in screenshot branch
-			handleNewNormalState(env, curLayout, obtainScreenshot(info, env));
+			// Screenshot is captured as a byte array and is stored in the node of TTG
+			if(TestingOptions.v().takeScreenshot()) {
+				handleNewNormalState(env, curLayout, obtainScreenshot(info, env));
+			} else {
+				handleNewNormalState(env, curLayout);
+			}
 		} else {
 			// Last layout has been found. Add a new edge into TTG (if layout updates are found) 
 			// or update the new event into current TTG node (if layout does not update)
@@ -39,7 +44,12 @@ public class CheckLayoutEvent extends InspectEvent {
 				diff.getDifferences().forEach(Log::println);
 				Log.println("====== End");
 				// Modified in screenshot branch
-				handleNewState(env, lastNormalState, curLayout, obtainScreenshot(info, env));
+				// Screenshot is captured as a byte array and is stored in the node of TTG
+				if(TestingOptions.v().takeScreenshot()) {
+					handleNewState(env, lastNormalState, curLayout, obtainScreenshot(info, env));
+				} else {
+					handleNewState(env, lastNormalState, curLayout);
+				}
 			} else {
 				Log.println("Same as the previous layout. ");
 				updateExistingState(env, lastNormalState);
@@ -58,7 +68,7 @@ public class CheckLayoutEvent extends InspectEvent {
 	private void handleNewNormalState(Env env, Layout layout) {
 		TestingTraceGraph.v().addNewNormalState(layout, true);
 	}
-	
+
 	// Insert a new node into TTG
 	// New method added in screenshot branch
 	private void handleNewNormalState(Env env, Layout layout, byte[] screenshot) {
@@ -69,7 +79,7 @@ public class CheckLayoutEvent extends InspectEvent {
 	private void handleNewState(Env env, NormalState from, Layout to) {
 		TestingTraceGraph.v().addEdge(from, to, env.getLastEvent());
 	}
-	
+
 	// Insert an edge into TTG
 	// New method added in screenshot branch
 	private void handleNewState(Env env, NormalState from, Layout to, byte[] screenshot) {
@@ -80,7 +90,7 @@ public class CheckLayoutEvent extends InspectEvent {
 	private void updateExistingState(Env env, NormalState from) {
 		TestingTraceGraph.v().updateState(from, env.getLastEvent());
 	}
-	
+
 	// Obtain the screenshot
 	private byte[] obtainScreenshot(AppInfoWrapper info, Env env) {
 		return env.driver().getScreenshotAs(OutputType.BYTES);

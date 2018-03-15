@@ -29,6 +29,8 @@ public class TestingOptions {
 	private boolean replay = false;
 
 	private int portNumber = 4723;
+	
+	private boolean takeScreenshot = false;
 
 	public String getEmulatorName() {
 		return emulatorName;
@@ -70,6 +72,14 @@ public class TestingOptions {
 		portNumber = _portNumber;
 	}
 	
+	public boolean takeScreenshot() {
+		return takeScreenshot;
+	}
+	
+	public void setTakeScreenshot(boolean _takeScreenshot) {
+		takeScreenshot = _takeScreenshot;
+	}
+	
 	private TestingOptions() {}
 
 	public static final TestingOptions v() {
@@ -78,13 +88,13 @@ public class TestingOptions {
 
 	public void processOptions(String[] args) {
 		for(int i = 0; i < args.length; i++) {
-			String arg = args[i];
+			String argument = args[i];
 			// process emulator name
-			if(arg.equals("-emulator")) {
+			if(argument.equals("-emulator")) {
 				emulatorName = args[i + 1];
 			}
 			// process app paths
-			else if(arg.equals("-app")) {
+			else if(argument.equals("-app")) {
 				List<Integer> appIds = new ArrayList<>();
 				for(int j = i + 1; j < args.length; j++) {
 					try {
@@ -96,7 +106,7 @@ public class TestingOptions {
 				appPaths = AppPathResolver.resolveAppPaths(Config.v().get(Config.APPDIR), appIds);
 			}
 			// process throttle time
-			else if(arg.equals("-throttle")) {
+			else if(argument.equals("-throttle")) {
 				try {
 					throttle = Integer.valueOf(args[i + 1]);
 					Throttle.v().init(throttle);
@@ -105,7 +115,7 @@ public class TestingOptions {
 				}
 			}
 			// process the number of test cases
-			else if(arg.equals("-event")) {
+			else if(argument.equals("-event")) {
 				try {
 					numberOfEvents = Integer.valueOf(args[i + 1]);
 				} catch (Exception e) {
@@ -113,7 +123,7 @@ public class TestingOptions {
 				}
 			}
 			// process the seed
-			else if(arg.equals("-seed")) {
+			else if(argument.equals("-seed")) {
 				try {
 					seed = Integer.valueOf(args[i + 1]);
 				} catch (Exception e) {
@@ -121,18 +131,20 @@ public class TestingOptions {
 				}
 			}
 			// whether replay the error
-			else if(arg.equals("-replay")) {
+			else if(argument.equals("-replay")) {
 				replay = true;
 			}
 			// port number of the Appium server
-			else if(arg.equals("-port")) {
+			else if(argument.equals("-port")) {
 				try {
 					portNumber = Integer.valueOf(args[i + 1]);
 				} catch (Exception e) {
 					Log.println(args[i + 1] + " is not a valid integer. Use 4723 as port number.");
 				}
 			}
-
+			else if(argument.equals("-screenshot")) {
+				takeScreenshot = true;
+			}
 		}
 		// assert emulatorName != null;
 		assert appPaths != null && ! appPaths.isEmpty();

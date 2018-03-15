@@ -3,7 +3,7 @@ package reduction.util;
 import java.awt.image.BufferedImage;
 
 /**
- * This class calculates the percentage difference of two images with the same size.
+ * This class calculates the percentage difference between two images with the same size.
  * {@link} https://rosettacode.org/wiki/Percentage_difference_between_images
  */
 public class ImageDiffPercentage {
