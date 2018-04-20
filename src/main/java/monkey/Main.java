@@ -125,17 +125,17 @@ public class Main {
 				e.printStackTrace();
 			}
 			System.out.println("Test app " + appInfo.getPkgName());
-			System.out.println("Options: ");
-			System.out.println(TestingOptions.v().toString());
 			reset();
 			// clean the output
 			appInfo.cleanOutputDirectory();
 			Timer timer = new Timer();
-			timer.start();
 			// Clean old logcat output.
 			Logcat.clean();
 			try(PrintStream printStream = new PrintStream(new File(appInfo.getOutputDirectory(), "output.txt"))) {
+				timer.start();
 				Log.init(printStream);
+				System.out.println("Options: ");
+				System.out.println(TestingOptions.v().toString());
 				// Run random testing
 				RandomEventSource eventSource = new RandomEventSource(appInfo, env, TestingOptions.v().getSeed());
 				env.addEventSource(eventSource);
@@ -197,7 +197,6 @@ public class Main {
 			Class<? extends PathFinder> pathFinderClz, Class<? extends EventCollector> eventCollectorClz) {
 		int before = TTGReductionHelper.getEvents(graph).size();
 		List<Event> replayEvents = TTGReduction.reduce(graph, pathFinderClz, eventCollectorClz);
-		//		List<Event> replayEvents = TTGReductionHelper.getEvents(graph);
 		Queue<Event> replayEventQueue = TTGReductionHelper.getEventQueueForReplay(replayEvents);
 		int after = replayEvents.size();
 		System.out.println("# Events before reduction: " + before);
@@ -209,10 +208,10 @@ public class Main {
 			return;
 		}
 		Timer timer = new Timer();
-		timer.start();
 		testingApp(appInfo, (info, env) -> {
 			// Clean old logcat output
 			Logcat.clean();
+			timer.start();
 			while(! replayEventQueue.isEmpty()) {
 				Event event = replayEventQueue.peek();
 				assert event != null;

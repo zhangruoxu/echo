@@ -48,7 +48,8 @@ public class PathEventCollector implements EventCollector {
 					Event tail = eventSeq.peekLast();
 					if(head != null && head.getID() == seqHeadEventID &&
 							tail != null && tail.getID() == seqTailEventID) {
-						events.addAll(eventSeq);
+						// Comment off for ASE paper
+						//events.addAll(eventSeq);
 					}
 				}
 			}
