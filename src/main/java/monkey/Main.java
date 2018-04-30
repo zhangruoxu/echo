@@ -27,6 +27,7 @@ import reduction.EventCollector;
 import reduction.PathEventCollector;
 import reduction.PathFinder;
 import reduction.TTGReduction;
+import reduction.event.CheckLayoutEvent;
 import reduction.ttg.TTGEdge;
 import reduction.ttg.TTGNode;
 import reduction.ttg.TestingTraceGraph;
@@ -62,6 +63,7 @@ public class Main {
 	 */
 	private static Env setUp(AppInfoWrapper appInfo) {
 		DesiredCapabilities capabilities = new DesiredCapabilities();
+//		capabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, AutomationName.ANDROID_UIAUTOMATOR2);
 		capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Android Emulator");
 		capabilities.setCapability(AndroidMobileCapabilityType.APP_PACKAGE, appInfo.getPkgName());
 		capabilities.setCapability(MobileCapabilityType.APP, appInfo.getAppPath());
@@ -146,6 +148,10 @@ public class Main {
 				Log.println("# Serialize the TTG.");
 				File graphFile = new File(appInfo.getOutputDirectory(), "graph");
 				TTGWriter.serializeTTG(graphFile);
+				Log.println("#CheckLayoutEvent: " + CheckLayoutEvent.numberOfCheckLayoutEvent);
+				Log.println("#Node: " + TestingTraceGraph.v().vertexSet().size());
+				Log.println("#Edge: " + TestingTraceGraph.v().edgeSet().size());
+				Log.println("#Events: " + TTGReductionHelper.getEvents(TestingTraceGraph.v().getTTG()));
 			} catch (TestFailureException e) {
 				// Catch the TestFailureException. Retest the app with an randomly generated seed.
 				System.out.println("# Errors occurs during testing. Retesting the app with a randomly generated seed again. ");
