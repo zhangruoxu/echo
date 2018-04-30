@@ -1,14 +1,10 @@
 package reduction.ttg;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.imageio.ImageIO;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DirectedPseudograph;
@@ -28,6 +24,7 @@ import reduction.DijkstraShortestPathFinder;
 import reduction.EventCollector;
 import reduction.PathEventCollector;
 import reduction.PathFinder;
+import reduction.TTGReduction;
 import reduction.WeightedGraphShorthestPathFinder;
 import reduction.checker.ResultChecker;
 import reduction.ttg.TTGEdge;
@@ -65,13 +62,17 @@ public class TestTTG {
 		testingTTG(1);
 		AppInfoWrapper appInfo = new AppInfoWrapper(1);
 		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
-		Main.replay(appInfo, ttg);
+//		Main.replay(appInfo, ttg);
+		TTGReductionHelper.getEvents(ttg).forEach(System.out::println);
+		Class<? extends PathFinder> pathFinderClz = DijkstraShortestPathFinder.class;
+		Class<? extends EventCollector> eventCollectorClz = PathEventCollector.class;
+		checkEvents(pathFinderClz, eventCollectorClz, ttg);
 	}
 
 	// Testing the app 4.
 	@Test
 	public void test4() {
-		String[] args = new String[] {"-app", "4", "-event",  "5000", "-throttle", "500", "-seed", "0"};
+		String[] args = new String[] {"-app", "4", "-event",  "5000", "-throttle", "500", "-seed", "0", "-screenshot"};
 		monkey.Main.main(args);
 	}
 
@@ -82,36 +83,40 @@ public class TestTTG {
 		AppInfoWrapper appInfo = new AppInfoWrapper(4);
 		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
 		Throttle.v().init(500);
-		Class<? extends PathFinder> pathFinder = DijkstraShortestPathFinder.class;
-		Class<? extends EventCollector> eventCollector = PathEventCollector.class;
-		// Main.replay(appInfo, ttg, pathFinder, eventCollector);
-		// ResultChecker.check(ttg, pathFinder, eventCollector);
+		Class<? extends PathFinder> pathFinderClz = DijkstraShortestPathFinder.class;
+		Class<? extends EventCollector> eventCollectorClz = PathEventCollector.class;
+		// Main.replay(appInfo, ttg, pathFinderClz, eventCollectorClz);
+		// dumpScreenshot(appInfo, ttg);
+		checkEvents(pathFinderClz, eventCollectorClz, ttg);
+		ResultChecker.check(ttg, pathFinderClz, eventCollectorClz);
+	}
+	
+	public void checkEvents(Class<? extends PathFinder> pathFinderClz, Class<? extends EventCollector> eventCollectorClz,
+			DirectedPseudograph<TTGNode, TTGEdge> ttg) {
+		List<Event> eventsOnNode = TTGReductionHelper.getEventsFromNode(ttg);
+		List<Event> eventsOnEdge = TTGReductionHelper.getEventsFromEdge(ttg);
+		List<Event> reducedEvents = TTGReduction.reduce(ttg, pathFinderClz, eventCollectorClz);
+		System.out.println("Events on nodes: ");
+		eventsOnNode.forEach(System.out::println);
+		System.out.println("Events on edges: ");
+		eventsOnEdge.forEach(System.out::println);
+		for(Event event : reducedEvents)
+			if(eventsOnNode.contains(event))
+				System.out.println("Event is on node.");
+			else if(eventsOnEdge.contains(event))
+				System.out.println("Event is on edge.");
+			else
+				System.out.println("Event is on mars.");
 		
-		System.out.println("# Obtain the screenshot:");
-		File screenshotDir = new File(String.join(File.separator, appInfo.getOutputDirectory(), "screenshot"));
-		if(screenshotDir.exists() && screenshotDir.isDirectory()) {
-			// Remove the directory tree
-			System.out.println("# Remove old output directory. ");
-			for(String s : screenshotDir.list()) {
-				File f = new File(screenshotDir.getPath(), s);
-				f.delete();
-			}
-			screenshotDir.delete();
-		} 
-		screenshotDir.mkdirs();
-		for(TTGNode node : ttg.vertexSet()) {
-			if(node instanceof NormalState) {
-				NormalState normalState = (NormalState) node;
-				if(normalState.getScreenshot() != null) {
-					ImageDumper.dumpImage(normalState.getScreenshot(), screenshotDir.getAbsolutePath(), Integer.toString(normalState.getID()));
-				} else {
-					Log.println("Screenshot is not captured at this node.");
-					System.out.println("Screenshot is not captured at this node.");
-				}
-			} else {}
+		try {
+			PathFinder finder = pathFinderClz.newInstance();
+			GraphPath<TTGNode, TTGEdge> path = finder.findPath(ttg);
+			path.getVertexList().forEach(n -> System.out.println(n.getID()));
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
-
+	
 	// Testing the app 6.
 	@Test
 	public void test6() {
@@ -125,8 +130,12 @@ public class TestTTG {
 		testingTTG(6);
 		AppInfoWrapper appInfo = new AppInfoWrapper(6);
 		DirectedPseudograph<TTGNode, TTGEdge> ttg = getTTG(appInfo);
-		//		printTTGInfo(ttg);
-		Main.replay(appInfo, ttg);
+		//		printTTGInfo(ttg);		
+		Class<? extends PathFinder> pathFinderClz = DijkstraShortestPathFinder.class;
+		Class<? extends EventCollector> eventCollectorClz = PathEventCollector.class;
+		// Main.replay(appInfo, ttg, pathFinderClz, eventCollectorClz);
+//		TTGReductionHelper.getEvents(ttg).forEach(System.out::println);
+		checkEvents(pathFinderClz, eventCollectorClz, ttg);
 	}
 
 	// Testing the app 7.
@@ -192,6 +201,7 @@ public class TestTTG {
 		Throttle.v().init(500);
 		Main.replay(appInfo, ttg);
 		ResultChecker.check(ttg, DijkstraShortestPathFinder.class, PathEventCollector.class);
+//		dumpScreenshot(appInfo, ttg);
 	}
 
 	@Test
@@ -282,7 +292,10 @@ public class TestTTG {
 		printTTGInfo(ttg);
 		// Initialize throttle time
 		Throttle.v().init(500);
-		Main.replay(appInfo, ttg);
+		Class<? extends PathFinder> pathFinderClz = DijkstraShortestPathFinder.class;
+		Class<? extends EventCollector> eventCollectorClz = PathEventCollector.class;
+//		Main.replay(appInfo, ttg, pathFinderClz, eventCollectorClz);
+		checkEvents(pathFinderClz, eventCollectorClz, ttg);
 	}
 
 	@Test
@@ -293,7 +306,10 @@ public class TestTTG {
 		// printTTGInfo(ttg);
 		// Initialize throttle time
 		Throttle.v().init(500);
-		Main.replay(appInfo, ttg);
+		Class<? extends PathFinder> pathFinderClz = DijkstraShortestPathFinder.class;
+		Class<? extends EventCollector> eventCollectorClz = PathEventCollector.class;
+		Main.replay(appInfo, ttg, pathFinderClz, eventCollectorClz);
+		checkEvents(pathFinderClz, eventCollectorClz, ttg);
 	}
 
 	@Test
@@ -360,6 +376,32 @@ public class TestTTG {
 		return TTGReader.deserializeTTG(graphFile);
 	}
 
+	public void dumpScreenshot(AppInfoWrapper appInfo, DirectedPseudograph<TTGNode, TTGEdge> ttg) {
+		System.out.println("# Obtain the screenshot:");
+		File screenshotDir = new File(String.join(File.separator, appInfo.getOutputDirectory(), "screenshot"));
+		if(screenshotDir.exists() && screenshotDir.isDirectory()) {
+			// Remove the directory tree
+			System.out.println("# Remove old screenshot directory. ");
+			for(String s : screenshotDir.list()) {
+				File f = new File(screenshotDir.getPath(), s);
+				f.delete();
+			}
+			screenshotDir.delete();
+		} 
+		screenshotDir.mkdirs();
+		for(TTGNode node : ttg.vertexSet()) {
+			if(node instanceof NormalState) {
+				NormalState normalState = (NormalState) node;
+				if(normalState.getScreenshot() != null) {
+					ImageDumper.dumpImage(normalState.getScreenshot(), screenshotDir.getAbsolutePath(), Integer.toString(normalState.getID()));
+				} else {
+					Log.println("Screenshot is not captured at this node.");
+					System.out.println("Screenshot is not captured at this node.");
+				}
+			} else {}
+		}
+	}
+	
 	private void testingTTG(int id) {
 		Config.init(null);
 		TestingOptions.v().setPortNumber(4725);

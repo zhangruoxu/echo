@@ -32,6 +32,10 @@ public class ResultChecker {
 			else {
 				NormalState normalState = (NormalState) node;
 				System.out.println("# " + normalState.getID() + ", outdegree " + ttg.outDegreeOf(node));
+				for(TTGEdge edge : ttg.outgoingEdgesOf(normalState)) {
+					TTGNode tgt = edge.getTarget();
+					System.out.println("From " + normalState.getID() + " to " + tgt.getID() + " via #" + edge.getEvent().getID());
+				}
 				System.out.println("#Event sequence: " + normalState.getEventSeqs().size());
 				for(Deque<Event> eventSeq : normalState.getEventSeqs()) {
 					if(eventSeq.isEmpty())
@@ -39,6 +43,11 @@ public class ResultChecker {
 					else {
 						System.out.println("  From " + eventSeq.peekFirst().getID() + " to " + eventSeq.peekLast().getID());
 					}
+				}
+				System.out.println();
+				System.out.println("# " + normalState.getID() + ", indegree " + ttg.outDegreeOf(node));
+				for(TTGEdge edge : ttg.incomingEdgesOf(normalState)) {
+					System.out.println("From " + edge.getSource().getID() + " to " + edge.getTarget().getID() + " via #" + edge.getEvent().getID());
 				}
 			}
 			System.out.println();
@@ -91,6 +100,8 @@ public class ResultChecker {
 			List<Event> reducedEvents = eventCollector.collectEventsOnPath(ttg, path);
 			System.out.println("Reduced events ID:");
 			reducedEvents.stream().map(Event::getID).forEach(System.out::println);
+			System.out.println("Reduced events: ");
+			reducedEvents.forEach(System.out::println);
 		}
 	}
 }

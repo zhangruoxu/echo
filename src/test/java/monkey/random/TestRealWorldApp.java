@@ -18,6 +18,7 @@ import monkey.util.TestingOptions;
 import reduction.ttg.TTGEdge;
 import reduction.ttg.TTGNode;
 import reduction.ttg.TestingTraceGraph;
+import reduction.util.TTGReductionHelper;
 import util.Config;
 import util.Log;
 import util.Timer;
@@ -143,7 +144,7 @@ public class TestRealWorldApp {
 				4
 				);
 		for(int i = 0; i < Math.min(5, buggyAppIDs.size()); i++) {
-			String[] args = new String[] {"-app", buggyAppIDs.get(i).toString(), "-event",  "10000", "-throttle", "1000", "-seed", "0", "-screenshot"};
+			String[] args = new String[] {"-app", buggyAppIDs.get(i).toString(), "-event",  "10000", "-throttle", "500", "-seed", "0", "-screenshot"};
 			monkey.Main.main(args);
 		}
 		DirectedPseudograph<TTGNode, TTGEdge> ttg = TestingTraceGraph.v().getTTG();
@@ -151,6 +152,7 @@ public class TestRealWorldApp {
 		Set<TTGEdge> edges = ttg.edgeSet();
 		System.out.println("#Node: " + nodes.size());
 		System.out.println("#Edge: " + edges.size());
+		System.out.println("#Events: " + TTGReductionHelper.getEvents(ttg).size());
 	}
 	
 	/**
