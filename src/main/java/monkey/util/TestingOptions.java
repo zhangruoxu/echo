@@ -31,6 +31,8 @@ public class TestingOptions {
 	private int portNumber = 4723;
 	
 	private boolean takeScreenshot = false;
+	
+	private boolean slidingWindowModel = false;
 
 	public String getEmulatorName() {
 		return emulatorName;
@@ -78,6 +80,10 @@ public class TestingOptions {
 	
 	public void setTakeScreenshot(boolean _takeScreenshot) {
 		takeScreenshot = _takeScreenshot;
+	}
+	
+	public boolean slidingWindowModel() {
+		return slidingWindowModel;
 	}
 	
 	private TestingOptions() {}
@@ -144,6 +150,8 @@ public class TestingOptions {
 			}
 			else if(argument.equals("-screenshot")) {
 				takeScreenshot = true;
+			} else if(argument.equals("-sliding")) {
+				slidingWindowModel = true;
 			}
 		}
 		// assert emulatorName != null;

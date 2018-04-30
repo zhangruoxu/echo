@@ -5,8 +5,10 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import monkey.util.TestingOptions;
 import reduction.event.CheckActivityEvent;
 import reduction.event.CheckLayoutEvent;
+import reduction.event.SlidingWindowEvent;
 import util.Log;
 
 /**
@@ -27,6 +29,9 @@ public class EventQueue extends LinkedList<Event> {
 			CheckActivityEvent.class,
 			CheckLayoutEvent.class
 		);
+		
+		// Sliding window event. 
+		slidingWindowEvents = Arrays.asList(SlidingWindowEvent.v());
 	}
 	
 	public EventQueue() {
@@ -65,7 +70,13 @@ public class EventQueue extends LinkedList<Event> {
 			super.addLast(throttleEvent);
 		}
 		// Insert inspecting events
-		super.addAll(inspectEvents);
+		// If sliding window model is adopted, sliding window event is injected. 
+		// Otherwise,  normal inspection events are injected.
+		if(TestingOptions.v().slidingWindowModel()) {
+			super.addAll(slidingWindowEvents);
+		} else {
+			 super.addAll(inspectEvents);
+		}
 	}
 	
 	// This list contains the meta class objects of the inspecting events 
@@ -75,4 +86,6 @@ public class EventQueue extends LinkedList<Event> {
 	private ThrottleEvent throttleEvent;
 	// Meta-class of inspecting events
 	private static List<Class<? extends Event>> inspectEventMetaClz;
+	// 
+	private static List<Event> slidingWindowEvents;
 }
