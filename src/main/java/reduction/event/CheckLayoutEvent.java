@@ -20,8 +20,10 @@ import util.Log;
  * @author yifei
  */
 public class CheckLayoutEvent extends InspectEvent {
+	public static int numberOfCheckLayoutEvent = 0;
 	@Override
 	public void injectEvent(AppInfoWrapper info, Env env) {
+		numberOfCheckLayoutEvent++;
 		String curLayoutContent = env.driver().getPageSource();
 		Layout curLayout = new Layout(getCurrentActivity(env), curLayoutContent);
 		NormalState lastNormalState = TestingTraceGraph.v().getLastNormalState();

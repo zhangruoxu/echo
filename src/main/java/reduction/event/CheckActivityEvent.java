@@ -2,11 +2,9 @@ package reduction.event;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import io.appium.java_client.android.Activity;
 import io.appium.java_client.android.AndroidKeyCode;
